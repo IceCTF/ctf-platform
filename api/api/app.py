@@ -10,8 +10,23 @@ from api.annotations import api_wrapper, require_login, require_admin
 
 log = api.logger.use(__name__)
 
-#TODO: Reenable this with proper logging.
-#api.setup.check_database_indexes()
+session_cookie_domain = "127.0.0.1"
+session_cookie_path = "/"
+session_cookie_name = "flask"
+
+secret_key = ""
+
+def run(*args, **kwargs):
+    """
+    Start the api with configured values.
+    """
+
+    app.secret_key = secret_key
+    app.config["SESSION_COOKIE_DOMAIN"] = session_cookie_domain
+    app.config["SESSION_COOKIE_PATH"] = session_cookie_path
+    app.config["SESSION_COOKIE_NAME"] = session_cookie_name
+
+    app.run(*args, **kwargs)
 
 @app.after_request
 def after_request(response):

@@ -11,3 +11,8 @@ import api.scoreboard
 import api.utilities
 import api.game
 import api.cache
+
+# MUST BE LAST
+import api.config
+
+api.setup.index_mongo()
