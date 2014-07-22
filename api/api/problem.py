@@ -315,14 +315,11 @@ def submit_key(tid, pid, key, uid=None, ip=None):
     db.submissions.insert(submission)
 
     if submission["correct"]:
-        api.cache.invalidate_memoization(
-            get_submissions,
-            tid=submission["tid"], correctness=True, uid=None, category=None
-        )
+        api.cache.invalidate_memoization(get_solved_pids, tid=submission["tid"])
+        api.cache.invalidate_memoization(api.scoreboard.get_score, tid=submission["tid"], uid=None)
 
     return result
 
-@api.cache.memoize(timeout=60)
 def get_submissions(pid=None, uid=None, tid=None, category=None, correctness=None):
     """
     Gets the submissions from a team or user.
@@ -497,6 +494,7 @@ def get_all_problems(category=None, show_disabled=False):
 
     return list(db.problems.find(match, {"_id":0}).sort('score', pymongo.ASCENDING))
 
+@api.cache.memoize()
 def get_solved_pids(tid, uid=None, category=None):
     """
     Gets the solved pids for a given team or user.
