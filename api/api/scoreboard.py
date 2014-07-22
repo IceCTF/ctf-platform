@@ -7,6 +7,7 @@ from datetime import datetime
 
 end = datetime(2020, 5, 7, 3, 59, 59)
 
+@api.cache.memoize()
 def get_score(tid=None, uid=None):
     """
     Get the score for a user or team.
