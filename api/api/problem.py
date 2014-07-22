@@ -16,8 +16,6 @@ import api.cache
 grader_base_path = "./graders"
 check_graders_exist = True
 
-cached_graders = {}
-
 submission_schema = Schema({
     Required("tid"): check(
         ("This does not look like a valid tid.", [str, Length(max=100)])),
@@ -227,6 +225,15 @@ def insert_problem_from_json(blob):
     else:
         raise InternalException("JSON blob does not appear to be a list of problems or a single problem.")
 
+@api.cache.fast_memoize()
+def get_grader(pid):
+    try:
+        path = get_problem(pid=pid)["grader"]
+        return imp.load_source(path[:-3],
+                join(grader_base_path, path))
+    except FileNotFoundError:
+        raise InternalException("Problem grader for {} is offline.".format(get_problem(pid=pid)['name']))
+
 def grade_problem(pid, key, uid=None):
     """
     Grades the problem with its associated grader script.
@@ -242,17 +249,14 @@ def grade_problem(pid, key, uid=None):
         message: message returned from the grader.
     """
 
+    if uid is None:
+        uid = api.user.get_user()["uid"]
+
     problem = get_problem(pid=pid)
 
-    if pid not in cached_graders:
-        try:
-            cached_graders[pid] = imp.load_source(
-                problem["grader"][:-3],
-                join(grader_base_path, problem["grader"]))
-        except FileNotFoundError:
-            raise InternalException("Problem grader for {} is offline.".format(get_problem(pid=pid)['name']))
+    grader = get_grader(pid)
 
-    (correct, message) = cached_graders[pid].grade(uid, key)
+    (correct, message) = grader.grade(uid, key)
 
     return {
         "correct": correct,
@@ -319,7 +323,7 @@ def submit_key(tid, pid, key, uid=None, ip=None):
     return result
 
 @api.cache.memoize(timeout=60)
-def get_submissions(pid=None, uid=None, tid=None, category=None, correctness=True):
+def get_submissions(pid=None, uid=None, tid=None, category=None, correctness=None):
     """
     Gets the submissions from a team or user.
     Optional filters of pid or category.

@@ -163,7 +163,7 @@ class TestUsers(object):
                     else:
                         sheep_user[key] = "A" * bad_length_mod
 
-                    if sheep_user["create-new-team"] != "on" and \
+                    if sheep_user["create-new-team"] != True and \
                     safe_fail(api.team.get_team, name=sheep_user["team-name-existing"]) is None:
                         team = self.base_team.copy()
                         team['team_name'], team['password'] = \

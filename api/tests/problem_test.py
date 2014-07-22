@@ -180,9 +180,8 @@ class TestProblems(object):
             assert False, "Submitted key to disabled problem"
 
         # test getting submissions two ways
-        #TODO: Not passing?
-        #assert len(api.problem.get_submissions(uid=self.uid)) == len(self.base_problems)
-        #assert len(api.problem.get_submissions(tid=self.tid)) == len(self.base_problems)
+        assert len(api.problem.get_submissions(uid=self.uid)) == len(self.base_problems)
+        assert len(api.problem.get_submissions(tid=self.tid)) == len(self.base_problems)
 
     @ensure_empty_collections("submissions")
     @clear_collections("submissions")
