@@ -16,6 +16,6 @@ def index_mongo():
     log.debug("Ensuring mongo is indexed.")
 
     db.users.ensure_index("uid", unique=True, name="unique uid")
-    db.users.ensure_index("username", unique=True, name="unique username")
+    db.groups.ensure_index("gid", unique=True, name="unique gid")
     db.problems.ensure_index("pid", unique=True, name="unique pid")
     db.submissions.ensure_index("tid", name="submission tids")
