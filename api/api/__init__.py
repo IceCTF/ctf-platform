@@ -1,3 +1,7 @@
+"""
+Imports and setup functionality
+"""
+
 import api.logger
 import api.setup
 import api.user
@@ -16,3 +20,4 @@ import api.cache
 import api.config
 
 api.setup.index_mongo()
+api.cache.clear()
