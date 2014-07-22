@@ -32,7 +32,7 @@ def main():
     #Pass command line arguments to api.logger
     api.logger.setup_logs(keyword_args)
 
-    app.run(host=args.listen, port=args.port, debug=args.debug)
+    api.app.run(host=args.listen, port=args.port, debug=args.debug)
 
 def object_from_args(args):
     """
