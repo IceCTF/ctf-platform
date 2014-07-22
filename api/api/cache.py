@@ -61,7 +61,7 @@ def get(key, deserialize=True):
 
     return cached_result
 
-def set(key, value, timeout=0, serialize=True):
+def set(key, value, timeout=None, serialize=True):
     """
     Set a key in the cache.
 
@@ -74,7 +74,10 @@ def set(key, value, timeout=0, serialize=True):
     if serialize:
         value = json_util.dumps(value)
 
-    cache.setex(key, timeout, value)
+    if timeout:
+        cache.setex(key, timeout, value)
+    else:
+        cache.set(key, value)
 
 
 def fast_memoize():
@@ -114,7 +117,19 @@ def fast_memoize():
 
     return decorator
 
-def memoize(timeout=0, serialize=True, deserialize=True):
+def invalidate_fast_memoization(f, *args, **kwargs):
+    """
+    Invalidate a memoized function.
+
+    Args:
+        f: the function
+        You must pass all arguments given to the function to accurately invalidate it.
+    """
+
+    key = get_key(f, *args, **kwargs)
+    fast_cache.pop(key, None)
+
+def memoize(timeout=None, serialize=True, deserialize=True):
     """
     Cache a function based on its arguments.
 
