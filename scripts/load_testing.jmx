@@ -39,7 +39,7 @@
           </elementProp>
           <elementProp name="SPEED_OFFSET" elementType="Argument">
             <stringProp name="Argument.name">SPEED_OFFSET</stringProp>
-            <stringProp name="Argument.value">1200</stringProp>
+            <stringProp name="Argument.value">500</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="DURATION" elementType="Argument">
@@ -54,7 +54,7 @@
           </elementProp>
           <elementProp name="TEAM_MULTIPLYER" elementType="Argument">
             <stringProp name="Argument.name">TEAM_MULTIPLYER</stringProp>
-            <stringProp name="Argument.value">10</stringProp>
+            <stringProp name="Argument.value">30</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
         </collectionProp>
@@ -195,7 +195,7 @@
           <stringProp name="LoopController.loops">1</stringProp>
         </elementProp>
         <stringProp name="ThreadGroup.num_threads">${PLAYERS}</stringProp>
-        <stringProp name="ThreadGroup.ramp_time">${PLAYERS}</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">${DURATION}</stringProp>
         <longProp name="ThreadGroup.start_time">1376680728000</longProp>
         <longProp name="ThreadGroup.end_time">1376680728000</longProp>
         <boolProp name="ThreadGroup.scheduler">false</boolProp>
@@ -271,7 +271,7 @@
                 </elementProp>
                 <elementProp name="create-new-team" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                  <stringProp name="Argument.value">on</stringProp>
+                  <stringProp name="Argument.value">true</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
                   <boolProp name="HTTPArgument.use_equals">true</boolProp>
                   <stringProp name="Argument.name">create-new-team</stringProp>
@@ -364,18 +364,9 @@
             <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
           </HTTPSamplerProxy>
           <hashTree/>
-          <RandomVariableConfig guiclass="TestBeanGUI" testclass="RandomVariableConfig" testname="Loop Length" enabled="true">
-            <stringProp name="maximumValue">99</stringProp>
-            <stringProp name="minimumValue">1</stringProp>
-            <stringProp name="outputFormat">00</stringProp>
-            <boolProp name="perThread">true</boolProp>
-            <stringProp name="randomSeed"></stringProp>
-            <stringProp name="variableName">LEN</stringProp>
-          </RandomVariableConfig>
-          <hashTree/>
           <LoopController guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
             <boolProp name="LoopController.continue_forever">true</boolProp>
-            <stringProp name="LoopController.loops">${LEN}</stringProp>
+            <stringProp name="LoopController.loops">${PLAYERS}</stringProp>
           </LoopController>
           <hashTree>
             <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Problems" enabled="true">
@@ -578,7 +569,7 @@
             <bytes>true</bytes>
           </value>
         </objProp>
-        <stringProp name="filename">/home/tim/data</stringProp>
+        <stringProp name="filename"></stringProp>
       </ResultCollector>
       <hashTree/>
     </hashTree>
