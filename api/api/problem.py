@@ -67,8 +67,7 @@ def analyze_problems():
 
     Returns:
         A list of error strings describing the problems.
-    """
-
+    """ 
     grader_missing_error = "{}: Missing grader at '{}'."
     unknown_weightmap_pid = "{}: Has weightmap entry '{}' which does not exist."
 
@@ -85,13 +84,6 @@ def analyze_problems():
                 print(problem)
                 errors.append(unknown_weightmap_pid.format(problem["name"], pid))
     return errors
-
-def clear_grader_cache():
-    """
-    Deletes grader cache. Necessary if a grader is updated."
-    """
-
-    cached_graders.clear()
 
 def insert_problem(problem):
     """
@@ -139,6 +131,7 @@ def insert_problem(problem):
         raise WebException("Problem with identical name already exists.")
 
     db.problems.insert(problem)
+    api.cache.invalidate_memoization(get_all_problems)
 
     return problem["pid"]
 
@@ -156,6 +149,7 @@ def remove_problem(pid):
     problem = get_problem(pid=pid)
 
     db.problems.remove({"pid": pid})
+    api.cache.invalidate_memoization(get_all_problems)
 
     return problem
 
@@ -190,6 +184,7 @@ def update_problem(pid, updated_problem):
     validate(problem_schema, problem)
 
     db.problems.update({"pid": pid}, problem)
+    api.cache.invalidate_memoization(get_problem, pid=pid)
 
     return problem
 
@@ -234,12 +229,12 @@ def get_grader(pid):
     except FileNotFoundError:
         raise InternalException("Problem grader for {} is offline.".format(get_problem(pid=pid)['name']))
 
-def grade_problem(pid, key, uid=None):
+def grade_problem(pid, key, tid=None):
     """
     Grades the problem with its associated grader script.
 
     Args:
-        uid: uid if provided
+        tid: tid if provided
         pid: problem's pid
         key: user's submission
     Returns:
@@ -249,14 +244,14 @@ def grade_problem(pid, key, uid=None):
         message: message returned from the grader.
     """
 
-    if uid is None:
-        uid = api.user.get_user()["uid"]
+    if tid is None:
+        uid = api.user.get_user()["tid"]
 
     problem = get_problem(pid=pid)
-
     grader = get_grader(pid)
 
-    (correct, message) = grader.grade(uid, key)
+    arg = api.autogen.get_instance_number(tid, pid) if problem['autogen'] else tid
+    (correct, message) = grader.grade(arg, key)
 
     return {
         "correct": correct,
@@ -294,7 +289,7 @@ def submit_key(tid, pid, key, uid=None, ip=None):
         raise InternalException("User submitting flag does not exist.")
     uid = user["uid"]
 
-    result = grade_problem(pid, key, uid)
+    result = grade_problem(pid, key, tid)
 
     problem = get_problem(pid=pid)
 
@@ -520,7 +515,7 @@ def get_solved_problems(tid, uid=None, category=None):
         List of solved problem dictionaries
     """
 
-    return [get_problem(pid) for pid in get_solved_pids(tid, uid, category)]
+    return [get_problem(pid=pid) for pid in get_solved_pids(tid, uid, category)]
 
 def get_unlocked_pids(tid, category=None):
     """
@@ -558,8 +553,10 @@ def get_unlocked_problems(tid, category=None):
     """
 
     solved = get_solved_problems(tid)
-    unlocked = [get_problem(pid) for pid in get_unlocked_pids(tid, category)]
+    unlocked = [get_problem(pid=pid) for pid in get_unlocked_pids(tid, category)]
     for problem in unlocked:
+        if problem['autogen']:
+            problem = api.autogen.get_problem_instance(problem, tid)
         problem['solved'] = problem in solved
 
     return unlocked
