@@ -5,29 +5,35 @@ Problem management script.
 
 import argparse
 import sys
-import json
+import imp
+import random
+import shutil
 
 import api
 from api.common import APIException
 
-from os.path import isfile
+from os import path
 from bson import json_util
 
-api.common.mongo_addr = "127.0.0.1"
-api.common.mongo_port = 27017
-api.common.mongo_db_name = "pico"
-
 def insert_problems(files):
-    for contents in files.values():
-        for line in contents:
-            try:
-                api.problem.insert_problem_from_json(line.strip())
-            except APIException as error:
-                raise
-                exit(1)
+    problems = get_problems(files)
+    for problem in problems:
+        try:
+            api.problem.insert_problem(problem)
+        except APIException as error:
+            raise
+            exit(1)
     errors = api.problem.analyze_problems()
     for error in errors:
         print(error)
+
+def get_problems(files):
+    problems = []
+    for contents in files.values():
+        for line in contents:
+            problem = json_util.loads(line.strip())
+            problems.append(problem)
+    return problems
 
 def migrate_problems(files, output_file, debug):
 
@@ -44,12 +50,8 @@ def migrate_problems(files, output_file, debug):
 
     deletion_key = ["_id", "pid", "generator", "submissiontype", "devnotes"]
 
-    problems = []
+    problems = get_problems(files)
     output = ""
-    for contents in files.values():
-        for line in contents:
-            problem = json_util.loads(line.strip())
-            problems.append(problem)
 
     def get_display_name_from_pid(problems, pid):
         for problem in problems:
@@ -81,6 +83,28 @@ def migrate_problems(files, output_file, debug):
         output += json_util.dumps(problem) + "\n"
     output_file.write(output)
 
+def build_autogen(instances):
+    problems = api.problem.get_all_problems(show_disabled=True)
+    for problem in problems:
+        if problem.get("autogen", False) and problem.get("generator", None):
+            generator_path = path.join(api.problem.grader_base_path, problem["generator"])
+            if not path.isfile(generator_path):
+                print("Generator for {} at {} does not exist.", problem["name"], problem["generator"])
+                exit(1)
+
+            generator = imp.load_source(problem["generator"][:-3], generator_path)
+            
+            random.seed(api.autogen.seed + problem["pid"])
+
+            for n in range(instances):
+                files = generator.generate(random)
+                create_instance_directory(problem, files, n)
+        
+
+def create_instance_directory(problem, files, n):
+    autogen_path = api.autogen.get_instance_path(problem["pid"])
+    pass
+
 def get_output_file(output):
     if output == sys.stdout:
         return output
@@ -98,7 +122,10 @@ def main():
     #parser.add_argument("-l", action="store_true", dest="show_list", help="View problem list")
     #parser.add_argument("-f", action="append", default=[], dest="filters", help="Key:value pairs that are used to search the database for problems. Used in conjuction with -l.")
 
+    parser.add_argument("--db", action="store", dest="mongo_db_name", help="Mongo database name.")
+
     parser.add_argument("-m", action="store_true", dest="migrate", help="Migrate old 2013 problems to new format.", default=False)
+    parser.add_argument("-b", "--build-autogen", action="store", type=int, help="Generate a specified amount of instances for a given list of problems.", default=0)
     parser.add_argument("-d", action="store_true", dest="debug", help="Debug mode", default=False)
     parser.add_argument("-o", action="store", dest="output_file", help="Output file.", default=sys.stdout)
     parser.add_argument("--no-confirm", action="store_true", dest="no_confirm", help="Remove confirmation and assume default action.")
@@ -112,7 +139,7 @@ def main():
 
     #Check that all listed files exist.
     for file_path in args.files:
-        if not isfile(file_path):
+        if not path.isfile(file_path):
             print("{}: File does not exist!".format(file_path))
             exit(1)
         with open(file_path, "r") as f:
@@ -120,17 +147,8 @@ def main():
 
     output_file = get_output_file(args.output_file)
 
-    if args.drop_problems:
-        if not args.no_confirm:
-            #TODO: make me pretty
-            answer = input("Are you sure you want to drop the problem's collection? [y/n]")
-            if answer.lower() != "y":
-                exit(1)
-
-        db = api.common.get_conn()
-        db.problems.remove()
-        print("Removed all of the problems.")
-
+    if args.build_problems > 0:
+        build_autogen(args.build_problems)
     if args.migrate:
         migrate_problems(files, output_file, args.debug)
     else:
