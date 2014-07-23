@@ -7,6 +7,7 @@ from bson import json_util
 
 import api
 import redis
+import time
 
 from api.common import InternalException
 
@@ -20,7 +21,7 @@ no_cache = False
 cache = redis.StrictRedis(host=redis_host, port=redis_port, db=0)
 fast_cache = {}
 
-def clear():
+def clear_all():
     """
     Clears the cache.
     """
@@ -80,12 +81,12 @@ def set(key, value, timeout=None, serialize=True):
         cache.set(key, value)
 
 
-def fast_memoize():
+def fast_memoize(timeout=0):
     """
     Cache a function based on its arguments.
 
     Args:
-        timout: Time the result stays valid in the cache.
+        timeout: Time the result stays valid in the cache.
     Returns:
         The functions result.
     """
@@ -104,14 +105,19 @@ def fast_memoize():
             key = get_key(f, *args, **kwargs)
 
             cached_result = fast_cache.get(key)
-
-            if cached_result is None or no_cache:
+            
+            if cached_result is None or no_cache or int(time.time()) - cached_result["set_time"] > timeout:
                 function_result = f(*args, **kwargs)
 
-                fast_cache[key] = function_result
+                fast_cache[key] = {
+                    "result": function_result,
+                    "timeout": timeout,
+                    "set_time": int(time.time())
+                }
+
                 return function_result
 
-            return cached_result
+            return cached_result["result"]
 
         return wrapper
 

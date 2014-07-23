@@ -9,7 +9,7 @@
         <collectionProp name="Arguments.arguments">
           <elementProp name="VIEWERS" elementType="Argument">
             <stringProp name="Argument.name">VIEWERS</stringProp>
-            <stringProp name="Argument.value">40</stringProp>
+            <stringProp name="Argument.value">20</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="EMAIL" elementType="Argument">
@@ -34,7 +34,7 @@
           </elementProp>
           <elementProp name="PLAYERS" elementType="Argument">
             <stringProp name="Argument.name">PLAYERS</stringProp>
-            <stringProp name="Argument.value">70</stringProp>
+            <stringProp name="Argument.value">20</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="SPEED_OFFSET" elementType="Argument">
@@ -54,7 +54,7 @@
           </elementProp>
           <elementProp name="TEAM_MULTIPLYER" elementType="Argument">
             <stringProp name="Argument.name">TEAM_MULTIPLYER</stringProp>
-            <stringProp name="Argument.value">30</stringProp>
+            <stringProp name="Argument.value">10</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
         </collectionProp>
@@ -177,7 +177,7 @@
         <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
           <collectionProp name="Arguments.arguments"/>
         </elementProp>
-        <stringProp name="HTTPSampler.domain">127.0.0.1</stringProp>
+        <stringProp name="HTTPSampler.domain">24.131.73.85</stringProp>
         <stringProp name="HTTPSampler.port">8080</stringProp>
         <stringProp name="HTTPSampler.connect_timeout"></stringProp>
         <stringProp name="HTTPSampler.response_timeout"></stringProp>

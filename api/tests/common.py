@@ -14,7 +14,7 @@ def clear_cache():
     def clear(f):
         @wraps(f)
         def wrapper(*args, **kwargs):
-            api.cache.clear()
+            api.cache.clear_all()
             return f(*args, **kwargs)
         return wrapper
     return clear

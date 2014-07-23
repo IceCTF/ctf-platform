@@ -86,7 +86,6 @@ def analyze_problems():
 
         for pid in problem["weightmap"].keys():
             if safe_fail(get_problem, pid=pid) is None:
-                print(problem)
                 errors.append(unknown_weightmap_pid.format(problem["name"], pid))
     return errors
 
@@ -136,7 +135,7 @@ def insert_problem(problem):
         raise WebException("Problem with identical name already exists.")
 
     db.problems.insert(problem)
-    api.cache.invalidate_memoization(get_all_problems)
+    api.cache.fast_cache.clear()
 
     return problem["pid"]
 
@@ -154,7 +153,7 @@ def remove_problem(pid):
     problem = get_problem(pid=pid)
 
     db.problems.remove({"pid": pid})
-    api.cache.invalidate_memoization(get_all_problems)
+    api.cache.fast_cache.clear()
 
     return problem
 
@@ -183,13 +182,22 @@ def update_problem(pid, updated_problem):
 
     db = api.common.get_conn()
 
-    problem = get_problem(pid=pid)
+    if updated_problem.get("name", None) is not None:
+        if safe_fail(get_problem, name=updated_problem["name"]) is not None:
+            raise WebException("Problem with identical name already exists.")
+
+    problem = get_problem(pid=pid, show_disabled=True).copy()
     problem.update(updated_problem)
 
+    # pass validation by removing/readding pid
+    problem.pop("pid", None)
     validate(problem_schema, problem)
+    problem["pid"] = pid
+
+
 
     db.problems.update({"pid": pid}, problem)
-    api.cache.invalidate_memoization(get_problem, pid=pid)
+    api.cache.fast_cache.clear()
 
     return problem
 
@@ -225,7 +233,7 @@ def insert_problem_from_json(blob):
     else:
         raise InternalException("JSON blob does not appear to be a list of problems or a single problem.")
 
-@api.cache.fast_memoize()
+@api.cache.fast_memoize(timeout=60)
 def get_grader(pid):
     """
     Returns the grader module for a given problem.
@@ -237,8 +245,9 @@ def get_grader(pid):
     """
 
     try:
-        path = get_problem(pid=pid)["grader"]
-        return imp.load_source(path[:-3], join(grader_base_path, path))
+        path = get_problem(pid=pid, show_disabled=True)["grader"]
+        return imp.load_source(path[:-3],
+                join(grader_base_path, path))
     except FileNotFoundError:
         raise InternalException("Problem grader for {} is offline.".format(get_problem(pid=pid)['name']))
 
@@ -260,7 +269,7 @@ def grade_problem(pid, key, tid=None):
     if tid is None:
         tid = api.user.get_user()["tid"]
 
-    problem = get_problem(pid=pid)
+    problem = get_problem(pid=pid, show_disabled=True)
     grader = get_grader(pid)
 
     arg = api.autogen.get_instance_number(tid, pid) if problem['autogen'] else tid
@@ -323,8 +332,7 @@ def submit_key(tid, pid, key, uid=None, ip=None):
     db.submissions.insert(submission)
 
     if submission["correct"]:
-        api.cache.invalidate_memoization(get_solved_pids, submission["tid"], None, None)
-        api.cache.invalidate_memoization(api.scoreboard.get_score, tid=submission["tid"], uid=None)
+        api.cache.invalidate_memoization(api.scoreboard.get_cached_team_score, submission["tid"])
 
     return result
 
@@ -421,24 +429,21 @@ def invalidate_submissions(pid=None, uid=None, tid=None):
 
 def reevaluate_submissions_for_problem(pid):
     """
-    In the case of the problem or grader being updated, this will reevaluate all submissions.
-    This will NOT work for auto generated problems.
+    In the case of the problem or grader being updated, this will reevaluate submissions for a problem.
 
     Args:
         pid: the pid of the problem to be reevaluated.
-    Returns:
-        A list of affected tids.
     """
 
     db = api.common.get_conn()
 
-    get_problem(pid=pid)
+    get_problem(pid=pid, show_disabled=True)
 
     keys = {}
     for submission in get_submissions(pid=pid):
         key = submission["key"]
         if key not in keys:
-            result = grade_problem(pid, key)
+            result = grade_problem(pid, key, submission["tid"])
             if result["correct"] != submission["correct"]:
                 keys[key] = result["correct"]
             else:
@@ -446,9 +451,19 @@ def reevaluate_submissions_for_problem(pid):
 
     for key, change in keys.items():
         if change is not None:
-            db.submissions.update({"key": key}, {"correct": change}, multi=True)
+            db.submissions.update({"key": key}, {"$set": {"correct": change}}, multi=True)
 
-@api.cache.fast_memoize()
+
+def reevaluate_all_submissions():
+    """
+    In the case of the problem or grader being updated, this will reevaluate all submissions.
+    """
+
+    api.cache.clear_all()
+    for problem in get_all_problems(show_disabled=True):
+        reevaluate_submissions_for_problem(problem["pid"])
+
+@api.cache.fast_memoize(timeout=60)
 def get_problem(pid=None, name=None, tid=None, show_disabled=False):
     """
     Gets a single problem.
@@ -463,7 +478,8 @@ def get_problem(pid=None, name=None, tid=None, show_disabled=False):
 
     db = api.common.get_conn()
 
-    match = {"disabled": show_disabled}
+    match = {}
+
     if pid is not None:
         match.update({'pid': pid})
     elif name is not None:
@@ -474,6 +490,9 @@ def get_problem(pid=None, name=None, tid=None, show_disabled=False):
     if tid is not None and pid not in get_unlocked_pids(tid):
         raise InternalException("You cannot get this problem")
 
+    if not show_disabled:
+        match.update({"disabled": False})
+
     db = api.common.get_conn()
     problem = db.problems.find_one(match, {"_id":0})
 
@@ -482,7 +501,6 @@ def get_problem(pid=None, name=None, tid=None, show_disabled=False):
 
     return problem
 
-@api.cache.memoize(timeout=600)
 def get_all_problems(category=None, show_disabled=False):
     """
     Gets all of the problems in the database.
@@ -496,13 +514,15 @@ def get_all_problems(category=None, show_disabled=False):
 
     db = api.common.get_conn()
 
-    match = {"disabled": show_disabled}
+    match = {}
     if category is not None:
       match.update({'category': category})
 
+    if not show_disabled:
+        match.update({'disabled': False})
+
     return list(db.problems.find(match, {"_id":0}).sort('score', pymongo.ASCENDING))
 
-@api.cache.memoize()
 def get_solved_pids(tid, uid=None, category=None):
     """
     Gets the solved pids for a given team or user.
@@ -515,7 +535,6 @@ def get_solved_pids(tid, uid=None, category=None):
     """
 
     return [sub['pid'] for sub in get_submissions(tid=tid, uid=uid, category=category, correctness=True)]
-
 
 def get_solved_problems(tid, uid=None, category=None):
     """

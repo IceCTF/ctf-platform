@@ -38,6 +38,7 @@ class TestProblems(object):
             "category": "",
             "grader" : "test.py",
             "description" : "",
+            "autogen": False,
             "threshold" : 0
         }
         for i in range(5)
@@ -50,6 +51,7 @@ class TestProblems(object):
             "score" : 10,
             "category": "",
             "grader" : "test.py",
+            "autogen": False,
             "description" : "",
             "threshold" : 0,
             "disabled": True
@@ -68,6 +70,7 @@ class TestProblems(object):
                 "category": "",
                 "grader" : "test.py",
                 "description" : "",
+                "autogen": False,
                 "threshold" : 3,
                 "weightmap" : {p['name']: 1 for p in base_problems}
             }

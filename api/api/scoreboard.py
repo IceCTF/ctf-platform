@@ -8,6 +8,13 @@ from datetime import datetime
 end = datetime(2020, 5, 7, 3, 59, 59)
 
 @api.cache.memoize()
+def get_cached_team_score(tid):
+    """
+    A wrapper around get_score used for safe memoization.
+    """
+
+    return get_score(tid=tid)
+
 def get_score(tid=None, uid=None):
     """
     Get the score for a user or team.
@@ -41,7 +48,7 @@ def get_group_scores(gid=None, name=None):
     for team in members:
         result.append({
             "name": team['team_name'],
-            "score": get_score(tid=team['tid'])
+            "score": get_cached_team_score(team['tid'])
         })
 
     return sorted(result, key=lambda entry: entry['score'], reverse=True)
@@ -74,7 +81,7 @@ def get_all_team_scores():
     for team in teams:
         result.append({
             "name": team['team_name'],
-            "score": get_score(tid=team['tid'])
+            "score": get_cached_team_score(team['tid'])
         })
 
     return sorted(result, key=lambda entry: entry['score'], reverse=True)

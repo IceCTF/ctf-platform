@@ -7,7 +7,6 @@ from line_profiler import LineProfiler
 from argparse import ArgumentParser 
 import api
 import random
-api.setup.load_config(api.app.app) 
 operations = []
 
 def profile(func, *args, **kwargs):
@@ -137,7 +136,7 @@ def main():
 
     db.submissions.remove()
 
-    api.cache.clear()
+    api.cache.clear_all()
     print("Re-running operations with profiling...")
 
     run_profiling(args)
