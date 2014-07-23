@@ -14,7 +14,6 @@ from os.path import join, isfile
 import api.cache
 
 grader_base_path = "./graders"
-check_graders_exist = True
 
 submission_schema = Schema({
     Required("tid"): check(
@@ -55,7 +54,8 @@ problem_schema = Schema({
         ("Tags must be described as a list.", [list])),
     "hint": check(
         ("A hint must be a string.", [str])),
-
+    "generator": check(
+        ("A generator must be a path.", [str])),
     "_id": check(
         ("Your problems should not already have _ids.", [lambda id: False]))
 })
@@ -67,8 +67,10 @@ def analyze_problems():
 
     Returns:
         A list of error strings describing the problems.
-    """ 
+    """
+
     grader_missing_error = "{}: Missing grader at '{}'."
+    generator_missing_error = "{}: Missing problem generator at '{}'."
     unknown_weightmap_pid = "{}: Has weightmap entry '{}' which does not exist."
 
     problems = get_all_problems()
@@ -78,6 +80,9 @@ def analyze_problems():
     for problem in problems:
         if not isfile(join(grader_base_path, problem["grader"])):
             errors.append(grader_missing_error.format(problem["name"], problem["grader"]))
+
+        if not isfile(join(grader_base_path, problem["generator"])):
+            errors.append(generator_missing_error.format(problem["name"], problem["generator"]))
 
         for pid in problem["weightmap"].keys():
             if safe_fail(get_problem, pid=pid) is None:
@@ -222,10 +227,18 @@ def insert_problem_from_json(blob):
 
 @api.cache.fast_memoize()
 def get_grader(pid):
+    """
+    Returns the grader module for a given problem.
+
+    Args:
+        pid: the problem id
+    Returns:
+        The grader module
+    """
+
     try:
         path = get_problem(pid=pid)["grader"]
-        return imp.load_source(path[:-3],
-                join(grader_base_path, path))
+        return imp.load_source(path[:-3], join(grader_base_path, path))
     except FileNotFoundError:
         raise InternalException("Problem grader for {} is offline.".format(get_problem(pid=pid)['name']))
 
@@ -245,7 +258,7 @@ def grade_problem(pid, key, tid=None):
     """
 
     if tid is None:
-        uid = api.user.get_user()["tid"]
+        tid = api.user.get_user()["tid"]
 
     problem = get_problem(pid=pid)
     grader = get_grader(pid)
