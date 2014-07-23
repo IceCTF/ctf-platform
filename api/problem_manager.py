@@ -8,9 +8,10 @@ import sys
 import imp
 import random
 import shutil
+import os
 
 import api
-from api.common import APIException
+from api.common import APIException, InternalException
 
 from os import path
 from bson import json_util
@@ -87,23 +88,41 @@ def build_autogen(instances):
     problems = api.problem.get_all_problems(show_disabled=True)
     for problem in problems:
         if problem.get("autogen", False) and problem.get("generator", None):
+            print(problem)
             generator_path = path.join(api.problem.grader_base_path, problem["generator"])
             if not path.isfile(generator_path):
                 print("Generator for {} at {} does not exist.", problem["name"], problem["generator"])
                 exit(1)
 
             generator = imp.load_source(problem["generator"][:-3], generator_path)
-            
+
             random.seed(api.autogen.seed + problem["pid"])
 
+            autogen_static_path = api.autogen.get_static_instance_path(problem["pid"], verify=False)
+
+            if not path.isdir(autogen_static_path):
+                print("making -> {}".format(autogen_static_path))
+                os.makedirs(autogen_static_path)
+
             for n in range(instances):
+                print("generating -> {} -> {}".format(problem["name"], n))
                 files = generator.generate(random)
                 create_instance_directory(problem, files, n)
         
 
 def create_instance_directory(problem, files, n):
-    autogen_path = api.autogen.get_instance_path(problem["pid"])
-    pass
+    autogen_instance_path = api.autogen.get_instance_path(problem["pid"], n=n, verify=False)
+    if not path.isdir(autogen_instance_path):
+        os.makedirs(autogen_instance_path)
+
+    for (f, name) in files.get("resource_files", []):
+        if path.isfile(f):
+            shutil.copyfile(f, path.join(autogen_instance_path, name))
+        elif path.isdir(f):
+            shutil.copytree(f, autogen_instance_path)
+
+    for f in files.get("static_files", []):
+        shutil.copytree(f, api.autogen.get_static_instance_path(problem["pid"]))
 
 def get_output_file(output):
     if output == sys.stdout:
@@ -147,8 +166,8 @@ def main():
 
     output_file = get_output_file(args.output_file)
 
-    if args.build_problems > 0:
-        build_autogen(args.build_problems)
+    if args.build_autogen > 0:
+        build_autogen(args.build_autogen)
     if args.migrate:
         migrate_problems(files, output_file, args.debug)
     else:
