@@ -66,12 +66,26 @@ def get_number_of_instances(pid):
 
     return len(os.listdir(get_instance_path(pid)))
 
-def get_instance_path(pid, n=""):
+def get_static_instance_path(pid, verify=True):
+    """
+    Gets the path to the static resources of a problem.
+
+    Args:
+        pid: the problem pid
+        verify: verify the path exists
+    Returns:
+        The path to the static resources of an autogen problem.
+    """
+
+    return path.join(get_instance_path(pid, verify=verify), "static")
+
+def get_instance_path(pid, n="", verify=True):
     """
     Gets the path to a particular instance of a problem.
 
     Args:
         n: the instance number
+        verify: Verify the path exists
     Returns:
         The path to the particular instance.
     """
@@ -82,7 +96,7 @@ def get_instance_path(pid, n=""):
 
     instance_path = path.join(path.dirname(grader_path), "instances", str(n))
 
-    if not path.isdir(instance_path):
+    if not path.isdir(instance_path) and verify:
         raise InternalException("Instance path {} does not exist.".format(instance_path))
 
     return instance_path
