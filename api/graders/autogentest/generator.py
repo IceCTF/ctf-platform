@@ -11,10 +11,13 @@ def generate(random):
 
     f = open("/tmp/key", "w")
 
-    f.write(random.randint(0, 1000))
+    f.write(str(random.randint(0, 1000)))
 
     f.close()
 
-    return ["/tmp/key"]
+    return {
+        "resource_files": [("/tmp/key", "key")],
+        "static_files": [("/tmp/key", "keyyo")]
+    }
 
 
