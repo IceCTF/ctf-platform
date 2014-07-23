@@ -20,7 +20,7 @@ no_cache = False
 cache = redis.StrictRedis(host=redis_host, port=redis_port, db=0)
 fast_cache = {}
 
-def clear():
+def clear_all():
     """
     Clears the cache.
     """

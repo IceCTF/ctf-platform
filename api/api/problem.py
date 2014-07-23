@@ -81,7 +81,6 @@ def analyze_problems():
 
         for pid in problem["weightmap"].keys():
             if safe_fail(get_problem, pid=pid) is None:
-                print(problem)
                 errors.append(unknown_weightmap_pid.format(problem["name"], pid))
     return errors
 
@@ -131,7 +130,7 @@ def insert_problem(problem):
         raise WebException("Problem with identical name already exists.")
 
     db.problems.insert(problem)
-    api.cache.invalidate_memoization(get_all_problems)
+    api.cache.fast_cache.clear()
 
     return problem["pid"]
 
@@ -149,7 +148,7 @@ def remove_problem(pid):
     problem = get_problem(pid=pid)
 
     db.problems.remove({"pid": pid})
-    api.cache.invalidate_memoization(get_all_problems)
+    api.cache.fast_cache.clear()
 
     return problem
 
@@ -184,7 +183,7 @@ def update_problem(pid, updated_problem):
     validate(problem_schema, problem)
 
     db.problems.update({"pid": pid}, problem)
-    api.cache.invalidate_memoization(get_problem, pid=pid)
+    api.cache.fast_cache.clear()
 
     return problem
 
@@ -310,8 +309,7 @@ def submit_key(tid, pid, key, uid=None, ip=None):
     db.submissions.insert(submission)
 
     if submission["correct"]:
-        api.cache.invalidate_memoization(get_solved_pids, submission["tid"], None, None)
-        api.cache.invalidate_memoization(api.scoreboard.get_score, tid=submission["tid"], uid=None)
+        api.cache.invalidate_memoization(api.scoreboard.get_cached_team_score, submission["tid"])
 
     return result
 
@@ -469,7 +467,6 @@ def get_problem(pid=None, name=None, tid=None, show_disabled=False):
 
     return problem
 
-@api.cache.memoize(timeout=600)
 def get_all_problems(category=None, show_disabled=False):
     """
     Gets all of the problems in the database.
@@ -489,7 +486,6 @@ def get_all_problems(category=None, show_disabled=False):
 
     return list(db.problems.find(match, {"_id":0}).sort('score', pymongo.ASCENDING))
 
-@api.cache.memoize()
 def get_solved_pids(tid, uid=None, category=None):
     """
     Gets the solved pids for a given team or user.
@@ -502,7 +498,6 @@ def get_solved_pids(tid, uid=None, category=None):
     """
 
     return [sub['pid'] for sub in get_submissions(tid=tid, uid=uid, category=category, correctness=True)]
-
 
 def get_solved_problems(tid, uid=None, category=None):
     """
