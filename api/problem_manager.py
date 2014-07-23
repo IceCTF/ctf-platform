@@ -102,6 +102,7 @@ def main():
     parser.add_argument("-d", action="store_true", dest="debug", help="Debug mode", default=False)
     parser.add_argument("-o", action="store", dest="output_file", help="Output file.", default=sys.stdout)
     parser.add_argument("--no-confirm", action="store_true", dest="no_confirm", help="Remove confirmation and assume default action.")
+    parser.add_argument("--drop-problems", action="store_true", help="Remove all problems in the database.")
 
     parser.add_argument("files", nargs="*", help="Files containing problems to insert.")
 
@@ -118,6 +119,17 @@ def main():
             files[file_path] = f.readlines()
 
     output_file = get_output_file(args.output_file)
+
+    if args.drop_problems:
+        if not args.no_confirm:
+            #TODO: make me pretty
+            answer = input("Are you sure you want to drop the problem's collection? [y/n]")
+            if answer.lower() != "y":
+                exit(1)
+
+        db = api.common.get_conn()
+        db.problems.remove()
+        print("Removed all of the problems.")
 
     if args.migrate:
         migrate_problems(files, output_file, args.debug)
