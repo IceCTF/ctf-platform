@@ -70,7 +70,6 @@ def analyze_problems():
     """
 
     grader_missing_error = "{}: Missing grader at '{}'."
-    generator_missing_error = "{}: Missing problem generator at '{}'."
     unknown_weightmap_pid = "{}: Has weightmap entry '{}' which does not exist."
 
     problems = get_all_problems()
@@ -80,9 +79,6 @@ def analyze_problems():
     for problem in problems:
         if not isfile(join(grader_base_path, problem["grader"])):
             errors.append(grader_missing_error.format(problem["name"], problem["grader"]))
-
-        if not isfile(join(grader_base_path, problem["generator"])):
-            errors.append(generator_missing_error.format(problem["name"], problem["generator"]))
 
         for pid in problem["weightmap"].keys():
             if safe_fail(get_problem, pid=pid) is None:
