@@ -14,6 +14,7 @@ import api.problem
 import api.scoreboard
 import api.utilities
 import api.game
+import api.autogen
 import api.cache
 
 # MUST BE LAST

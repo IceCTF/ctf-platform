@@ -310,7 +310,7 @@ def submit_key(tid, pid, key, uid=None, ip=None):
     db.submissions.insert(submission)
 
     if submission["correct"]:
-        api.cache.invalidate_memoization(get_solved_pids, tid=submission["tid"])
+        api.cache.invalidate_memoization(get_solved_pids, submission["tid"], None, None)
         api.cache.invalidate_memoization(api.scoreboard.get_score, tid=submission["tid"], uid=None)
 
     return result
