@@ -328,7 +328,10 @@ def submit_key(tid, pid, key, uid=None, ip=None):
     db.submissions.insert(submission)
 
     if submission["correct"]:
-        api.cache.invalidate_memoization(api.scoreboard.get_cached_team_score, submission["tid"])
+        api.cache.invalidate_memoization(api.scoreboard.get_score, {"kwargs.tid":tid}, {"kwargs.uid":uid})
+        api.cache.invalidate_memoization(get_unlocked_pids, {"args":tid})
+        api.cache.invalidate_memoization(get_unlocked_problems, {"args":tid})
+        api.cache.invalidate_memoization(get_solved_pids, {"kwargs.tid":tid} , {"kwargs.uid":uid})
 
     return result
 
@@ -449,7 +452,6 @@ def reevaluate_submissions_for_problem(pid):
         if change is not None:
             db.submissions.update({"key": key}, {"$set": {"correct": change}}, multi=True)
 
-
 def reevaluate_all_submissions():
     """
     In the case of the problem or grader being updated, this will reevaluate all submissions.
@@ -519,7 +521,8 @@ def get_all_problems(category=None, show_disabled=False):
 
     return list(db.problems.find(match, {"_id":0}).sort('score', pymongo.ASCENDING))
 
-def get_solved_pids(tid, uid=None, category=None):
+@api.cache.memoize()
+def get_solved_pids(tid=None, uid=None, category=None):
     """
     Gets the solved pids for a given team or user.
 
@@ -532,7 +535,7 @@ def get_solved_pids(tid, uid=None, category=None):
 
     return [sub['pid'] for sub in get_submissions(tid=tid, uid=uid, category=category, correctness=True)]
 
-def get_solved_problems(tid, uid=None, category=None):
+def get_solved_problems(tid=None, uid=None, category=None):
     """
     Gets the solved problems for a given team or user.
 
@@ -543,8 +546,9 @@ def get_solved_problems(tid, uid=None, category=None):
         List of solved problem dictionaries
     """
 
-    return [get_problem(pid=pid) for pid in get_solved_pids(tid, uid, category)]
+    return [get_problem(pid=pid) for pid in get_solved_pids(tid=tid, uid=uid, category=category)]
 
+@api.cache.memoize()
 def get_unlocked_pids(tid, category=None):
     """
     Gets the unlocked pids for a given team.
@@ -569,6 +573,7 @@ def get_unlocked_pids(tid, category=None):
 
     return unlocked
 
+@api.cache.memoize()
 def get_unlocked_problems(tid, category=None):
     """
     Gets the unlocked problems for a given team.
