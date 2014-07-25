@@ -46,7 +46,8 @@ def migrate_problems(files, output_file, debug):
     }
 
     migration_overwrites = {
-        "grader": "test.py"
+        "grader": "test.py",
+	"autogen": False
     }
 
     deletion_key = ["_id", "pid", "generator", "submissiontype", "devnotes"]
