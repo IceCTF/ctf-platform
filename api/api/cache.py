@@ -3,30 +3,45 @@ Caching Library for picoCTF API
 """
 
 from functools import wraps
-from bson import json_util
+from bson import json_util, datetime
 
 import api
-import redis
 import time
 
-from api.common import InternalException
 
 log = api.logger.use(__name__)
 
-redis_host = "127.0.0.1"
-redis_port = 6379
-
 no_cache = False
 
-cache = redis.StrictRedis(host=redis_host, port=redis_port, db=0)
 fast_cache = {}
+
+_mongo_index = None
 
 def clear_all():
     """
     Clears the cache.
     """
-    cache.flushdb()
+    db = api.common.get_conn()
+    db.cache.remove()
     fast_cache.clear()
+
+def get_mongo_key(f, *args, **kwargs):
+    """
+    Returns a mongo object key for the function.
+
+    Args:
+        f: the function
+        args: positional arguments
+        kwargs: keyword arguments
+    Returns:
+        The key.
+    """
+
+    return {
+        "function": "{}.{}".format(f.__module__, f.__name__),
+        "args": args,
+        "kwargs": kwargs,
+    }
 
 def get_key(f, *args, **kwargs):
     """
@@ -40,11 +55,17 @@ def get_key(f, *args, **kwargs):
         The key.
     """
 
-    key = "{}.{}${}${}".format(f.__module__, f.__name__, str(args), str(kwargs)).replace(" ", "~")
+    if len(args) > 0:
+        kwargs["#args"] = ",".join(map(str, args))
+
+    sorted_keys = sorted(kwargs)
+    arg_key = "&".join(["{}:{}".format(key, kwargs[key]) for key in sorted_keys])
+
+    key = "{}.{}${}".format(f.__module__, f.__name__, arg_key).replace(" ", "~")
 
     return key
 
-def get(key, deserialize=True):
+def get(key):
     """
     Get a key from the cache.
 
@@ -55,14 +76,14 @@ def get(key, deserialize=True):
         The result deserialized.
     """
 
-    cached_result = cache.get(key)
+    db = api.common.get_conn()
 
-    if deserialize and cached_result is not None:
-        cached_result = json_util.loads(cached_result.decode("utf-8"))
+    cached_result = db.cache.find_one(key)
 
-    return cached_result
+    if cached_result:
+        return cached_result["value"]
 
-def set(key, value, timeout=None, serialize=True):
+def set(key, value, timeout=None):
     """
     Set a key in the cache.
 
@@ -72,14 +93,14 @@ def set(key, value, timeout=None, serialize=True):
         serialize: Whether or not the data should be serialized.
     """
 
-    if serialize:
-        value = json_util.dumps(value)
+    db = api.common.get_conn()
 
-    if timeout:
-        cache.setex(key, timeout, value)
-    else:
-        cache.set(key, value)
+    key["value"] = value
 
+    if timeout is not None:
+        key["expireAt"] = datetime.datetime.utcnow() + datetime.timedelta(seconds=timeout)
+
+    db.cache.insert(key)
 
 def fast_memoize(timeout=0):
     """
@@ -105,7 +126,7 @@ def fast_memoize(timeout=0):
             key = get_key(f, *args, **kwargs)
 
             cached_result = fast_cache.get(key)
-            
+
             if cached_result is None or no_cache or int(time.time()) - cached_result["set_time"] > timeout:
                 function_result = f(*args, **kwargs)
 
@@ -135,7 +156,7 @@ def invalidate_fast_memoization(f, *args, **kwargs):
     key = get_key(f, *args, **kwargs)
     fast_cache.pop(key, None)
 
-def memoize(timeout=None, serialize=True, deserialize=True):
+def memoize(timeout=None):
     """
     Cache a function based on its arguments.
 
@@ -156,14 +177,15 @@ def memoize(timeout=None, serialize=True, deserialize=True):
             Function cache
             """
 
-            key = get_key(f, *args, **kwargs)
 
-            cached_result = get(key, deserialize=deserialize)
+            key = get_mongo_key(f, *args, **kwargs)
+
+            cached_result = get(key)
 
             if cached_result is None or no_cache:
                 function_result = f(*args, **kwargs)
+                set(key, function_result, timeout=timeout)
 
-                set(key, function_result, timeout=timeout, serialize=serialize)
                 return function_result
 
             return cached_result
@@ -172,7 +194,7 @@ def memoize(timeout=None, serialize=True, deserialize=True):
 
     return decorator
 
-def invalidate_memoization(f, *args, **kwargs):
+def invalidate_memoization(f, *keys):
     """
     Invalidate a memoized function.
 
@@ -181,6 +203,16 @@ def invalidate_memoization(f, *args, **kwargs):
         You must pass all arguments given to the function to accurately invalidate it.
     """
 
-    key = get_key(f, *args, **kwargs)
-    cache.delete(key)
+    db = api.common.get_conn()
 
+    search = {"function": "{}.{}".format(f.__module__, f.__name__)}
+    search.update({"$or": list(keys)})
+    db.cache.remove(search, multi=True)
+
+"""
+
+import api
+@api.cache.memoize()
+def f(a, b, c="test", d="other_test"):
+  return a, b, c, d
+"""
