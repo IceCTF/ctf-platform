@@ -302,7 +302,7 @@ def submit_key(tid, pid, key, uid=None, ip=None):
     if pid not in get_unlocked_pids(tid):
         raise InternalException("You can't submit flags to problems you haven't unlocked.")
 
-    if pid in get_solved_pids(tid):
+    if pid in get_solved_pids(tid=tid):
         raise WebException("You have already solved this problem.")
 
     user = api.user.get_user(uid=uid)
@@ -331,7 +331,9 @@ def submit_key(tid, pid, key, uid=None, ip=None):
     db.submissions.insert(submission)
 
     if submission["correct"]:
-        api.cache.invalidate_memoization(api.scoreboard.get_cached_team_score, submission["tid"])
+        api.cache.invalidate_memoization(api.scoreboard.get_score, {"kwargs.tid":tid}, {"kwargs.uid":uid})
+        api.cache.invalidate_memoization(get_unlocked_pids, {"args":tid})
+        api.cache.invalidate_memoization(get_solved_pids, {"kwargs.tid":tid} , {"kwargs.uid":uid})
 
     return result
 
@@ -452,7 +454,6 @@ def reevaluate_submissions_for_problem(pid):
         if change is not None:
             db.submissions.update({"key": key}, {"$set": {"correct": change}}, multi=True)
 
-
 def reevaluate_all_submissions():
     """
     In the case of the problem or grader being updated, this will reevaluate all submissions.
@@ -462,7 +463,7 @@ def reevaluate_all_submissions():
     for problem in get_all_problems(show_disabled=True):
         reevaluate_submissions_for_problem(problem["pid"])
 
-@api.cache.fast_memoize(timeout=60)
+#@api.cache.fast_memoize(timeout=60)
 def get_problem(pid=None, name=None, tid=None, show_disabled=False):
     """
     Gets a single problem.
@@ -522,7 +523,8 @@ def get_all_problems(category=None, show_disabled=False):
 
     return list(db.problems.find(match, {"_id":0}).sort('score', pymongo.ASCENDING))
 
-def get_solved_pids(tid, uid=None, category=None):
+@api.cache.memoize()
+def get_solved_pids(tid=None, uid=None, category=None):
     """
     Gets the solved pids for a given team or user.
 
@@ -535,7 +537,7 @@ def get_solved_pids(tid, uid=None, category=None):
 
     return [sub['pid'] for sub in get_submissions(tid=tid, uid=uid, category=category, correctness=True)]
 
-def get_solved_problems(tid, uid=None, category=None):
+def get_solved_problems(tid=None, uid=None, category=None):
     """
     Gets the solved problems for a given team or user.
 
@@ -546,8 +548,9 @@ def get_solved_problems(tid, uid=None, category=None):
         List of solved problem dictionaries
     """
 
-    return [get_problem(pid=pid) for pid in get_solved_pids(tid, uid, category)]
+    return [get_problem(pid=pid) for pid in get_solved_pids(tid=tid, uid=uid, category=category)]
 
+@api.cache.memoize()
 def get_unlocked_pids(tid, category=None):
     """
     Gets the unlocked pids for a given team.
@@ -559,7 +562,7 @@ def get_unlocked_pids(tid, category=None):
         List of unlocked problem ids
     """
 
-    solved = get_solved_problems(tid, category)
+    solved = get_solved_problems(tid=tid, category=category)
 
     unlocked = []
     for problem in get_all_problems():
@@ -583,11 +586,16 @@ def get_unlocked_problems(tid, category=None):
         List of unlocked problem dictionaries
     """
 
-    solved = get_solved_problems(tid)
-    unlocked = [get_problem(pid=pid) for pid in get_unlocked_pids(tid, category)]
+    solved = get_solved_problems(tid=tid)
+    unlocked = [get_problem(pid=pid) for pid in get_unlocked_pids(tid, category=category)]
     for problem in unlocked:
+<<<<<<< HEAD
         if api.autogen.is_autogen_problem(problem["pid"]):
             problem = api.autogen.get_problem_instance(problem["pid"], tid)
+=======
+        if problem['autogen']:
+            problem = problem #api.autogen.get_problem_instance(problem, tid)
+>>>>>>> 36f2db03de9f4c055f09c87e3688fff969d19e98
         problem['solved'] = problem in solved
 
     return unlocked

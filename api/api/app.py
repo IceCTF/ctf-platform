@@ -16,7 +16,7 @@ session_cookie_name = "flask"
 
 secret_key = ""
 
-def run(*args, **kwargs):
+def config_app(*args, **kwargs):
     """
     Start the api with configured values.
     """
@@ -26,7 +26,7 @@ def run(*args, **kwargs):
     app.config["SESSION_COOKIE_PATH"] = session_cookie_path
     app.config["SESSION_COOKIE_NAME"] = session_cookie_name
 
-    app.run(*args, **kwargs)
+    return app
 
 @app.after_request
 def after_request(response):

@@ -98,7 +98,7 @@ def set(key, value, timeout=None):
     key["value"] = value
 
     if timeout is not None:
-        key["expireAt"] = datetime.datetime.utcnow() + datetime.timedelta(seconds=timeout)
+        key["expireAt"] = datetime.datetime.now() + datetime.timedelta(seconds=timeout)
 
     db.cache.insert(key)
 
@@ -207,12 +207,5 @@ def invalidate_memoization(f, *keys):
 
     search = {"function": "{}.{}".format(f.__module__, f.__name__)}
     search.update({"$or": list(keys)})
-    db.cache.remove(search, multi=True)
 
-"""
-
-import api
-@api.cache.memoize()
-def f(a, b, c="test", d="other_test"):
-  return a, b, c, d
-"""
+    db.cache.remove(search)

@@ -50,8 +50,8 @@ def get_conn():
         except InvalidName as error:
             raise SevereInternalException("Database {} is invalid! - {}".format(mongo_db_name, error))
 
-    if not __client.alive():
-        raise SevereInternalException("Mongodb is down!")
+#    if not __client.alive():
+#        raise SevereInternalException("Mongodb is down!")
 
     return __connection
 
