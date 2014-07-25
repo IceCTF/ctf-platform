@@ -268,7 +268,7 @@ def grade_problem(pid, key, tid=None):
     problem = get_problem(pid=pid, show_disabled=True)
     grader = get_grader(pid)
 
-    arg = api.autogen.get_instance_number(tid, pid) if problem['autogen'] else tid
+    arg = "yoloswag" #api.autogen.get_instance_number(tid, pid) if problem['autogen'] else tid
     (correct, message) = grader.grade(arg, key)
 
     return {
@@ -299,7 +299,7 @@ def submit_key(tid, pid, key, uid=None, ip=None):
     if pid not in get_unlocked_pids(tid):
         raise InternalException("You can't submit flags to problems you haven't unlocked.")
 
-    if pid in get_solved_pids(tid):
+    if pid in get_solved_pids(tid=tid):
         raise WebException("You have already solved this problem.")
 
     user = api.user.get_user(uid=uid)
@@ -330,7 +330,6 @@ def submit_key(tid, pid, key, uid=None, ip=None):
     if submission["correct"]:
         api.cache.invalidate_memoization(api.scoreboard.get_score, {"kwargs.tid":tid}, {"kwargs.uid":uid})
         api.cache.invalidate_memoization(get_unlocked_pids, {"args":tid})
-        api.cache.invalidate_memoization(get_unlocked_problems, {"args":tid})
         api.cache.invalidate_memoization(get_solved_pids, {"kwargs.tid":tid} , {"kwargs.uid":uid})
 
     return result
@@ -461,7 +460,7 @@ def reevaluate_all_submissions():
     for problem in get_all_problems(show_disabled=True):
         reevaluate_submissions_for_problem(problem["pid"])
 
-@api.cache.fast_memoize(timeout=60)
+#@api.cache.fast_memoize(timeout=60)
 def get_problem(pid=None, name=None, tid=None, show_disabled=False):
     """
     Gets a single problem.
@@ -560,7 +559,7 @@ def get_unlocked_pids(tid, category=None):
         List of unlocked problem ids
     """
 
-    solved = get_solved_problems(tid, category)
+    solved = get_solved_problems(tid=tid, category=category)
 
     unlocked = []
     for problem in get_all_problems():
@@ -573,7 +572,6 @@ def get_unlocked_pids(tid, category=None):
 
     return unlocked
 
-@api.cache.memoize()
 def get_unlocked_problems(tid, category=None):
     """
     Gets the unlocked problems for a given team.
@@ -585,11 +583,11 @@ def get_unlocked_problems(tid, category=None):
         List of unlocked problem dictionaries
     """
 
-    solved = get_solved_problems(tid)
-    unlocked = [get_problem(pid=pid) for pid in get_unlocked_pids(tid, category)]
+    solved = get_solved_problems(tid=tid)
+    unlocked = [get_problem(pid=pid) for pid in get_unlocked_pids(tid, category=category)]
     for problem in unlocked:
         if problem['autogen']:
-            problem = api.autogen.get_problem_instance(problem, tid)
+            problem = problem #api.autogen.get_problem_instance(problem, tid)
         problem['solved'] = problem in solved
 
     return unlocked
