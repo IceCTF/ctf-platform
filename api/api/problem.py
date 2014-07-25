@@ -463,7 +463,7 @@ def reevaluate_all_submissions():
     for problem in get_all_problems(show_disabled=True):
         reevaluate_submissions_for_problem(problem["pid"])
 
-#@api.cache.fast_memoize(timeout=60)
+@api.cache.fast_memoize(timeout=60)
 def get_problem(pid=None, name=None, tid=None, show_disabled=False):
     """
     Gets a single problem.
