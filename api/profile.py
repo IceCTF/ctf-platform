@@ -42,7 +42,7 @@ def submit_problems():
 
     for uid, tid in zip(uids, tids):
         unlocked = set(api.problem.get_unlocked_pids(tid))
-        done = set(api.problem.get_solved_pids(tid))
+        done = set(api.problem.get_solved_pids(tid=tid))
 
         new = unlocked - done
 
