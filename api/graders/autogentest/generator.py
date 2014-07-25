@@ -11,13 +11,16 @@ def generate(random):
 
     f = open("/tmp/key", "w")
 
-    f.write(str(random.randint(0, 1000)))
-
+    k = str(random.randint(0, 1000))
+    f.write(k)
     f.close()
 
     return {
         "resource_files": [("/tmp/key", "key")],
-        "static_files": [("/tmp/key", "keyyo")]
+        "static_files": [("/tmp/key", "backdoor")],
+        "problem_updates": {
+            "description": "The answer is not "+k+". ;)"
+        }
     }
 
 
