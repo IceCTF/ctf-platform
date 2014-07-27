@@ -47,7 +47,7 @@ def migrate_problems(files, output_file, debug):
 
     migration_overwrites = {
         "grader": "test.py",
-	"autogen": False
+        "autogen": False
     }
 
     deletion_key = ["_id", "pid", "generator", "submissiontype", "devnotes"]
@@ -111,12 +111,11 @@ def get_output_file(output):
 def main():
     parser = argparse.ArgumentParser(description='picoCTF problem manager')
 
-    #TODO: Implement these?
-    #parser.add_argument("-f", action="append", default=[], dest="filters", help="Key:value pairs that are used to search the database for problems. Used in conjuction with -l.")
 
     parser.add_argument("--db", action="store", dest="mongo_db_name", help="Mongo database name.")
-
     parser.add_argument("-l", action="store_true", dest="show_list", help="View problem list")
+    #TODO: Implement this?
+    #parser.add_argument("-f", action="append", default=[], dest="filters", help="Key:value pairs that are used to search the database for problems. Used in conjuction with -l.")
     parser.add_argument("-m", action="store_true", dest="migrate", help="Migrate old 2013 problems to new format.", default=False)
     parser.add_argument("-b", "--build-autogen", action="store", type=int, help="Generate a specified amount of instances for a given list of problems.", default=0)
     parser.add_argument("-d", action="store_true", dest="debug", help="Debug mode", default=False)
