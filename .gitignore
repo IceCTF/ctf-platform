@@ -4,3 +4,4 @@
 web/js/*.js
 web/node_modules/
 web/_site/
+api/graders/autogentest/instances/*
