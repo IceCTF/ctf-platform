@@ -91,6 +91,13 @@ def build_autogen(instances):
         if problem.get("autogen", False):
             api.autogen.build_problem_instances(problem["pid"], instances)
 
+def list_problems():
+    #TODO: This could be improved
+    problems = api.problem.get_all_problems(show_disabled=True)
+    for problem in problems:
+        print("{} ({}) - {} points".format(problem["name"], "disabled" if problem["disabled"] else "enabled", problem["score"]))
+
+
 def get_output_file(output):
     if output == sys.stdout:
         return output
@@ -105,11 +112,11 @@ def main():
     parser = argparse.ArgumentParser(description='picoCTF problem manager')
 
     #TODO: Implement these?
-    #parser.add_argument("-l", action="store_true", dest="show_list", help="View problem list")
     #parser.add_argument("-f", action="append", default=[], dest="filters", help="Key:value pairs that are used to search the database for problems. Used in conjuction with -l.")
 
     parser.add_argument("--db", action="store", dest="mongo_db_name", help="Mongo database name.")
 
+    parser.add_argument("-l", action="store_true", dest="show_list", help="View problem list")
     parser.add_argument("-m", action="store_true", dest="migrate", help="Migrate old 2013 problems to new format.", default=False)
     parser.add_argument("-b", "--build-autogen", action="store", type=int, help="Generate a specified amount of instances for a given list of problems.", default=0)
     parser.add_argument("-d", action="store_true", dest="debug", help="Debug mode", default=False)
@@ -135,6 +142,8 @@ def main():
 
     if args.build_autogen > 0:
         build_autogen(args.build_autogen)
+    if args.show_list:
+        list_problems()
     if args.migrate:
         migrate_problems(files, output_file, args.debug)
     else:
