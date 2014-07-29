@@ -16,4 +16,3 @@ def grade(autogen, key):
         return (True, "Autogen!")
     else:
         return (False, ":<")
-

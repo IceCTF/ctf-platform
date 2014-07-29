@@ -22,5 +22,3 @@ def generate(random):
             "description": "The answer is not "+k+". ;)"
         }
     }
-
-
