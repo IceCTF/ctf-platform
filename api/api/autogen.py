@@ -236,8 +236,8 @@ def get_number_of_instances(pid):
         The number of instances.
     """
 
-    #TODO: Account for arbitrary additional directories.
-    return len(os.listdir(get_instance_path(pid))) - 1
+    # this is more reliable than before, but it may be a little slow
+    return [dirname.isdigit() for dirname in os.listdir(get_instance_path(pid))].count(True)
 
 def get_static_instance_path(pid):
     """
