@@ -190,7 +190,7 @@ def submit_key_hook():
     key = request.form.get('key', '')
 
     result = api.problem.submit_key(tid, pid, key)
-    
+
     if result['correct']:
         return WebSuccess(result['message'], result['points'])
     else:

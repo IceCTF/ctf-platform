@@ -117,7 +117,6 @@ def get_user(name=None, uid=None):
 
     return user
 
-
 def create_user(username, email, password_hash, tid):
     """
     This inserts a user directly into the database. It assumes all data is valid.

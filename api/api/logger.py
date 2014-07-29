@@ -162,4 +162,3 @@ def setup_logs(args):
     log.root.addHandler(internal_error_log)
     log.root.addHandler(severe_error_log)
     log.root.addHandler(stats_log)
-

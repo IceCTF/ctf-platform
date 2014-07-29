@@ -8,13 +8,10 @@ from bson import json_util, datetime
 import api
 import time
 
-
 log = api.logger.use(__name__)
 
 no_cache = False
-
 fast_cache = {}
-
 _mongo_index = None
 
 def clear_all():

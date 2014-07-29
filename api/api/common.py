@@ -50,9 +50,6 @@ def get_conn():
         except InvalidName as error:
             raise SevereInternalException("Database {} is invalid! - {}".format(mongo_db_name, error))
 
-#    if not __client.alive():
-#        raise SevereInternalException("Mongodb is down!")
-
     return __connection
 
 
@@ -72,11 +69,11 @@ def esc(s):
         .replace('"', '&quot;')\
         .replace("'", '&#39;')
 
-
 def token():
     """
     Generate a token, should be random but does not have to be secure necessarily. Speed is a priority.
     """
+
     return str(uuid.uuid4().hex)
 
 def hash(string):
@@ -95,12 +92,14 @@ class APIException(Exception):
     """
     Exception thrown by the API.
     """
+
     pass
 
 def WebSuccess(message=None, data=None):
     """
     Successful web request wrapper.
     """
+
     return {
         "status": 1,
         "message": message,
@@ -111,6 +110,7 @@ def WebError(message=None, data=None):
     """
     Unsuccessful web request wrapper.
     """
+
     return {
         "status": 0,
         "message": message,
@@ -121,17 +121,21 @@ class WebException(APIException):
     """
     Errors that are thrown that need to be displayed to the end user.
     """
+
     pass
 
 class InternalException(APIException):
     """
     Exceptions thrown by the API constituting mild errors.
     """
+
     pass
 
 class SevereInternalException(InternalException):
     """
-    Exceptions thrown by the API constituting critical errors."""
+    Exceptions thrown by the API constituting critical errors.
+    """
+
     pass
 
 def flat_multi(multidict):

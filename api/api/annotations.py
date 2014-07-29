@@ -72,7 +72,6 @@ def api_wrapper(f):
 
     return wrapper
 
-
 def require_login(f):
     @wraps(f)
     def wrapper(*args, **kwds):
@@ -83,7 +82,6 @@ def require_login(f):
         #   abort(403)
         return f(*args, **kwds)
     return wrapper
-
 
 def check_csrf(f):
     @wraps(f)
@@ -98,7 +96,6 @@ def check_csrf(f):
         return f(*args, **kwds)
     return wrapper
 
-
 def deny_blacklisted(f):
     @wraps(f)
     @require_login
@@ -107,7 +104,6 @@ def deny_blacklisted(f):
          #   abort(403)
         return f(*args, **kwds)
     return wrapper
-
 
 def require_admin(f):
     @wraps(f)

@@ -87,7 +87,7 @@ def get_all_user_scores():
     """
 
     users = api.user.get_all_users()
-    
+
     result = []
     for user in users:
         result.append({
