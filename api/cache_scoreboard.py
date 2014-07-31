@@ -2,12 +2,9 @@
 import api
 import time
 
-# kind of a hacky, but it works
-api.cache.no_cache=True
-
 while True:
     f = api.scoreboard.get_all_team_scores
-    result = f()
-    api.cache.invalidate_memoization(f, {})
-    api.cache.set(api.cache.get_mongo_key(f), result)
+    result = f(cache=False)
+    key = api.cache.get_mongo_key(f)
+    api.cache.set(key, result)
     time.sleep(60)

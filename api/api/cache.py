@@ -34,10 +34,12 @@ def get_mongo_key(f, *args, **kwargs):
         The key.
     """
 
+    min_kwargs = dict(filter(lambda pair: pair[1] is not None, kwargs.items()))
+
     return {
         "function": "{}.{}".format(f.__module__, f.__name__),
         "args": args,
-        "kwargs": kwargs,
+        "kwargs": min_kwargs,
     }
 
 def get_key(f, *args, **kwargs):
@@ -92,12 +94,14 @@ def set(key, value, timeout=None):
 
     db = api.common.get_conn()
 
-    key["value"] = value
+    update = key.copy()
+    update.update({"value":value})
 
     if timeout is not None:
-        key["expireAt"] = datetime.datetime.now() + datetime.timedelta(seconds=timeout)
+        expireAt = datetime.datetime.now() + datetime.timedelta(seconds=timeout)
+        update.update({"expireAt": expireAt})
 
-    db.cache.insert(key)
+    db.cache.update(key, update, upsert=True)
 
 def fast_memoize(timeout=0):
     """
@@ -153,7 +157,7 @@ def invalidate_fast_memoization(f, *args, **kwargs):
     key = get_key(f, *args, **kwargs)
     fast_cache.pop(key, None)
 
-def memoize(timeout=None):
+def memoize(timeout=None, fast=False):
     """
     Cache a function based on its arguments.
 
@@ -174,6 +178,9 @@ def memoize(timeout=None):
             Function cache
             """
 
+            if not kwargs.get("cache", True):
+                kwargs.pop("cache", None)
+                return f(*args, **kwargs)
 
             key = get_mongo_key(f, *args, **kwargs)
 
