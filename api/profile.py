@@ -69,7 +69,8 @@ def run_profiling(args):
 
     monitor_fuctions = [api.problem.submit_key, api.problem.get_unlocked_pids, api.problem.get_solved_pids,
                         api.problem.get_all_problems, api.problem.get_solved_problems, api.scoreboard.get_score,
-			api.cache.memoize]
+			api.cache.memoize, api.autogen.grade_problem_instance, api.autogen.get_problem_instance,
+			api.autogen.get_number_of_instances]
 
     for func in monitor_fuctions:
         lprofiler.add_function(func)
