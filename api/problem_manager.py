@@ -97,6 +97,11 @@ def list_problems():
     for problem in problems:
         print("{} ({}) - {} points".format(problem["name"], "disabled" if problem["disabled"] else "enabled", problem["score"]))
 
+def drop_collections(collections):
+    db = api.common.get_conn()
+    for collection in collections:
+        db[collection].remove()
+        print("Dropped -> {}".format(collection))
 
 def get_output_file(output):
     if output == sys.stdout:
@@ -112,7 +117,6 @@ def main():
     parser = argparse.ArgumentParser(description='picoCTF problem manager')
 
 
-    parser.add_argument("--db", action="store", dest="mongo_db_name", help="Mongo database name.")
     parser.add_argument("-l", action="store_true", dest="show_list", help="View problem list")
     #TODO: Implement this?
     #parser.add_argument("-f", action="append", default=[], dest="filters", help="Key:value pairs that are used to search the database for problems. Used in conjuction with -l.")
@@ -121,7 +125,7 @@ def main():
     parser.add_argument("-d", action="store_true", dest="debug", help="Debug mode", default=False)
     parser.add_argument("-o", action="store", dest="output_file", help="Output file.", default=sys.stdout)
     parser.add_argument("--no-confirm", action="store_true", dest="no_confirm", help="Remove confirmation and assume default action.")
-    parser.add_argument("--drop-problems", action="store_true", help="Remove all problems in the database.")
+    parser.add_argument("--drop-collections", dest="collections_string", action="store", help="Remove all entries from the listed collections in the database.")
 
     parser.add_argument("files", nargs="*", help="Files containing problems to insert.")
 
@@ -139,6 +143,9 @@ def main():
 
     output_file = get_output_file(args.output_file)
 
+    if args.collections_string:
+        collections = map(lambda s: s.strip(), args.collections_string.split(","))
+        drop_collections(collections)
     if args.build_autogen > 0:
         build_autogen(args.build_autogen)
     if args.show_list:
