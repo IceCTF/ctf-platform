@@ -7,15 +7,15 @@ window.redirectIfNotLoggedIn = ->
   apiCall "GET", "/api/user/status", {}
   .done (data) ->
     switch data["status"]
-      when 0
+      when 1
         if not data.data["logged_in"]
           window.location.href = "/login"
 
 window.redirectIfLoggedIn = ->
-  apiCall "GET", "/api/user/isloggedin", {}
+  apiCall "GET", "/api/user/status", {}
   .done (data) ->
     switch data["status"]
-      when 0
+      when 1
         if data.data["logged_in"]
           window.location.href = "/"
 
