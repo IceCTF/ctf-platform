@@ -18,6 +18,7 @@ def clear_all():
     """
     Clears the cache.
     """
+
     db = api.common.get_conn()
     db.cache.remove()
     fast_cache.clear()
@@ -64,16 +65,19 @@ def get_key(f, *args, **kwargs):
 
     return key
 
-def get(key):
+def get(key, fast=False):
     """
     Get a key from the cache.
 
     Args:
         key: cache key
-        deserialize: Whether or not the data should be deserialized.
+        fast: whether or not to use the fast cache
     Returns:
-        The result deserialized.
+        The result from the cache.
     """
+
+    if fast:
+        return fast_cache.get(key, None)
 
     db = api.common.get_conn()
 
@@ -82,15 +86,24 @@ def get(key):
     if cached_result:
         return cached_result["value"]
 
-def set(key, value, timeout=None):
+def set(key, value, timeout=None, fast=False):
     """
     Set a key in the cache.
 
     Args:
         key: The cache key.
         timeout: Time the key is valid.
-        serialize: Whether or not the data should be serialized.
+        fast: whether or not to use the fast cache
     """
+
+    if fast:
+        fast_cache[key] = {
+            "result": value,
+            "timeout": timeout,
+            "set_time": time.time()
+        }
+        return
+
 
     db = api.common.get_conn()
 
@@ -103,59 +116,8 @@ def set(key, value, timeout=None):
 
     db.cache.update(key, update, upsert=True)
 
-def fast_memoize(timeout=0):
-    """
-    Cache a function based on its arguments.
-
-    Args:
-        timeout: Time the result stays valid in the cache.
-    Returns:
-        The functions result.
-    """
-
-    def decorator(f):
-        """
-        Inner decorator
-        """
-
-        @wraps(f)
-        def wrapper(*args, **kwargs):
-            """
-            Function cache
-            """
-
-            key = get_key(f, *args, **kwargs)
-
-            cached_result = fast_cache.get(key)
-
-            if cached_result is None or no_cache or int(time.time()) - cached_result["set_time"] > timeout:
-                function_result = f(*args, **kwargs)
-
-                fast_cache[key] = {
-                    "result": function_result,
-                    "timeout": timeout,
-                    "set_time": int(time.time())
-                }
-
-                return function_result
-
-            return cached_result["result"]
-
-        return wrapper
-
-    return decorator
-
-def invalidate_fast_memoization(f, *args, **kwargs):
-    """
-    Invalidate a memoized function.
-
-    Args:
-        f: the function
-        You must pass all arguments given to the function to accurately invalidate it.
-    """
-
-    key = get_key(f, *args, **kwargs)
-    fast_cache.pop(key, None)
+def timed_out(info):
+    return int(time.time()) - info['set_time'] > info['timeout']
 
 def memoize(timeout=None, fast=False):
     """
@@ -166,6 +128,8 @@ def memoize(timeout=None, fast=False):
     Returns:
         The functions result.
     """
+
+    assert(not fast or (fast and timeout is not None)), "You cannot set fast cache without a timeout!"
 
     def decorator(f):
         """
@@ -182,17 +146,16 @@ def memoize(timeout=None, fast=False):
                 kwargs.pop("cache", None)
                 return f(*args, **kwargs)
 
-            key = get_mongo_key(f, *args, **kwargs)
+            key = get_key(f, *args, **kwargs) if fast else get_mongo_key(f, *args, **kwargs)
+            cached_result = get(key, fast=fast)
 
-            cached_result = get(key)
-
-            if cached_result is None or no_cache:
+            if cached_result is None or no_cache or (fast and timed_out(cached_result)):
                 function_result = f(*args, **kwargs)
-                set(key, function_result, timeout=timeout)
+                set(key, function_result, timeout=timeout, fast=fast)
 
                 return function_result
 
-            return cached_result
+            return cached_result['result'] if fast else cached_result
 
         return wrapper
 
