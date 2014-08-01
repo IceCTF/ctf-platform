@@ -1,9 +1,3 @@
-window.checkLoggedIn = ->
- apiCall "GET", "/api/user/isloggedin"
-  .done (data) ->
-    if data['status'] == 1
-      document.location.href = "/problems"
-
 login = (e) ->
   e.preventDefault()
   apiCall "POST", "/api/user/login", $("#login-form").serialize()
