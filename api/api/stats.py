@@ -5,6 +5,8 @@ import api
 from api.common import cache, APIException
 from datetime import datetime
 
+_get_problem_names = lambda problems: [problem['name'] for problem in problems]
+
 end = datetime(2020, 5, 7, 3, 59, 59)
 
 @api.cache.memoize()
@@ -68,7 +70,7 @@ def get_all_team_scores():
     """
 
     teams = api.team.get_all_teams()
-    
+
     result = []
     for team in teams:
         result.append({
@@ -96,3 +98,22 @@ def get_all_user_scores():
         })
 
     return sorted(result, key=lambda entry: entry['score'], reverse=True)
+
+@api.cache.memoize(timeout=120, fast=True)
+def problems_by_category():
+    """
+    Gets the list of all problems divided into categories
+
+    Returns:
+        A dictionary of category:[problem list]
+    """
+
+    result = {cat: _get_problem_names(api.problem.get_all_problems(category=cat))
+                            for cat in api.problem.get_all_categories()}
+
+    return result
+
+def team_member_stats(tid):
+    members = api.team.get_team_members(tid=tid)
+
+    return {member['username']: _get_problem_names(api.problem.get_solved_problems(uid=member['uid']))}

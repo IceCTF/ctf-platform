@@ -82,22 +82,25 @@ def create_team(params):
 
     return params['tid']
 
-def get_team_uids(tid=None, name=None):
+def get_team_members(tid=None, name=None):
     """
-    Retrieves the uids for all members on a team.
+    Retrieves the members on a team.
 
     Args:
         tid: the team id to query
         name: the team name to query
     Returns:
-        A list of the uids of the team's members.
+        A list of the team's members.
     """
 
     db = api.common.get_conn()
 
     tid = get_team(name=name, tid=tid)["tid"]
 
-    return [user["uid"] for user in db.users.find({"tid": tid})]
+    return db.users.find({"tid": tid}, {"uid": 1, "username": 1})
+
+def get_team_uids(tid=None, name=None):
+    return [team['uid'] for team in get_team_members(tid=tid, name=name)]
 
 def get_team_information(tid=None):
     """
@@ -107,12 +110,8 @@ def get_team_information(tid=None):
         tid: the team id
     Returns:
         A dict of team information.
-        team_name:
-        password:
-        adviser_name:
-        adviser_email:
-        school:
-        members: A list of the member uids
+            team_name
+            members
     """
 
     team_info = get_team(tid=tid)
@@ -121,7 +120,7 @@ def get_team_information(tid=None):
        tid = team_info["tid"] 
 
     team_info["score"] = api.stats.get_score(tid=tid)
-    team_info["members"] = [api.user.get_user(uid=uid)["username"] for uid in get_team_uids(tid)]
+    team_info["members"] = get_team_members
 
     return team_info
 

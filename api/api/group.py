@@ -220,4 +220,4 @@ def delete_group_request(params, tid=None):
     if tid not in group['owners']:
         raise WebException("Your team is not an owner of that group!")
 
-    delete_group(gid)
+    delete_group(group['gid'])
