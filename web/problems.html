@@ -7,6 +7,9 @@ startup_functions:
  - redirectIfNotLoggedIn()
 ---
 
+<script src="/js/libs/star-rating.min.js"></script>
+<link href="/css/star-rating.min.css" rel="stylesheet" type="text/css"/>
+
 <script type="text/template" id="problem-template">
   <%
     var panelClass = problem.solved ? 'solved' : '';
@@ -39,14 +42,11 @@ startup_functions:
               </div>
           <% } %>
         </p>
-        <form class="problem-submit">
-          <div class="input-group input-group-sm">
-            <span class="input-group-btn">
-              <button class="btn btn-default" type="submit">Submit!</button>
-            </span>
-            <input type="text" data-pid="<%- problem.pid %>" class="form-control">
-          </div>
-        </form>
+        <% if(!problem.solved) { %>
+          <%= renderProblemSubmit({problem: problem}) %>
+        <% } else { %>
+          <%= renderProblemReview({problem: problem}) %>
+        <% } %>
       </div>
     </div>
   </div>
@@ -55,9 +55,44 @@ startup_functions:
 <script type="text/template" id="problem-list-template">
   <div class="problem-list panel-group">
     <% _.each(problems, function(problem) { %>
-      <%= renderProblem({problem: problem}) %>
+      <%= renderProblem({
+            problem: problem,
+            renderProblemReview: renderProblemReview,
+            renderProblemSubmit: renderProblemSubmit
+          }) %>
     <% }); %>
   </div>
+</script>
+
+<script type="text/template" id="problem-submit-template">
+  <form class="problem-submit">
+    <div class="input-group input-group-sm">
+      <span class="input-group-btn">
+        <button class="btn btn-default" type="submit">Submit!</button>
+      </span>
+      <input type="text" data-pid="<%- problem.pid %>" class="form-control">
+    </div>
+  </form>
+</script>
+
+<script type="text/template" id="problem-review-template">
+  <form class="problem-review">
+    <% var ratings = ["difficulty", "enjoyment"]; %>
+    <h4>Optional Feedback</h4>
+    <% _.each(ratings, function(rating) { %>
+      <div class="row">
+        <div class="col-md-4">
+          <p><%- rating %></p>
+        </div>
+        <div class="col-md-8">
+          <input data-rating="<%= rating %>" type="number" class="rating">
+        </div>
+      </div>
+    <% }) %>
+    <div class="row">
+      <textarea class="form-control" id="description" name=""></textarea>
+    </div>
+  </form>
 </script>
 
 <div class="container">
