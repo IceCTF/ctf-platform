@@ -41,14 +41,13 @@ loadNavbar = (renderNavbarLinks, renderNestedNavbarLinks) ->
   apiCall "GET", "/api/user/status", {}
   .done (data) ->
     navbarLayout.links = userNotLoggedIn
-    
-    console.log data
+
     if data["status"] == 1
       if data.data["teacher"]
         navbarLayout.links = teacherLoggedIn
       else if data.data["logged_in"]
         navbarLayout.links = userLoggedIn
-    console.log navbarLayout.links
+
     $("#navbar-links").html renderNavbarLinks(navbarLayout)
 
   .fail ->
