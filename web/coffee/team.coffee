@@ -20,7 +20,7 @@ load_group_info = ->
         $("#group-info").html renderGroupInformation({data: data.data})
 
         $("#group-request-form").on "submit", group_request
-        $(".leave-team-span").on "click", (e) ->
+        $(".leave-group-span").on "click", (e) ->
           leave_group $(e.target).data("group-name")
 
 join_group = (group_name) ->
