@@ -119,29 +119,16 @@ def get_user_score_hook():
         return WebSuccess(data={'score': score})
     return WebError("There was an error retrieving your score.")
 
-@app.route('/api/user/isloggedin', methods=['GET'])
+@app.route('/api/user/status', methods=['GET'])
 @api_wrapper
 def is_logged_in_hook():
-    if api.auth.is_logged_in():
-        return WebSuccess("You are logged in.")
-    else:
-        return WebError("You are not logged in.")
+    status = {
+        "logged_in": api.auth.is_logged_in(),
+        "admin": api.auth.is_admin(),
+        "teacher": api.auth.is_logged_in() and api.user.is_teacher()
+    }
 
-@app.route('/api/user/isadmin', methods=['GET'])
-@api_wrapper
-def is_admin_hook():
-    if api.auth.is_admin():
-        return WebSuccess("You have admin permissions.")
-    else:
-        return WebError("You do not have admin permissions.")
-
-@app.route('/api/user/isteacher', methods=['GET'])
-@api_wrapper
-def is_admin_hook():
-    if api.user.is_teacher():
-        return WebSuccess("You are a teacher.")
-    else:
-        return WebError("You are not a teacher.")
+    return WebSuccess(data=status)
 
 @app.route('/api/team', methods=['GET'])
 @api_wrapper
@@ -157,6 +144,8 @@ def get_team_score_hook():
     if score is not None:
         return WebSuccess(data={'score': score})
     return WebError("There was an error retrieving your score.")
+
+@app.route('/api/team/stats/solved_problems')
 
 @app.route('/api/admin/getallproblems', methods=['GET'])
 @api_wrapper
