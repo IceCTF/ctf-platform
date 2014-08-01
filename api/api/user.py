@@ -255,7 +255,6 @@ def create_user_request(params):
 
     return uid
 
-
 def is_teacher(uid=None):
     """
     Determines if a user is a teacher.

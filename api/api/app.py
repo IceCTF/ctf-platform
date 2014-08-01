@@ -135,6 +135,14 @@ def is_admin_hook():
     else:
         return WebError("You do not have admin permissions.")
 
+@app.route('/api/user/isteacher', methods=['GET'])
+@api_wrapper
+def is_admin_hook():
+    if api.user.is_teacher():
+        return WebSuccess("You are a teacher.")
+    else:
+        return WebError("You are not a teacher.")
+
 @app.route('/api/team', methods=['GET'])
 @api_wrapper
 @require_login
