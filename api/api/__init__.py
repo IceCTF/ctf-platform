@@ -11,7 +11,7 @@ import api.annotations
 import api.auth
 import api.common
 import api.problem
-import api.scoreboard
+import api.stats
 import api.utilities
 import api.game
 import api.autogen

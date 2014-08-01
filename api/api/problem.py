@@ -60,6 +60,24 @@ problem_schema = Schema({
         ("Your problems should not already have _ids.", [lambda id: False]))
 })
 
+def get_all_categories(show_disabled=False):
+    """
+    Gets the set of distinct problem categories.
+
+    Args:
+        show_disabled: Whether to include categories that are only on disabled problems
+    Returns:
+        The set of distinct problem categories.
+    """
+
+    db = api.common.get_conn()
+
+    match = {}
+    if not show_disabled:
+        match.update({"disabled": False})
+
+    db.problems.disinct("category", match)
+
 def analyze_problems():
     """
     Checks the sanity of inserted problems.
@@ -331,7 +349,7 @@ def submit_key(tid, pid, key, uid=None, ip=None):
     db.submissions.insert(submission)
 
     if submission["correct"]:
-        api.cache.invalidate_memoization(api.scoreboard.get_score, {"kwargs.tid":tid}, {"kwargs.uid":uid})
+        api.cache.invalidate_memoization(api.stats.get_score, {"kwargs.tid":tid}, {"kwargs.uid":uid})
         api.cache.invalidate_memoization(get_unlocked_pids, {"args":tid})
         api.cache.invalidate_memoization(get_solved_pids, {"kwargs.tid":tid} , {"kwargs.uid":uid})
 

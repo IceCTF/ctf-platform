@@ -57,7 +57,7 @@ def submit_problems():
             profile(api.problem.submit_key, tid, pid, "test", uid=uid)
 
 def get_scoreboard():
-    profile(api.scoreboard.get_all_team_scores)
+    profile(api.stats.get_all_team_scores)
 
 def simulate_competition(calls):
     ops = [submit_problems, get_scoreboard]
@@ -68,9 +68,9 @@ def run_profiling(args):
     lprofiler = LineProfiler() 
 
     monitor_fuctions = [api.problem.submit_key, api.problem.get_unlocked_pids, api.problem.get_solved_pids,
-                        api.problem.get_all_problems, api.problem.get_solved_problems, api.scoreboard.get_score,
-			api.cache.memoize, api.autogen.grade_problem_instance, api.autogen.get_problem_instance,
-			api.autogen.get_number_of_instances]
+                        api.problem.get_all_problems, api.problem.get_solved_problems, api.stats.get_score,
+                        api.cache.memoize, api.autogen.grade_problem_instance, api.autogen.get_problem_instance,
+                        api.autogen.get_number_of_instances]
 
     for func in monitor_fuctions:
         lprofiler.add_function(func)
