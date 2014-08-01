@@ -21,6 +21,16 @@ userNotLoggedIn =
     News: "/news"
   Login: "/login"
 
+teacherLoggedIn =
+  Problems: "/problems"
+  Scoreboard: "/scoreboard"
+  Stats: "/stats"
+  About:
+    FAQ: "/faq"
+    Sponsors: "/sponsors"
+    News: "/news"
+  Logout: "/logout"
+
 
 loadNavbar = (renderNavbarLinks, renderNestedNavbarLinks) ->
 
@@ -29,18 +39,20 @@ loadNavbar = (renderNavbarLinks, renderNestedNavbarLinks) ->
     renderNestedNavbarLinks: renderNestedNavbarLinks
   }
 
-  apiCall "GET", "/api/user/isloggedin", {}
+  apiCall "GET", "/api/user/status", {}
   .done (data) ->
     navbarLayout.links = userNotLoggedIn
 
-    if data["status"] == 1
-      navbarLayout.links = userLoggedIn
+    if data["status"] == 0
+      if data.data["teacher"]
+        navbarLayout.links = teacherLoggedIn
+      else if data.data["logged_in"]
+        navbarLayout.links = userLoggedIn
 
     $("#navbar-links").html renderNavbarLinks(navbarLayout)
 
   .fail ->
     navbarLayout.links = apiOffline
-    console.log(navbarLayout)
     $("#navbar-links").html renderNavbarLinks(navbarLayout)
 
 $ ->
