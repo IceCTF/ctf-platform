@@ -121,7 +121,7 @@ def get_user_score_hook():
 
 @app.route('/api/user/status', methods=['GET'])
 @api_wrapper
-def is_logged_in_hook():
+def status_hook():
     status = {
         "logged_in": api.auth.is_logged_in(),
         "admin": api.auth.is_admin(),
@@ -145,7 +145,17 @@ def get_team_score_hook():
         return WebSuccess(data={'score': score})
     return WebError("There was an error retrieving your score.")
 
-@app.route('/api/team/stats/solved_problems')
+@app.route('/api/team/stats/solved_problems', methods=['GET'])
+@require_login
+@api_wrapper
+def get_team_solved_problems_hook():
+    tid = request.form.get("tid", "")
+    stats = {
+        "problems": api.stats.problems_by_category(),
+        "members": api.stats.team_member_stats(tid)
+    }
+
+    return WebSuccess(data=stats)
 
 @app.route('/api/admin/getallproblems', methods=['GET'])
 @api_wrapper
@@ -247,6 +257,12 @@ def get_state_hook():
 def update_state_hook():
     return api.game.update_state(request.form.get('avatar'),request.form.get('eventid'),
             request.form.get('level'))
+
+@app.route('/api/group')
+@api_wrapper
+@require_login
+def get_groups():
+    return WebSuccess(data=api.team.get_groups())
 
 @app.route('/api/group/score', methods=['GET'])
 @api_wrapper
