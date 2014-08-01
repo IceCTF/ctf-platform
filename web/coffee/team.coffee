@@ -23,13 +23,6 @@ load_group_info = ->
         $(".leave-team-span").on "click", (e) ->
           leave_group $(e.target).data("group-name")
 
-create_group = (group_name) ->
-  $.post "/api/group/create", {"group-name": group_name}
-  .done (data) ->
-    apiNotify(data)
-    if data['status'] is 1
-      load_group_info()
-
 join_group = (group_name) ->
   $.post "/api/group/join", {"group-name": group_name}
   .done (data) ->
@@ -44,17 +37,12 @@ leave_group = (group_name) ->
     if data['status'] is 1
       load_group_info()
 
+#Could be simplified without this function
 group_request = (e) ->
   e.preventDefault()
 
   group_name = $("#group-name-input").val()
-  action = $("#group-request-action").val()
-
-  switch action
-    when "join"
-      join_group group_name
-    when "create"
-      create_group group_name
+  join_group group_name
 
 $ ->
   load_team_info()
