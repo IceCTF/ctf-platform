@@ -31,7 +31,6 @@ startup_functions:
           <tr>
             <th></th>
             <th>Group Name</th>
-            <th>Score</th>
           </tr>
         </thead>
         <tbody>
@@ -42,9 +41,6 @@ startup_functions:
               </td>
               <td>
                 <p><%- group.name %></p>
-              </td>
-              <td>
-                <p><%= group.score %></p>
               </td>
             </tr>
           <% }); %>
@@ -58,16 +54,12 @@ startup_functions:
 
     <div class="panel-body">
       <form class="form form-inline" id="group-request-form" type="submit">
-        <div class="form-group pull-right">
-            <div class="input-group">
-              <span class="input-group-btn">
-                <select class="btn" id="group-request-action">
-                  <option value="join">Join</option>
-                  <option value="create">Create</option>
-                </select>
-              </span>
-              <input type="text" class="form-control" id="group-name-input">
-            </div>
+        <div class="form-group">
+          <div class="input-group">
+            <span class="input-group-btn">
+              <button class="btn btn-default" type="submit">Join</button>
+            </span>
+            <input type="text" class="form-control" id="group-name-input">
           </div>
         </div>
       </div>
