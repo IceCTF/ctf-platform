@@ -76,7 +76,7 @@ def get_all_categories(show_disabled=False):
     if not show_disabled:
         match.update({"disabled": False})
 
-    db.problems.disinct("category", match)
+    return db.problems.find(match).distinct("category")
 
 def analyze_problems():
     """
@@ -247,7 +247,7 @@ def insert_problem_from_json(blob):
     else:
         raise InternalException("JSON blob does not appear to be a list of problems or a single problem.")
 
-@api.cache.fast_memoize(timeout=60)
+@api.cache.memoize(timeout=60, fast=True)
 def get_grader(pid):
     """
     Returns the grader module for a given problem.
@@ -481,7 +481,7 @@ def reevaluate_all_submissions():
     for problem in get_all_problems(show_disabled=True):
         reevaluate_submissions_for_problem(problem["pid"])
 
-@api.cache.fast_memoize(timeout=60)
+@api.cache.memoize(timeout=60, fast=True)
 def get_problem(pid=None, name=None, tid=None, show_disabled=False):
     """
     Gets a single problem.
