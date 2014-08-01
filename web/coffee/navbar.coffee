@@ -5,7 +5,7 @@ apiOffline =
 teacherLoggedIn =
   Problems: "/problems"
   Scoreboard: "/scoreboard"
-  Stats: "/teacherpage"
+  Classroom: "/classroom"
   About:
     FAQ: "/faq"
     Sponsors: "/sponsors"
