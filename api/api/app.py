@@ -114,26 +114,21 @@ def logout_hook():
 @require_login
 @api_wrapper
 def get_user_score_hook():
-    score = api.scoreboard.get_score(uid=api.user.get_user()['uid'])
+    score = api.stats.get_score(uid=api.user.get_user()['uid'])
     if score is not None:
         return WebSuccess(data={'score': score})
     return WebError("There was an error retrieving your score.")
 
-@app.route('/api/user/isloggedin', methods=['GET'])
+@app.route('/api/user/status', methods=['GET'])
 @api_wrapper
 def is_logged_in_hook():
-    if api.auth.is_logged_in():
-        return WebSuccess("You are logged in.")
-    else:
-        return WebError("You are not logged in.")
+    status = {
+        "logged_in": api.auth.is_logged_in(),
+        "admin": api.auth.is_admin(),
+        "teacher": api.auth.is_logged_in() and api.user.is_teacher()
+    }
 
-@app.route('/api/user/isadmin', methods=['GET'])
-@api_wrapper
-def is_admin_hook():
-    if api.auth.is_admin():
-        return WebSuccess("You have admin permissions.")
-    else:
-        return WebError("You do not have admin permissions.")
+    return WebSuccess(data=status)
 
 @app.route('/api/team', methods=['GET'])
 @api_wrapper
@@ -145,10 +140,12 @@ def team_information_hook():
 @require_login
 @api_wrapper
 def get_team_score_hook():
-    score = api.scoreboard.get_score(tid=api.user.get_user()['tid'])
+    score = api.stats.get_score(tid=api.user.get_user()['tid'])
     if score is not None:
         return WebSuccess(data={'score': score})
     return WebError("There was an error retrieving your score.")
+
+@app.route('/api/team/stats/solved_problems')
 
 @app.route('/api/admin/getallproblems', methods=['GET'])
 @api_wrapper
@@ -251,18 +248,11 @@ def update_state_hook():
     return api.game.update_state(request.form.get('avatar'),request.form.get('eventid'),
             request.form.get('level'))
 
-@app.route('/api/group', methods=['GET'])
-@api_wrapper
-@require_teacher
-def group_hook():
-    groups = api.team.get_groups()
-    return WebSuccess("Successfully retrieved the team's groups", groups)
-
 @app.route('/api/group/score', methods=['GET'])
 @api_wrapper
 @require_teacher
 def get_group_score_hook():
-    score = api.scoreboard.get_group_score(name=request.form.get("group-name"))
+    score = api.stats.get_group_score(name=request.form.get("group-name"))
     if score is not None:
         return WebSuccess(data={'score': score})
     return WebError("There was an error retrieving your score.")
@@ -299,7 +289,7 @@ def delete_group_hook():
 @api_wrapper
 def get_scoreboard_hook():
     result = {}
-    result['public'] = api.scoreboard.get_all_team_scores()
+    result['public'] = api.stats.get_all_team_scores()
     result['groups'] = []
 
     if api.auth.is_logged_in():
@@ -307,7 +297,7 @@ def get_scoreboard_hook():
             result['groups'].append({
                 'gid': group['gid'],
                 'name': group['name'],
-                'scoreboard': api.scoreboard.get_group_scores(gid=group['gid'])
+                'scoreboard': api.stats.get_group_scores(gid=group['gid'])
             })
 
     return WebSuccess(data=result)

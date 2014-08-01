@@ -3,7 +3,7 @@ import api
 import time
 
 while True:
-    f = api.scoreboard.get_all_team_scores
+    f = api.stats.get_all_team_scores
     result = f(cache=False)
     key = api.cache.get_mongo_key(f)
     api.cache.set(key, result)

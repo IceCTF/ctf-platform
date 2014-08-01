@@ -56,7 +56,7 @@ def get_groups(tid=None):
     for group in list(db.groups.find({'owners': tid}, {'name': 1, 'gid': 1, 'owners': 1})):
         groups.append({'name': group['name'],
                        'gid': group['gid'],
-                       'score': api.scoreboard.get_group_score(gid=group['gid'])})
+                       'score': api.stats.get_group_score(gid=group['gid'])})
     return groups
 
 def create_team(params):
@@ -120,7 +120,7 @@ def get_team_information(tid=None):
     if tid is None:
        tid = team_info["tid"] 
 
-    team_info["score"] = api.scoreboard.get_score(tid=tid)
+    team_info["score"] = api.stats.get_score(tid=tid)
     team_info["members"] = [api.user.get_user(uid=uid)["username"] for uid in get_team_uids(tid)]
 
     return team_info

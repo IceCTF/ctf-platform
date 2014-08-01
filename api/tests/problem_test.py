@@ -226,6 +226,6 @@ class TestProblems(object):
             score = api.problem.submit_key(self.tid, problem['pid'], self.correct, uid=self.uid)['points']
             correct_total += problem['score']
             assert score == problem['score'], "submit_key return wrong score"
-            s = api.scoreboard.get_score(tid=self.tid)
-            assert api.scoreboard.get_score(tid=self.tid) == correct_total, "Team score is calculating incorrectly!"
-            assert api.scoreboard.get_score(uid=self.uid) == correct_total, "User score is calculating incorrectly!"
+            s = api.stats.get_score(tid=self.tid)
+            assert api.stats.get_score(tid=self.tid) == correct_total, "Team score is calculating incorrectly!"
+            assert api.stats.get_score(uid=self.uid) == correct_total, "User score is calculating incorrectly!"
