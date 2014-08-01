@@ -8,7 +8,7 @@ server {
                 index  index.html;
         }
 
-        location ~ ^/(problems|login|logout|compete|registration|team|scoreboard)$
+        location ~ ^/(problems|login|logout|compete|registration|team|scoreboard|teacherpage)$
         {
 		    default_type text/html;
 		    alias /srv/http/ctf/$1.html;
