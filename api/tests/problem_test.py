@@ -16,7 +16,7 @@ class TestProblems(object):
     """
     API Tests for problem.py
     """
-    
+
     test_user = {
         "username": "valid",
         "password": "valid",

@@ -16,7 +16,7 @@ register_group_schema = Schema({
 join_group_schema = Schema({
     Required("group-name"): check(
         ("Group name must be between 3 and 50 characters.", [str, Length(min=3, max=100)]),
-        ("No group exists with that name! try creating it instead.", [
+        ("No group exists with that name!", [
             lambda name: safe_fail(get_group, name=name) is not None]),
     )
 })
@@ -82,7 +82,7 @@ def create_group(tid, group_name):
     db.groups.insert({
         "name": group_name,
         "owners": [tid],
-        "members": [tid],
+        "members": [],
         "gid": gid
     })
 

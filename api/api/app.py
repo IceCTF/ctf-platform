@@ -5,7 +5,7 @@ app = Flask(__name__)
 import api
 
 from api.common import WebSuccess, WebError
-from api.annotations import api_wrapper, require_login, require_admin
+from api.annotations import api_wrapper, require_login, require_teacher, require_admin
 
 
 log = api.logger.use(__name__)
@@ -253,14 +253,14 @@ def update_state_hook():
 
 @app.route('/api/group', methods=['GET'])
 @api_wrapper
-@require_login
+@require_teacher
 def group_hook():
     groups = api.team.get_groups()
     return WebSuccess("Successfully retrieved the team's groups", groups)
 
 @app.route('/api/group/score', methods=['GET'])
-@require_login
 @api_wrapper
+@require_teacher
 def get_group_score_hook():
     score = api.scoreboard.get_group_score(name=request.form.get("group-name"))
     if score is not None:
@@ -269,7 +269,7 @@ def get_group_score_hook():
 
 @app.route('/api/group/create', methods=['POST'])
 @api_wrapper
-@require_login
+@require_teacher
 def create_group_hook():
     gid = api.group.create_group_request(api.common.flat_multi(request.form))
     return WebSuccess("Successfully created group", gid)
@@ -290,7 +290,7 @@ def leave_group_hook():
 
 @app.route('/api/group/delete', methods=['POST'])
 @api_wrapper
-@require_login
+@require_teacher
 def delete_group_hook():
     api.group.delete_group_request(api.common.flat_multi(request.form))
     return WebSuccess("Successfully deleted group")

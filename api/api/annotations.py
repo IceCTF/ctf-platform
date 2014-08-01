@@ -83,6 +83,16 @@ def require_login(f):
         return f(*args, **kwds)
     return wrapper
 
+def require_teacher(f):
+    @require_login
+    @wraps(f)
+    def wrapper(*args, **kwds):
+        if not api.user.is_teacher():
+            abort(403)
+
+        return f(*args, **kwds)
+    return wrapper
+
 def check_csrf(f):
     @wraps(f)
     @require_login

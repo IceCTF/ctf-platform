@@ -60,6 +60,11 @@ existing_team_schema = Schema({
         check(("Team passwords must be between 3 and 50 characters.", [str, Length(min=3, max=50)]))
 }, extra=True)
 
+teacher_schema = Schema({
+    Required('teacher-school'):
+        check(("School names must be between 3 and 100 characters.", [str, Length(min=3, max=100)]))
+}, extra=True)
+
 def hash_password(password):
     """
     Hash plaintext password.
@@ -117,7 +122,7 @@ def get_user(name=None, uid=None):
 
     return user
 
-def create_user(username, email, password_hash, tid):
+def create_user(username, email, password_hash, tid, teacher=False):
     """
     This inserts a user directly into the database. It assumes all data is valid.
 
@@ -126,6 +131,7 @@ def create_user(username, email, password_hash, tid):
         email: user's email
         password_hash: a hash of the user's password
         tid: the team id to join
+        teacher: whether this account is a teacher
     Returns:
         Returns the uid of the newly created user
     """
@@ -136,27 +142,38 @@ def create_user(username, email, password_hash, tid):
     if safe_fail(get_user, name=username) is not None:
         raise InternalException("User already exists!")
 
-    db.users.insert({
+    user = {
         'uid': uid,
         'username': username,
         'email': email,
         'password_hash': password_hash,
         'tid': tid,
+        'teacher': teacher,
         'avatar': 3,
         'eventid': 0,
         'level': 'Not Started'
-    })
+    }
+
+    db.users.insert(user)
 
     return uid
 
-def get_all_users():
+def get_all_users(show_teachers=False):
     """
     Returns:
         Returns the uid, username, and email of all users.
     """
 
     db = api.common.get_conn()
-    return list(db.users.find({}, {"uid": 1, "username": 1, "email": 1, "tid": 1}))
+
+    match = {}
+    projection = {"uid": 1, "username": 1, "email": 1, "tid": 1}
+
+    if not show_teachers:
+        match.update({"teacher": False})
+        projection.update({"teacher": 1})
+
+    return list(db.users.find(match, projection))
 
 @log_action
 def create_user_request(params):
@@ -168,6 +185,8 @@ def create_user_request(params):
         username: user's username
         password: user's password
         email: user's email
+        create-new-teacher:
+            boolean "true" indicating whether or not the user is a teacher
         create-new-team:
             boolean "true" indicating whether or not the user is creating a new team or
             joining an already existing team.
@@ -185,6 +204,18 @@ def create_user_request(params):
 
     validate(user_schema, params)
 
+    if params.get("create-new-teacher", None):
+        validate(teacher_schema, params)
+        tid = api.team.create_team({"eligible": False})
+
+        return create_user(
+            params["username"],
+            params["email"],
+            hash_password(params["password"]),
+            tid,
+            teacher=True
+        )
+
     if params.get("create-new-team", None):
         validate(new_team_schema, params)
 
@@ -193,7 +224,8 @@ def create_user_request(params):
             "adviser_name": params["team-adv-name-new"],
             "adviser_email": params["team-adv-email-new"],
             "school": params["team-school-new"],
-            "password" : params["team-password-new"]
+            "password" : params["team-password-new"],
+            "eligible" : True
         }
 
         tid = api.team.create_team(team_params)
@@ -222,6 +254,20 @@ def create_user_request(params):
         raise InternalException("There was an error during registration.")
 
     return uid
+
+
+def is_teacher(uid=None):
+    """
+    Determines if a user is a teacher.
+
+    Args:
+        uid: user's uid
+    Returns:
+        True if the user is a teacher, False otherwise
+    """
+
+    user = get_user(uid=uid)
+    return user.get('teacher', False)
 
 def update_password(uid, password):
     """

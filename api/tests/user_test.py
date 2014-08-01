@@ -18,6 +18,14 @@ class TestUsers(object):
     API Tests for user.py
     """
 
+    teacher_user = {
+        "username": "valid",
+        "password": "valid",
+        "email": "valid@hs.edu",
+        "create-new-teacher": True,
+        "teacher-school": "Hacks HS"
+    }
+
     new_team_user = {
         "username": "valid",
         "password": "valid",
@@ -275,3 +283,24 @@ class TestUsers(object):
             api.user.update_password_request({"password": "", "confirm-password":""}, uid)
             assert False, "Should not be able to update password to nothing."
 
+    @ensure_empty_collections("users", "teams")
+    @clear_collections("users", "teams")
+    def test_create_teacher(self):
+        """
+        Tests teacher account creation.
+
+        Covers: 
+            user.create_user_request
+            user.is_teacher
+            user.get_all_users
+        """
+
+        teacher_uid = api.user.create_user_request(self.teacher_user.copy())
+
+
+        eligible_uids = [u['uid'] for u in api.user.get_all_users()]
+        all_uids = [u['uid'] for u in api.user.get_all_users(show_teachers=True)]
+
+        assert api.user.is_teacher(uid=teacher_uid), "Teacher account is not flagged as teacher"
+        assert teacher_uid not in eligible_uids, "Teacher was set to be eligible"
+        assert teacher_uid in all_uids, "Teacher was not in list of all users"

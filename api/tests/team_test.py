@@ -22,7 +22,8 @@ class TestTeams(object):
         "adviser_name": "Dr. Test",
         "adviser_email": "test@hs.edu",
         "school": "Test HS",
-        "password": "much_protected"
+        "password": "much_protected",
+        "eligible": True
     }
 
     base_user = {

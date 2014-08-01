@@ -17,6 +17,14 @@ class TestGroups(object):
     API Tests for group.py
     """
 
+    teacher_user = {
+        "username": "valid",
+        "password": "valid",
+        "email": "valid@hs.edu",
+        "create-new-teacher": True,
+        "teacher-school": "Hacks HS"
+    }
+
     base_teams = [
         {
             "team_name": "team" + str(i),
@@ -40,7 +48,8 @@ class TestGroups(object):
         for team in self.base_teams:
             self.tids.append(api.team.create_team(team))
 
-        self.owner_tid = self.tids[0]
+        self.owner_uid = api.user.create_user_request(self.teacher_user)
+        self.owner_tid = api.user.get_team(uid=self.owner_uid)['tid']
 
     def teardown_class(self):
         teardown_db()
@@ -48,6 +57,15 @@ class TestGroups(object):
     @ensure_empty_collections("groups")
     @clear_collections("groups")
     def test_create_batch_groups(self, groups=10):
+        """
+        Tests group creation and lookups
+
+        Covers:
+            group.create_group_request
+            group.get_group
+
+        """
+
         gids = []
         for i in range(groups):
             group = self.base_group.copy()
@@ -77,6 +95,16 @@ class TestGroups(object):
     @ensure_empty_collections("groups")
     @clear_collections("groups")
     def test_join_and_leave_group(self):
+        """
+        Tests leaving and joining groups
+
+        Covers:
+            group.create_group_request
+            group.get_group
+            group.join_group
+            group.leave_group
+        """
+
         gid = api.group.create_group_request(self.base_group, self.owner_tid)
         name = api.group.get_group(gid=gid)["name"]
 

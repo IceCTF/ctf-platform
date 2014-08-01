@@ -53,10 +53,9 @@ def get_groups(tid=None):
     db = api.common.get_conn()
 
     groups = []
-    for group in list(db.groups.find({'members': tid}, {'name': 1, 'gid': 1, 'owners': 1})):
+    for group in list(db.groups.find({'owners': tid}, {'name': 1, 'gid': 1, 'owners': 1})):
         groups.append({'name': group['name'],
                        'gid': group['gid'],
-                       'owner': tid in group['owners'],
                        'score': api.scoreboard.get_group_score(gid=group['gid'])})
     return groups
 
@@ -70,6 +69,7 @@ def create_team(params):
         adviser_email: Adviser's email address
         school: Name of the school
         password: Team's password
+        eligible: the teams eligibility
     Returns:
         The newly created team id.
     """
@@ -115,7 +115,6 @@ def get_team_information(tid=None):
         members: A list of the member uids
     """
 
-    #TODO: Consider what information we give. Right now this includes tid and the password.
     team_info = get_team(tid=tid)
 
     if tid is None:
@@ -126,7 +125,7 @@ def get_team_information(tid=None):
 
     return team_info
 
-def get_all_teams():
+def get_all_teams(show_ineligible=False):
     """
     Retrieves all teams.
 
@@ -134,5 +133,10 @@ def get_all_teams():
         A list of all of the teams.
     """
 
+    match = {}
+
+    if not show_ineligible:
+        match.update({"eligible": True})
+
     db = api.common.get_conn()
-    return list(db.teams.find({}, {"_id": 0}))
+    return list(db.teams.find(match, {"_id": 0}))
