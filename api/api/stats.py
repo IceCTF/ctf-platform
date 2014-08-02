@@ -7,7 +7,8 @@ from datetime import datetime, timezone
 
 _get_problem_names = lambda problems: [problem['name'] for problem in problems]
 
-end = datetime(2020, 5, 7, 3, 59, 59)
+# TODO: adjust this for correct date/timezone
+end = datetime(2014, 11, 7, 23, 59, 59)
 
 @api.cache.memoize()
 def get_score(tid=None, uid=None):
@@ -120,6 +121,7 @@ def get_team_member_stats(tid):
 
     return {member['username']: _get_problem_names(api.problem.get_solved_problems(uid=member['uid']))}
 
+#@api.cache.memoize()
 def get_score_over_time(uid=None, tid=None, category=None):
     """
     Finds the score and time after each correct submission of a team or user.
