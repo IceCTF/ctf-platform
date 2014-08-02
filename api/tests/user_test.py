@@ -304,3 +304,27 @@ class TestUsers(object):
         assert api.user.is_teacher(uid=teacher_uid), "Teacher account is not flagged as teacher"
         assert teacher_uid not in eligible_uids, "Teacher was set to be eligible"
         assert teacher_uid in all_uids, "Teacher was not in list of all users"
+
+
+    @ensure_empty_collections("users", "teams")
+    @clear_collections("users", "teams")
+    def test_unicode_fields(self):
+        """
+        Ensures that unicode characters will work in user and team fields
+        """
+
+        team_name = u"Team \N{GREEK CAPITAL LETTER DELTA}"
+        username = u"User \u039B"
+
+        user1 = self.new_team_user.copy()
+        user2 = self.existing_team_user.copy()
+
+        user1["username"] = username
+        user1["team-name-new"] =  team_name
+        user2["team-name-existing"] = team_name
+
+        api.user.create_user_request(user1)
+        api.user.create_user_request(user2)
+
+        assert safe_fail(api.user.get_user, name=username) is not None, "Cannot look up unicode username"
+        assert safe_fail(api.team.get_team, name=team_name) is not None, "Cannot look up unicode team name"
