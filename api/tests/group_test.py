@@ -21,7 +21,7 @@ class TestGroups(object):
         "username": "valid",
         "password": "valid",
         "email": "valid@hs.edu",
-        "create-new-teacher": True,
+        "create-new-teacher": "true",
         "teacher-school": "Hacks HS"
     }
 
