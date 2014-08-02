@@ -8,7 +8,7 @@ from api.common import check, validate, safe_fail, WebException, InternalExcepti
 register_group_schema = Schema({
     Required("group-name"): check(
         ("Group name must be between 3 and 50 characters.", [str, Length(min=3, max=100)]),
-        ("A group with that name already exists! Try joining it instead.", [
+        ("A group with that name already exists!", [
             lambda name: safe_fail(get_group, name=name) is None])
     )
 })

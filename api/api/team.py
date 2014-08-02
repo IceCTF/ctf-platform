@@ -53,7 +53,14 @@ def get_groups(tid=None):
     db = api.common.get_conn()
 
     groups = []
-    for group in list(db.groups.find({'owners': tid}, {'name': 1, 'gid': 1, 'owners': 1})):
+
+    for group in list(db.groups.find({'owners': tid}, {'name': 1, 'gid': 1, 'owners': 1, 'members': 1})):
+        groups.append({'name': group['name'],
+                       'gid': group['gid'],
+                       'members': group['members'],
+                       'score': api.stats.get_group_score(gid=group['gid'])})
+
+    for group in list(db.groups.find({'members': tid}, {'name': 1, 'gid': 1})):
         groups.append({'name': group['name'],
                        'gid': group['gid'],
                        'score': api.stats.get_group_score(gid=group['gid'])})
