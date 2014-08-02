@@ -97,7 +97,7 @@ def get_team_members(tid=None, name=None):
 
     tid = get_team(name=name, tid=tid)["tid"]
 
-    return db.users.find({"tid": tid}, {"uid": 1, "username": 1})
+    return list(db.users.find({"tid": tid}, {"_id": 0, "uid": 1, "username": 1}))
 
 def get_team_uids(tid=None, name=None):
     return [team['uid'] for team in get_team_members(tid=tid, name=name)]
@@ -120,7 +120,7 @@ def get_team_information(tid=None):
        tid = team_info["tid"] 
 
     team_info["score"] = api.stats.get_score(tid=tid)
-    team_info["members"] = get_team_members
+    team_info["members"] = [member["username"] for member in get_team_members(tid=tid)]
 
     return team_info
 
