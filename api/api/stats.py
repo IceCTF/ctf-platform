@@ -47,9 +47,9 @@ def get_group_scores(gid=None, name=None):
 
     return sorted(result, key=lambda entry: entry['score'], reverse=True)
 
-def get_group_score(gid=None, name=None):
+def get_group_average_score(gid=None, name=None):
     """
-    Get the group score.
+    Get the average score of teams in a group.
 
     Args:
         gid: The group id
@@ -58,7 +58,9 @@ def get_group_score(gid=None, name=None):
         The total score of the group
     """
 
-    return sum([entry['score'] for entry in get_group_scores(gid, name)])
+    group_scores = get_group_scores(gid=gid, name=name)
+    total_score = sum([entry['score'] for entry in group_scores])
+    return int(total_score / len(group_scores)) if len(group_scores) > 0 else 0
 
 @api.cache.memoize()
 def get_all_team_scores():

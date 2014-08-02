@@ -58,12 +58,12 @@ def get_groups(tid=None):
         groups.append({'name': group['name'],
                        'gid': group['gid'],
                        'members': group['members'],
-                       'score': api.stats.get_group_score(gid=group['gid'])})
+                       'score': api.stats.get_group_average_score(gid=group['gid'])})
 
     for group in list(db.groups.find({'members': tid}, {'name': 1, 'gid': 1})):
         groups.append({'name': group['name'],
                        'gid': group['gid'],
-                       'score': api.stats.get_group_score(gid=group['gid'])})
+                       'score': api.stats.get_group_average_score(gid=group['gid'])})
     return groups
 
 def create_team(params):
