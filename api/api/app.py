@@ -151,11 +151,18 @@ def get_team_score_hook():
 def get_team_solved_problems_hook():
     tid = request.form.get("tid", "")
     stats = {
-        "problems": api.stats.problems_by_category(),
-        "members": api.stats.team_member_stats(tid)
+        "problems": api.stats.get_problems_by_category(),
+        "members": api.stats.get_team_member_stats(tid)
     }
 
     return WebSuccess(data=stats)
+
+@app.route('/api/team/stats/score_progression')
+@api_wrapper
+def get_team_score_progression():
+    tid = request.form.get("tid", None)
+    category = request.form.get("category", None)
+    return WebSuccess(data=api.stats.get_score_over_time(tid=tid, category=category))
 
 @app.route('/api/admin/getallproblems', methods=['GET'])
 @api_wrapper

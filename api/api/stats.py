@@ -3,7 +3,7 @@
 import api
 
 from api.common import cache, APIException
-from datetime import datetime
+from datetime import datetime, timezone
 
 _get_problem_names = lambda problems: [problem['name'] for problem in problems]
 
@@ -100,7 +100,7 @@ def get_all_user_scores():
     return sorted(result, key=lambda entry: entry['score'], reverse=True)
 
 @api.cache.memoize(timeout=120, fast=True)
-def problems_by_category():
+def get_problems_by_category():
     """
     Gets the list of all problems divided into categories
 
@@ -113,7 +113,34 @@ def problems_by_category():
 
     return result
 
-def team_member_stats(tid):
+def get_team_member_stats(tid):
     members = api.team.get_team_members(tid=tid)
 
     return {member['username']: _get_problem_names(api.problem.get_solved_problems(uid=member['uid']))}
+
+def get_score_over_time(uid=None, tid=None, category=None):
+    """
+    Finds the score and time after each correct submission of a team or user.
+    NOTE: this is slower than get_score. Do not use this for getting current score.
+
+    Args:
+        uid: the uid of the user
+        tid: the tid of the user
+        category: category filter
+    Returns:
+        A list of dictionaries containing score and time
+    """
+
+    correct_submissions = api.problem.get_submissions(uid=uid, tid=tid, category=category, correctness=True)
+
+    result = []
+    score = 0
+
+    for submission in sorted(correct_submissions, key=lambda sub: sub["timestamp"]):
+        score += api.problem.get_problem(pid=submission["pid"])["score"]
+        result.append({
+            "score": score,
+            "time": int(submission["timestamp"].replace(tzinfo=timezone.utc).timestamp())
+        })
+
+    return result
