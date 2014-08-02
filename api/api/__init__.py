@@ -21,4 +21,3 @@ import api.cache
 import api.config
 
 api.setup.index_mongo()
-api.cache.clear_all()
