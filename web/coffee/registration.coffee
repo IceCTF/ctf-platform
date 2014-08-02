@@ -3,7 +3,7 @@ submit_registration = (e) ->
   
   registrationData = $("#user-registration-form").serializeObject()
   registrationData["create-new-team"] = $("#new-team").hasClass("active")
-  registrationData["create-new-teacher"] = $("new-teacher").hasClass("active")
+  registrationData["create-new-teacher"] = $("#new-teacher").hasClass("active")
 
   $.post "/api/user/create", registrationData
   .done (data) ->
