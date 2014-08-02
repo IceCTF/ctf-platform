@@ -204,7 +204,7 @@ def create_user_request(params):
 
     validate(user_schema, params)
 
-    if params.get("create-new-teacher", None):
+    if params.get("create-new-teacher", "false") == "true":
         validate(teacher_schema, params)
         tid = api.team.create_team({"eligible": False})
 
@@ -216,7 +216,7 @@ def create_user_request(params):
             teacher=True
         )
 
-    if params.get("create-new-team", None):
+    if params.get("create-new-team", "false") == "true":
         validate(new_team_schema, params)
 
         team_params = {
@@ -240,7 +240,6 @@ def create_user_request(params):
 
         if team['password'] != params['team-password-existing']:
             raise WebException("Your team password is incorrect.")
-
 
     # Create new user
     uid = create_user(
