@@ -84,13 +84,13 @@ class TestTeams(object):
         """
 
         tid = api.team.create_team(self.base_team.copy())
-        
+
         uids = []
         for i in range(api.team.max_team_users):
             test_user = self.base_user.copy()
             test_user['username'] += str(i)
             uids.append(api.user.create_user_request(test_user))
-        
+
         team_uids = api.team.get_team_uids(tid)
         assert len(team_uids) == api.team.max_team_users, "Team does not have correct number of members"
         assert sorted(uids) == sorted(team_uids), "Team does not have the correct members"

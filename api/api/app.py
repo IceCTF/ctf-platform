@@ -200,10 +200,12 @@ def get_solved_problems_hook():
 def submit_key_hook():
     user_account = api.user.get_user()
     tid = user_account['tid']
+    uid = user_account['uid']
     pid = request.form.get('pid', '')
     key = request.form.get('key', '')
+    ip = request.remote_addr
 
-    result = api.problem.submit_key(tid, pid, key)
+    result = api.problem.submit_key(tid, pid, key, uid, ip)
 
     if result['correct']:
         return WebSuccess(result['message'], result['points'])
