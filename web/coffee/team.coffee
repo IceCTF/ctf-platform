@@ -11,7 +11,7 @@ load_team_info = ->
         $("#team-info").html renderTeamInformation({data: data.data})
 
 load_group_info = ->
-  $.get "/api/group"
+  $.get "/api/group/list"
   .done (data) ->
     switch data["status"]
       when 0
