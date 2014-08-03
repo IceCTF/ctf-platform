@@ -204,9 +204,15 @@ def create_user_request(params):
 
     validate(user_schema, params)
 
+    #Why are these strings? :o
     if params.get("create-new-teacher", "false") == "true":
         validate(teacher_schema, params)
-        tid = api.team.create_team({"eligible": False})
+
+        tid = api.team.create_team({
+            "eligible": False,
+            "school": params["teacher-school"],
+            "team_name": api.common.token()
+        })
 
         return create_user(
             params["username"],
