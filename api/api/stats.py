@@ -118,7 +118,7 @@ def get_problems_by_category():
 def get_team_member_stats(tid):
     members = api.team.get_team_members(tid=tid)
 
-    return {member['username']: _get_problem_names(api.problem.get_solved_problems(uid=member['uid']))}
+    return {member['username']: _get_problem_names(api.problem.get_solved_problems(uid=member['uid'])) for member in members}
 
 def get_score_over_time(uid=None, tid=None, category=None):
     """
