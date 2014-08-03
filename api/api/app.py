@@ -267,11 +267,23 @@ def update_state_hook():
     return api.game.update_state(request.form.get('avatar'),request.form.get('eventid'),
             request.form.get('level'))
 
-@app.route('/api/group')
+@app.route('/api/group/list')
 @api_wrapper
 @require_login
-def get_groups():
+def get_group_list_hook():
     return WebSuccess(data=api.team.get_groups())
+
+@app.route('/api/group', methods=['GET'])
+@api_wrapper
+@require_login
+def get_group_hook():
+    return WebSuccess(data=api.group.get_group(name=request.form.get("group-name")))
+
+@app.route('/api/group/team_information', methods=['GET'])
+@api_wrapper
+@require_login
+def get_memeber_information_hook():
+    return WebSuccess(data=api.group.get_member_information(gid=request.form.get("gid")))
 
 @app.route('/api/group/score', methods=['GET'])
 @api_wrapper
