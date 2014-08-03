@@ -26,15 +26,26 @@ loadTeamSelection = (gid) ->
       apiCall "GET", "/api/team/stats/solved_problems", {tid: tid}
       .done (data) ->
         teamData = data.data
-        users = ["users"].concat _.keys(teamData.members), [{role: 'annotation'}]
+        users = ["users"].concat _.keys(teamData.members), "Unsolved", [{role: 'annotation'}]
 
 
         graphData = [users]
         _.each teamData.problems, (problems, category) ->
+
           categoryData = [category]
+          solvedSet = []
+
           _.each teamData.members, (solved, member) ->
-            categoryData.push _.intersection(solved, problems).length
+
+            userSolved = _.intersection solved, problems
+            categoryData.push userSolved.length
+
+            solvedSet = _.union solvedSet, userSolved
+
+          #Number of unsolved problems
+          categoryData.push _.difference(problems, solvedSet).length
           categoryData.push ''
+
           graphData.push categoryData
 
         packagedData = google.visualization.arrayToDataTable graphData
