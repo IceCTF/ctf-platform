@@ -149,7 +149,7 @@ def get_team_score_hook():
 @require_login
 @api_wrapper
 def get_team_solved_problems_hook():
-    tid = request.form.get("tid", "")
+    tid = request.args.get("tid", "")
     stats = {
         "problems": api.stats.get_problems_by_category(),
         "members": api.stats.get_team_member_stats(tid)
@@ -279,11 +279,11 @@ def get_group_list_hook():
 def get_group_hook():
     return WebSuccess(data=api.group.get_group(name=request.form.get("group-name")))
 
-@app.route('/api/group/team_information', methods=['GET'])
+@app.route('/api/group/member_information', methods=['GET'])
 @api_wrapper
-@require_login
-def get_memeber_information_hook():
-    return WebSuccess(data=api.group.get_member_information(gid=request.form.get("gid")))
+@require_teacher
+def get_memeber_information_hook(gid=None):
+    return WebSuccess(data=api.group.get_member_information(gid=request.args.get("gid")))
 
 @app.route('/api/group/score', methods=['GET'])
 @api_wrapper
