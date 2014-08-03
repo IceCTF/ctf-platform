@@ -76,9 +76,9 @@ def get_member_information(gid):
 
     group = get_group(gid=gid)
 
-    team_information = [api.team.get_team_information(tid) for tid in group.members]
+    member_information = [api.team.get_team_information(tid) for tid in group["members"]]
 
-    return team_information
+    return member_information
 
 
 def create_group(tid, group_name):
