@@ -1,39 +1,68 @@
 renderGroupInformation = _.template($("#group-info-template").remove().text())
+renderGroupSelection = _.template($("#group-selection-template").remove().text())
 
-load_group_info = ->
-  $.get "/api/group"
+renderTeamSelection = _.template($("#team-selection-template").remove().text())
+
+loadGroupSelection = (groups) ->
+  $("#group-selection").html renderGroupSelection({groups: groups})
+  $("#group-selector").on "change", (e) ->
+    loadGroupInfo()
+
+  selectedGroupName = $("#group-selector").val()
+
+  _.each groups, (group) ->
+    if group.name == selectedGroupName
+      loadTeamSelection group.gid
+
+loadTeamSelection = (gid) ->
+  apiCall "GET", "/api/group/member_information", {gid: gid}
+  .done (data) ->
+    $("#team-selection").html renderTeamSelection({teams: data.data})
+    $(".team-visualization-enabler").on "click", (e) ->
+      tid = $(e.target).data("tid")
+      console.log(tid)
+      apiCall "GET", "/api/team/stats/solved_problems", {tid: tid}
+      .done (data) ->
+        console.log(data)
+    
+
+loadGroupManagement = (groups) ->
+  $("#group-management").html renderGroupInformation({data: groups})
+  $("#group-request-form").on "submit", groupRequest
+  $(".delete-group-span").on "click", (e) ->
+    deleteGroup $(e.target).data("group-name")
+
+loadGroupInfo = ->
+  apiCall "GET", "/api/group/list", {}
   .done (data) ->
     switch data["status"]
       when 0
         apiNotify(data)
       when 1
-        $("#group-management").html renderGroupInformation({data: data.data})
+        loadGroupManagement data.data
+        loadGroupSelection data.data
 
-        $("#group-request-form").on "submit", group_request
-        $(".delete-group-span").on "click", (e) ->
-          delete_group $(e.target).data("group-name")
-
-create_group = (group_name) ->
-  $.post "/api/group/create", {"group-name": group_name}
+createGroup = (groupName) ->
+  apiCall "POST",  "/api/group/create", {"group-name": groupName}
   .done (data) ->
     apiNotify(data)
     if data['status'] is 1
-      load_group_info()
+      loadGroupInfo()
 
-delete_group = (group_name) ->
-  $.post "/api/group/delete", {"group-name": group_name}
+deleteGroup = (groupName) ->
+  apiCall "POST", "/api/group/delete", {"group-name": groupName}
   .done (data) ->
     apiNotify(data)
     if data['status'] is 1
-      load_group_info()
+      loadGroupInfo()
 
 #Could be simplified without this function
-group_request = (e) ->
+groupRequest = (e) ->
   e.preventDefault()
 
-  group_name = $("#group-name-input").val()
-  create_group group_name
+  groupName = $("#group-name-input").val()
+  createGroup groupName
 
 $ ->
-  load_group_info()
+  loadGroupInfo()
   return
