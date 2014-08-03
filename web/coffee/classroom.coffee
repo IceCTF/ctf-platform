@@ -3,6 +3,8 @@ renderGroupSelection = _.template($("#group-selection-template").remove().text()
 
 renderTeamSelection = _.template($("#team-selection-template").remove().text())
 
+google.load 'visualization', '1.0', {'packages':['corechart']}
+
 loadGroupSelection = (groups) ->
   $("#group-selection").html renderGroupSelection({groups: groups})
   $("#group-selector").on "change", (e) ->
@@ -23,8 +25,31 @@ loadTeamSelection = (gid) ->
       console.log(tid)
       apiCall "GET", "/api/team/stats/solved_problems", {tid: tid}
       .done (data) ->
-        console.log(data)
-    
+        teamData = data.data
+        users = ["users"].concat _.keys(teamData.members), [{role: 'annotation'}]
+
+
+        graphData = [users]
+        _.each teamData.problems, (problems, category) ->
+          categoryData = [category]
+          _.each teamData.members, (solved, member) ->
+            categoryData.push _.intersection(solved, problems).length
+          categoryData.push ''
+          graphData.push categoryData
+
+        packagedData = google.visualization.arrayToDataTable graphData
+
+        options = {
+          width: 600,
+          height: 400,
+          legend: {position: 'top', maxLines: 3},
+          bar: {groupWidth: '75%'},
+          isStacked: true,
+        }
+
+        visualElementString = "##{tid}>.panel-body>.team-visualizer"
+        chart = new google.visualization.ColumnChart _.first($(visualElementString))
+        chart.draw packagedData, options
 
 loadGroupManagement = (groups) ->
   $("#group-management").html renderGroupInformation({data: groups})
