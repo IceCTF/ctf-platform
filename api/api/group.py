@@ -64,6 +64,23 @@ def get_group(gid=None, name=None):
 
     return group
 
+def get_member_information(gid):
+    """
+    Retrieves the team information for all teams in a group.
+    
+    Args:
+        gid: the group id
+    Returns:
+        A list of team information
+    """
+
+    group = get_group(gid=gid)
+
+    team_information = [api.team.get_team_information(tid) for tid in group.members]
+
+    return team_information
+
+
 def create_group(tid, group_name):
     """
     Inserts group into the db. Assumes everything is validated.
