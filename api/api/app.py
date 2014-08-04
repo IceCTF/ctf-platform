@@ -145,7 +145,7 @@ def get_team_score_hook():
         return WebSuccess(data={'score': score})
     return WebError("There was an error retrieving your score.")
 
-@app.route('/api/team/stats/solved_problems', methods=['GET'])
+@app.route('/api/stats/team/solved_problems', methods=['GET'])
 @require_login
 @api_wrapper
 def get_team_solved_problems_hook():
@@ -157,7 +157,7 @@ def get_team_solved_problems_hook():
 
     return WebSuccess(data=stats)
 
-@app.route('/api/team/stats/score_progression')
+@app.route('/api/stats/team/score_progression')
 @api_wrapper
 def get_team_score_progression():
     tid = request.form.get("tid", None)
@@ -325,7 +325,7 @@ def delete_group_hook():
     api.group.delete_group_request(api.common.flat_multi(request.form))
     return WebSuccess("Successfully deleted group")
 
-@app.route('/api/scoreboard', methods=['GET'])
+@app.route('/api/stats/scoreboard', methods=['GET'])
 @api_wrapper
 def get_scoreboard_hook():
     result = {}
@@ -339,5 +339,14 @@ def get_scoreboard_hook():
                 'name': group['name'],
                 'scoreboard': api.stats.get_group_scores(gid=group['gid'])
             })
+
+    return WebSuccess(data=result)
+
+@app.route('/api/stats/top_teams_score_progression', methods=['GET'])
+@api_wrapper
+def get_top_teams_score_progression_hook():
+    top_teams = api.stats.get_top_teams()
+
+    result = {team["name"]: api.stats.get_score_over_time(team["tid"]) for team in top_teams}
 
     return WebSuccess(data=result)
