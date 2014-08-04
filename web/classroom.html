@@ -37,6 +37,7 @@ startup_functions:
           <label for="group-select-button">Select a group</label>
           <div class="btn-group">
             <select id="group-selector" class="form-control btn">
+              <option value="none-selected">None</option>
               <% _.each(groups, function(group) { %>
                   <option value="<%- group.name %>"><a href="#"><%- group.name %></a></option>
               <% }); %>
@@ -51,22 +52,36 @@ startup_functions:
 </script>
 
 <script type="text/template" id="team-selection-template">
-  <% _.each(teams, function(team) { %>
-    <div class="row">
-      <div class="problem panel panel-primary">
-        <div class="panel-heading" data-toggle="collapse" data-target="#<%= team.tid  %>">
-          <h4 class="panel-title team-visualization-enabler" data-tid="<%= team.tid %>">
-            <%- team.team_name %> <span class="pull-right"><%- team.score %></span>
-          </h4>
-        </div>
-        <div class="panel-collapse collapse" id="<%= team.tid %>">
-          <div class="panel-body">
-            <div class="team-visualizer"></div>
+  <% if(teams.length > 0 ) { %>
+    <% _.each(teams, function(team) { %>
+      <div class="row">
+        <div class="problem panel panel-primary">
+          <div class="panel-heading team-visualization-enabler" data-tid="<%= team.tid %>" data-toggle="collapse" data-target="#<%= team.tid %>">
+              <%- team.team_name %> <div class="pull-right"><%- team.score %></div>
+          </div>
+          <div class="panel-collapse collapse" id="<%= team.tid %>">
+            <div class="panel-body">
+              <div class="col-md-8">
+                <div class="team-visualizer">
+                  Loading...
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="team-information">
+                  Other information
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  <% }) %>
+    <% }) %>
+  <% } else { %>
+    <pre>
+      This group has no members!
+    </pre>
+  <% } %>
+
 </script>
 
 <script type="text/template" id="group-info-template">
