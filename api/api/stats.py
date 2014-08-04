@@ -143,7 +143,7 @@ def get_score_over_time(tid=None, uid=None, category=None):
         score += api.problem.get_problem(pid=submission["pid"])["score"]
         result.append({
             "score": score,
-            "time": int(submission["timestamp"].timestamp() - api.config.start_time.timestamp())
+            "time": int(submission["timestamp"].timestamp())
         })
 
     return result
