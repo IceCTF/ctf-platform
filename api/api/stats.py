@@ -143,7 +143,7 @@ def get_score_over_time(tid=None, uid=None, category=None):
         score += api.problem.get_problem(pid=submission["pid"])["score"]
         result.append({
             "score": score,
-            "time": int(submission["timestamp"].timestamp())
+            "time": int(submission["timestamp"].timestamp() - api.config.start_time.timestamp())
         })
 
     return result
@@ -158,3 +158,18 @@ def get_top_teams():
 
     all_teams = api.stats.get_all_team_scores()
     return all_teams if len(all_teams) < top_teams else all_teams[:top_teams]
+
+@api.cache.memoize()
+def get_top_teams_score_progressions():
+    """
+    Gets the score_progressions for the top teams
+
+    Returns:
+        The top teams and their score progressions.
+        A dict of {team_name: score_progression}
+    """
+
+    return [{
+        "name": team["name"],
+        "score_progression": get_score_over_time(tid=team["tid"]),
+    } for team in get_top_teams()]

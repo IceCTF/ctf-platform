@@ -347,9 +347,5 @@ def get_scoreboard_hook():
 
 @app.route('/api/stats/top_teams_score_progression', methods=['GET'])
 @api_wrapper
-def get_top_teams_score_progression_hook():
-    top_teams = api.stats.get_top_teams()
-
-    result = {team["name"]: api.stats.get_score_over_time(tid=team["tid"]) for team in top_teams}
-
-    return WebSuccess(data=result)
+def get_top_teams_score_progressions_hook():
+    return WebSuccess(data=api.stats.get_top_teams_score_progressions())
