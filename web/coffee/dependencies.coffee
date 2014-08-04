@@ -1,9 +1,9 @@
-window.apiCall = (type, url, data) ->
+@apiCall = (type, url, data) ->
   $.ajax {url: url, type: type, data: data, cache: false}
   .fail (jqXHR, text) ->
     $.notify "API is offline. :(", "error"
 
-window.redirectIfNotLoggedIn = ->
+@redirectIfNotLoggedIn = ->
   apiCall "GET", "/api/user/status", {}
   .done (data) ->
     switch data["status"]
@@ -11,7 +11,7 @@ window.redirectIfNotLoggedIn = ->
         if not data.data["logged_in"]
           window.location.href = "/login"
 
-window.redirectIfLoggedIn = ->
+@redirectIfLoggedIn = ->
   apiCall "GET", "/api/user/status", {}
   .done (data) ->
     switch data["status"]
@@ -28,7 +28,7 @@ getStyle = (data) ->
       style = "success"
   return style
 
-window.apiNotify = (data) ->
+@apiNotify = (data) ->
   style = getStyle data
   $.notify data.message, style
 
