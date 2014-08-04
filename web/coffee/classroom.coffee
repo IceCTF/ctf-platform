@@ -5,62 +5,81 @@ renderTeamSelection = _.template($("#team-selection-template").remove().text())
 
 google.load 'visualization', '1.0', {'packages':['corechart']}
 
+@groupListCache = []
+
 loadGroupSelection = (groups) ->
   $("#group-selection").html renderGroupSelection({groups: groups})
+
   $("#group-selector").on "change", (e) ->
-    loadGroupInfo()
+    selectedGroupName = $("#group-selector").val()
+    
+    #Clears the pane on none selected.
+    if selectedGroupName == "none-selected"
+      $("#team-selection").html ""
 
-  selectedGroupName = $("#group-selector").val()
+    _.each groups, (group) ->
+      if group.name == selectedGroupName
+        loadTeamSelection group.gid
 
-  _.each groups, (group) ->
-    if group.name == selectedGroupName
-      loadTeamSelection group.gid
+    return
+
+teamSelectionHandler = (e) ->
+  tid = $(e.target).data("tid")
+
+  apiCall "GET", "/api/stats/team/solved_problems", {tid: tid}
+  .done (data) ->
+    drawTeamSolvedVisualization data.data, tid
 
 loadTeamSelection = (gid) ->
   apiCall "GET", "/api/group/member_information", {gid: gid}
   .done (data) ->
     $("#team-selection").html renderTeamSelection({teams: data.data})
+
     $(".team-visualization-enabler").on "click", (e) ->
-      tid = $(e.target).data("tid")
-      console.log(tid)
-      apiCall "GET", "/api/team/stats/solved_problems", {tid: tid}
-      .done (data) ->
-        teamData = data.data
-        users = ["users"].concat _.keys(teamData.members), "Unsolved", [{role: 'annotation'}]
+      teamSelectionHandler e
 
+    return
 
-        graphData = [users]
-        _.each teamData.problems, (problems, category) ->
+drawTeamSolvedVisualization = (teamData, tid) ->
+  members = _.keys(teamData.members)
+  users = ["users"].concat members, "Unsolved", {role: 'annotation'}
+  graphData = [users]
 
-          categoryData = [category]
-          solvedSet = []
+  _.each teamData.problems, (problems, category) ->
+    categoryData = [category]
+    solvedSet = []
 
-          _.each teamData.members, (solved, member) ->
+    _.each teamData.members, (solved, member) ->
+      userSolved = _.intersection solved, problems
+      categoryData.push userSolved.length
 
-            userSolved = _.intersection solved, problems
-            categoryData.push userSolved.length
+      solvedSet = _.union solvedSet, userSolved
 
-            solvedSet = _.union solvedSet, userSolved
+    #Number of unsolved problems
+    categoryData.push _.difference(problems, solvedSet).length
+    categoryData.push ''
 
-          #Number of unsolved problems
-          categoryData.push _.difference(problems, solvedSet).length
-          categoryData.push ''
+    graphData.push categoryData
 
-          graphData.push categoryData
+  packagedData = google.visualization.arrayToDataTable graphData
 
-        packagedData = google.visualization.arrayToDataTable graphData
+  options = {
+    height: 400,
+    legend: {position: 'top', maxLines: 3},
+    bar: {groupWidth: '75%'},
+    isStacked: true,
+    colors: ["#2FA4F0", "#B9F9D0", "#2E5CC0", "#8BADE0", "#E6BF70", "#CECFF0", "#30A0B0"]
+    series: {},
+    title: "Problem Overview"
+  }
 
-        options = {
-          width: 600,
-          height: 400,
-          legend: {position: 'top', maxLines: 3},
-          bar: {groupWidth: '75%'},
-          isStacked: true,
-        }
+  options.series[members.length] = {color: "black", visibleInLegend: false}
 
-        visualElementString = "##{tid}>.panel-body>.team-visualizer"
-        chart = new google.visualization.ColumnChart _.first($(visualElementString))
-        chart.draw packagedData, options
+  console.log options
+
+  visualElementString = "##{tid}>.panel-body>div>.team-visualizer"
+  chart = new google.visualization.ColumnChart _.first($(visualElementString))
+  chart.draw packagedData, options
 
 loadGroupManagement = (groups) ->
   $("#group-management").html renderGroupInformation({data: groups})
@@ -75,6 +94,7 @@ loadGroupInfo = ->
       when 0
         apiNotify(data)
       when 1
+        window.groupListCache = data.data
         loadGroupManagement data.data
         loadGroupSelection data.data
 
