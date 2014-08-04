@@ -7,7 +7,6 @@ import api
 
 from datetime import datetime
 from api.common import validate, check, safe_fail, InternalException, SevereInternalException, WebException
-from api.annotations import block_before_competition
 from voluptuous import Schema, Length, Required, Range
 from bson import json_util
 from os.path import join, isfile
@@ -569,7 +568,6 @@ def get_solved_problems(tid=None, uid=None, category=None):
 
     return [get_problem(pid=pid) for pid in get_solved_pids(tid=tid, uid=uid, category=category)]
 
-@block_before_competition([])
 @api.cache.memoize()
 def get_unlocked_pids(tid, category=None):
     """

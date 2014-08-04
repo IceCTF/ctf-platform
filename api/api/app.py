@@ -6,6 +6,7 @@ import api
 
 from api.common import WebSuccess, WebError
 from api.annotations import api_wrapper, require_login, require_teacher, require_admin
+from api.annotations import block_before_competition, block_after_competition
 
 log = api.logger.use(__name__)
 
@@ -184,18 +185,21 @@ def get_all_users_hook():
 @app.route('/api/problems', methods=['GET'])
 @require_login
 @api_wrapper
+@block_before_competition(WebError("The competition has not begun yet!"))
 def get_unlocked_problems_hook():
     return WebSuccess(data=api.problem.get_unlocked_problems(api.user.get_user()['tid']))
 
 @app.route('/api/problems/solved', methods=['GET'])
 @require_login
 @api_wrapper
+@block_before_competition(WebError("The competition has not begun yet!"))
 def get_solved_problems_hook():
     return WebSuccess(api.problem.get_solved_problems(api.user.get_user()['tid']))
 
 @app.route('/api/problems/submit', methods=['POST'])
 @require_login
 @api_wrapper
+@block_before_competition(WebError("The competition has not begun yet!"))
 def submit_key_hook():
     user_account = api.user.get_user()
     tid = user_account['tid']
