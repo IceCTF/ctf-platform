@@ -2,10 +2,12 @@
 layout: default
 title: Problems
 post_scripts:
+ - js/progression_graphs.js
  - js/team.js
 startup_functions:
  - redirectIfNotLoggedIn()
 ---
+
 <div class="container">
   <div class="well">
     <div class="row">
@@ -14,6 +16,11 @@ startup_functions:
       </div>
       <div class="col-md-6">
         <div id="group-info"></div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <div id="team-progression-graph">
       </div>
     </div>
   </div>
