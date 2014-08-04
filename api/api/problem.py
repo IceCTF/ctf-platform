@@ -335,7 +335,7 @@ def submit_key(tid, pid, key, uid=None, ip=None):
     submission = {
         'uid': uid,
         'tid': tid,
-        'timestamp': datetime.now(),
+        'timestamp': datetime.utcnow(),
         'pid': pid,
         'ip': ip,
         'key': key,

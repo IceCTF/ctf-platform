@@ -1,14 +1,21 @@
-""" Module for getting scoreboard information """
+""" Module for getting competition statistics"""
 
 import api
 
 from api.common import cache, APIException
-from datetime import datetime, timezone
+from datetime import datetime, timezone, tzinfo
 
 _get_problem_names = lambda problems: [problem['name'] for problem in problems]
 
-# TODO: adjust this for correct date/timezone
-end = datetime(2014, 11, 7, 23, 59, 59)
+#I think this works
+class EST(tzinfo):
+    def utcoffset(self, dt):
+      return datetime.timedelta(hours=-5)
+
+    def dst(self, dt):
+        return datetime.timedelta(0)
+
+end = datetime(2014, 11, 7, 23, 59, 59, EST())
 
 @api.cache.memoize()
 def get_score(tid=None, uid=None):
@@ -144,7 +151,7 @@ def get_score_over_time(uid=None, tid=None, category=None):
         score += api.problem.get_problem(pid=submission["pid"])["score"]
         result.append({
             "score": score,
-            "time": int(submission["timestamp"].replace(tzinfo=timezone.utc).timestamp())
+            "time": int(submission["timestamp"].timestamp())
         })
 
     return result
