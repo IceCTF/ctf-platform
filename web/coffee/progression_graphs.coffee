@@ -13,8 +13,37 @@ teamGraphOptions = {
 
 timestampsToBuckets = (samples, key, seconds) ->
   min = _.first(samples)[key]
+  max = _.last(samples)[key]
+
+  bucketNumber = (number) ->
+    Math.floor((number - min) / seconds)
+
+  continuousBucket = {}
+  maxBuckets = bucketNumber max
+
+  for i in [0..maxBuckets]
+    continuousBucket[i] = []
+
   buckets = _.groupBy samples, (sample) ->
-    (sample[key] - min) / seconds
+    bucketNumber sample[key]
+
+  return _.extend continuousBucket, buckets
+
+maxValuesFromBuckets = (buckets, sampleKey) ->
+  maxValues = []
+  
+  lastInsertedValue = 0
+  _.each buckets, (samples) ->
+    values = _.pluck(samples, sampleKey)
+
+    if values.length > 0
+      maxValue = _.max values
+      maxValues.push maxValue
+      lastInsertedValue = maxValue
+    else
+      maxValues.push lastInsertedValue
+
+  return maxValues
 
 @drawTeamProgressionGraph = (selector) ->
   div = divFromSelector selector
@@ -29,7 +58,6 @@ timestampsToBuckets = (samples, key, seconds) ->
       graphData.push [submission.time, submission.score]
       lastSubmission = submission
       
-    console.log(timestampsToBuckets data.data, "time", 600)
     packagedData = google.visualization.arrayToDataTable graphData
 
     chart = new google.visualization.LineChart(div)
