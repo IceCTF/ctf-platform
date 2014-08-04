@@ -6,6 +6,8 @@ from api.common import cache, APIException
 
 _get_problem_names = lambda problems: [problem['name'] for problem in problems]
 
+top_teams = 10
+
 @api.cache.memoize()
 def get_score(tid=None, uid=None):
     """
@@ -74,6 +76,7 @@ def get_all_team_scores():
     for team in teams:
         result.append({
             "name": team['team_name'],
+            "tid": team['tid'],
             "score": get_score(tid=team['tid'])
         })
 
@@ -144,3 +147,14 @@ def get_score_over_time(uid=None, tid=None, category=None):
         })
 
     return result
+
+def get_top_teams():
+    """
+    Finds the top teams
+
+    Returns:
+        The top teams and their scores
+    """
+
+    all_teams = api.stats.get_all_team_scores()
+    return all_teams if len(all_teams) < top_teams else all_teams[:top_teams]
