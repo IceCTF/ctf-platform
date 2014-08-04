@@ -2,7 +2,7 @@ renderScoreboardTabs = _.template($("#scoreboard-tabs-template").remove().text()
 renderScoreboard = _.template($("#scoreboard-template").remove().text())
 
 load_scoreboard = ->
-  apiCall "GET", "/api/scoreboard", {}
+  apiCall "GET", "/api/stats/scoreboard", {}
   .done (data) ->
     switch data["status"]
       when 1

@@ -211,7 +211,7 @@ def create_user_request(params):
         tid = api.team.create_team({
             "eligible": False,
             "school": params["teacher-school"],
-            "team_name": api.common.token()
+            "team_name": "TEACHER-" + api.common.token()
         })
 
         return create_user(

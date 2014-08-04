@@ -1,14 +1,12 @@
-""" Module for getting scoreboard information """
+""" Module for getting competition statistics"""
 
 import api
 
 from api.common import cache, APIException
-from datetime import datetime, timezone
 
 _get_problem_names = lambda problems: [problem['name'] for problem in problems]
 
-# TODO: adjust this for correct date/timezone
-end = datetime(2014, 11, 7, 23, 59, 59)
+top_teams = 10
 
 @api.cache.memoize()
 def get_score(tid=None, uid=None):
@@ -78,6 +76,7 @@ def get_all_team_scores():
     for team in teams:
         result.append({
             "name": team['team_name'],
+            "tid": team['tid'],
             "score": get_score(tid=team['tid'])
         })
 
@@ -121,15 +120,15 @@ def get_team_member_stats(tid):
 
     return {member['username']: _get_problem_names(api.problem.get_solved_problems(uid=member['uid'])) for member in members}
 
-#@api.cache.memoize()
-def get_score_over_time(uid=None, tid=None, category=None):
+@api.cache.memoize()
+def get_score_over_time(tid=None, uid=None, category=None):
     """
     Finds the score and time after each correct submission of a team or user.
     NOTE: this is slower than get_score. Do not use this for getting current score.
 
     Args:
-        uid: the uid of the user
         tid: the tid of the user
+        uid: the uid of the user
         category: category filter
     Returns:
         A list of dictionaries containing score and time
@@ -144,7 +143,18 @@ def get_score_over_time(uid=None, tid=None, category=None):
         score += api.problem.get_problem(pid=submission["pid"])["score"]
         result.append({
             "score": score,
-            "time": int(submission["timestamp"].replace(tzinfo=timezone.utc).timestamp())
+            "time": int(submission["timestamp"].timestamp())
         })
 
     return result
+
+def get_top_teams():
+    """
+    Finds the top teams
+
+    Returns:
+        The top teams and their scores
+    """
+
+    all_teams = api.stats.get_all_team_scores()
+    return all_teams if len(all_teams) < top_teams else all_teams[:top_teams]

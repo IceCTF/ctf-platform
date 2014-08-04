@@ -6,7 +6,7 @@ import api
 
 from api.common import WebSuccess, WebError
 from api.annotations import api_wrapper, require_login, require_teacher, require_admin
-
+from api.annotations import block_before_competition, block_after_competition
 
 log = api.logger.use(__name__)
 
@@ -145,7 +145,7 @@ def get_team_score_hook():
         return WebSuccess(data={'score': score})
     return WebError("There was an error retrieving your score.")
 
-@app.route('/api/team/stats/solved_problems', methods=['GET'])
+@app.route('/api/stats/team/solved_problems', methods=['GET'])
 @require_login
 @api_wrapper
 def get_team_solved_problems_hook():
@@ -157,11 +157,14 @@ def get_team_solved_problems_hook():
 
     return WebSuccess(data=stats)
 
-@app.route('/api/team/stats/score_progression')
+@app.route('/api/stats/team/score_progression')
+@require_login
 @api_wrapper
 def get_team_score_progression():
-    tid = request.form.get("tid", None)
     category = request.form.get("category", None)
+
+    tid = api.user.get_team()["tid"]
+
     return WebSuccess(data=api.stats.get_score_over_time(tid=tid, category=category))
 
 @app.route('/api/admin/getallproblems', methods=['GET'])
@@ -185,18 +188,21 @@ def get_all_users_hook():
 @app.route('/api/problems', methods=['GET'])
 @require_login
 @api_wrapper
+@block_before_competition(WebError("The competition has not begun yet!"))
 def get_unlocked_problems_hook():
     return WebSuccess(data=api.problem.get_unlocked_problems(api.user.get_user()['tid']))
 
 @app.route('/api/problems/solved', methods=['GET'])
 @require_login
 @api_wrapper
+@block_before_competition(WebError("The competition has not begun yet!"))
 def get_solved_problems_hook():
     return WebSuccess(api.problem.get_solved_problems(api.user.get_user()['tid']))
 
 @app.route('/api/problems/submit', methods=['POST'])
 @require_login
 @api_wrapper
+@block_before_competition(WebError("The competition has not begun yet!"))
 def submit_key_hook():
     user_account = api.user.get_user()
     tid = user_account['tid']
@@ -322,7 +328,7 @@ def delete_group_hook():
     api.group.delete_group_request(api.common.flat_multi(request.form))
     return WebSuccess("Successfully deleted group")
 
-@app.route('/api/scoreboard', methods=['GET'])
+@app.route('/api/stats/scoreboard', methods=['GET'])
 @api_wrapper
 def get_scoreboard_hook():
     result = {}
@@ -336,5 +342,14 @@ def get_scoreboard_hook():
                 'name': group['name'],
                 'scoreboard': api.stats.get_group_scores(gid=group['gid'])
             })
+
+    return WebSuccess(data=result)
+
+@app.route('/api/stats/top_teams_score_progression', methods=['GET'])
+@api_wrapper
+def get_top_teams_score_progression_hook():
+    top_teams = api.stats.get_top_teams()
+
+    result = {team["name"]: api.stats.get_score_over_time(tid=team["tid"]) for team in top_teams}
 
     return WebSuccess(data=result)

@@ -335,7 +335,7 @@ def submit_key(tid, pid, key, uid=None, ip=None):
     submission = {
         'uid': uid,
         'tid': tid,
-        'timestamp': datetime.now(),
+        'timestamp': datetime.utcnow(),
         'pid': pid,
         'ip': ip,
         'key': key,
@@ -352,6 +352,8 @@ def submit_key(tid, pid, key, uid=None, ip=None):
         api.cache.invalidate_memoization(api.stats.get_score, {"kwargs.tid":tid}, {"kwargs.uid":uid})
         api.cache.invalidate_memoization(get_unlocked_pids, {"args":tid})
         api.cache.invalidate_memoization(get_solved_pids, {"kwargs.tid":tid} , {"kwargs.uid":uid})
+
+        api.cache.invalidate_memoization(api.stats.get_score_over_time, {"kwargs.tid":tid}, {"kwargs.uid":uid})
 
     return result
 
