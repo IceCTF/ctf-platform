@@ -3,7 +3,6 @@
 import api
 
 from api.common import cache, APIException
-from datetime import datetime, timezone, tzinfo, timedelta
 
 _get_problem_names = lambda problems: [problem['name'] for problem in problems]
 

@@ -7,7 +7,6 @@ import api
 from api.common import WebSuccess, WebError
 from api.annotations import api_wrapper, require_login, require_teacher, require_admin
 
-
 log = api.logger.use(__name__)
 
 session_cookie_domain = "127.0.0.1"
@@ -15,20 +14,6 @@ session_cookie_path = "/"
 session_cookie_name = "flask"
 
 secret_key = ""
-
-class EST(tzinfo):
-    def __init__(self, utc_offset):
-        self.utc_offset=utcoffset
-
-    def utcoffset(self, dt):
-      return timedelta(hours=-self.utcoffset)
-
-    def dst(self, dt):
-        return timedelta(0)
-
-#adjust these as necessary
-start = dateime(2014, 10, 27, 12, 0, 0, tzinfo=EST(4)) # DST changes!
-end = datetime(2014, 11, 7, 23, 59, 59, tzinfo=EST(5))
 
 def config_app(*args, **kwargs):
     """
