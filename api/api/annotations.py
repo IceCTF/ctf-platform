@@ -123,14 +123,38 @@ def require_admin(f):
         return f(*args, **kwds)
     return wrapper
 
-def block_before_competition(f):
-    @wraps(f)
-    def wrapper(*args, **kwds):
-        if datetime.utcnow().timestamp > api.config.start_time.timestamp():
-            return f(*args, **kwds)
+def block_before_competition(return_result):
 
-def block_after_competition(f):
-    @wraps(f)
-    def wrapper(*args, **kwds):
-        if datetime.utcnow().timestamp < api.config.end_time.timestamp():
-            return f(*args, **kwds)
+    def decorator(f):
+        """
+        Inner decorator
+        """
+
+        @wraps(f)
+        def wrapper(*args, **kwds):
+            if datetime.utcnow().timestamp() > api.config.start_time.timestamp():
+                return f(*args, **kwds)
+            else:
+                return return_result
+
+        return wrapper
+
+    return decorator
+
+def block_after_competition(return_result):
+
+    def decorator(f):
+        """
+        Inner decorator
+        """
+
+        @wraps(f)
+        def wrapper(*args, **kwds):
+            if datetime.utcnow().timestamp < api.config.end_time.timestamp():
+                return f(*args, **kwds)
+            else:
+                return return_result
+
+        return wrapper
+
+    return decorator
