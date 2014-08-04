@@ -3,19 +3,9 @@
 import api
 
 from api.common import cache, APIException
-from datetime import datetime, timezone, tzinfo
+from datetime import datetime, timezone, tzinfo, timedelta
 
 _get_problem_names = lambda problems: [problem['name'] for problem in problems]
-
-#I think this works
-class EST(tzinfo):
-    def utcoffset(self, dt):
-      return datetime.timedelta(hours=-5)
-
-    def dst(self, dt):
-        return datetime.timedelta(0)
-
-end = datetime(2014, 11, 7, 23, 59, 59, tzinfo=EST())
 
 @api.cache.memoize()
 def get_score(tid=None, uid=None):
