@@ -353,6 +353,8 @@ def submit_key(tid, pid, key, uid=None, ip=None):
         api.cache.invalidate_memoization(get_unlocked_pids, {"args":tid})
         api.cache.invalidate_memoization(get_solved_pids, {"kwargs.tid":tid} , {"kwargs.uid":uid})
 
+        api.cache.invalidate_memoization(api.stats.get_score_over_time, {"kwargs.tid":tid}, {"kwargs.uid":uid})
+
     return result
 
 def get_submissions(pid=None, uid=None, tid=None, category=None, correctness=None):

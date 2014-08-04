@@ -120,15 +120,15 @@ def get_team_member_stats(tid):
 
     return {member['username']: _get_problem_names(api.problem.get_solved_problems(uid=member['uid'])) for member in members}
 
-#@api.cache.memoize()
-def get_score_over_time(uid=None, tid=None, category=None):
+@api.cache.memoize()
+def get_score_over_time(tid=None, uid=None, category=None):
     """
     Finds the score and time after each correct submission of a team or user.
     NOTE: this is slower than get_score. Do not use this for getting current score.
 
     Args:
-        uid: the uid of the user
         tid: the tid of the user
+        uid: the uid of the user
         category: category filter
     Returns:
         A list of dictionaries containing score and time

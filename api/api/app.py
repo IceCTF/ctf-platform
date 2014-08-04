@@ -158,10 +158,13 @@ def get_team_solved_problems_hook():
     return WebSuccess(data=stats)
 
 @app.route('/api/stats/team/score_progression')
+@require_login
 @api_wrapper
 def get_team_score_progression():
-    tid = request.form.get("tid", None)
     category = request.form.get("category", None)
+
+    tid = api.user.get_team()["tid"]
+
     return WebSuccess(data=api.stats.get_score_over_time(tid=tid, category=category))
 
 @app.route('/api/admin/getallproblems', methods=['GET'])
@@ -347,6 +350,6 @@ def get_scoreboard_hook():
 def get_top_teams_score_progression_hook():
     top_teams = api.stats.get_top_teams()
 
-    result = {team["name"]: api.stats.get_score_over_time(team["tid"]) for team in top_teams}
+    result = {team["name"]: api.stats.get_score_over_time(tid=team["tid"]) for team in top_teams}
 
     return WebSuccess(data=result)
