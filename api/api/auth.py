@@ -31,11 +31,8 @@ user_login_schema = Schema({
 
 @log_action
 def login(username, password):
-    """Authenticates a user.
-
-    Verify that the user is not already logged in. Verify that the username/password are not empty.
-    Query for the user from the user interface matching on username. Check if passwords match, if so add the
-    corresponding 'uid' to the session, if not inform the user of incorrect credentials.
+    """
+    Authenticates a user.
     """
 
     # Read in submitted username and password

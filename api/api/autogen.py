@@ -144,7 +144,7 @@ def get_generator_path(pid):
 
     Args:
         pid: the problem pid
-    Returns
+    Returns:
         The path to the generator.
     """
 

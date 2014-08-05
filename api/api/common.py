@@ -54,7 +54,8 @@ def get_conn():
 
 
 def esc(s):
-    """Escapes a string to prevent html injection
+    """
+    Escapes a string to prevent html injection
 
     Returns a string with special HTML characters replaced.
     Used to sanitize output to prevent XSS. We looked at 
@@ -72,6 +73,9 @@ def esc(s):
 def token():
     """
     Generate a token, should be random but does not have to be secure necessarily. Speed is a priority.
+
+    Returns:
+        The randomly generated token
     """
 
     return str(uuid.uuid4().hex)
