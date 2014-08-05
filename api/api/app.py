@@ -345,7 +345,7 @@ def get_scoreboard_hook():
 
     return WebSuccess(data=result)
 
-@app.route('/api/stats/top_teams_score_progression', methods=['GET'])
+@app.route('/api/stats/top_teams/score_progression', methods=['GET'])
 @api_wrapper
 def get_top_teams_score_progressions_hook():
     return WebSuccess(data=api.stats.get_top_teams_score_progressions())
