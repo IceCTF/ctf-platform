@@ -32,6 +32,10 @@ getStyle = (data) ->
   style = getStyle data
   $.notify data.message, style
 
+@numericalSort = (data) ->
+  data.sort (a, b) ->
+    return (b - a)
+
 $.fn.apiNotify = (data, configuration) ->
   configuration["className"] = getStyle data
   return $(this).notify(data.message, configuration)
