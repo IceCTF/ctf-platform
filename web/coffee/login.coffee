@@ -9,5 +9,12 @@ login = (e) ->
         document.location.href = "/"
 
 $ ->
-  $("#error-alert").hide()
+  $("#password-reset-form").toggle()
+
   $("#login-form").on "submit", login
+
+  $(".toggle-login-ui").on "click", (e) ->
+    e.preventDefault()
+
+    $("#login-form").toggle()
+    $("#password-reset-form").toggle()

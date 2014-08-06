@@ -10,29 +10,53 @@ startup_functions:
 <div class="container-narrow">
     <div class="contentbox row">
         <div class="col-md-4 col-md-offset-4">
-            <form class="form-horizontal" id="login-form">
-                <div class="form-group">
-                    <label for="login-username">Username</label>
+          <form class="form-horizontal" id="login-form">
+              <div class="form-group">
+                  <label for="login-username">Username</label>
 
-                    <div>
-                        <input name="username" id="login-username" placeholder="Username" type="text" class="form-control">
-                    </div>
-                </div>
+                  <div>
+                      <input name="username" id="login-username" placeholder="Username" type="text" class="form-control">
+                  </div>
+              </div>
 
-                <div class="form-group">
-                    <label for="login-password">Password</label>
+              <div class="form-group">
+                  <label for="login-password">Password</label>
 
-                    <div>
-                        <input name="password" id="login-password" placeholder="Password" type="password" class="form-control">
-                    </div>
-                </div>
+                  <div>
+                      <input name="password" id="login-password" placeholder="Password" type="password" class="form-control">
+                  </div>
+              </div>
 
-                <div class="form-group">
-                    <div>
-                        <button id="login-button" class="btn btn-primary" type="submit"> Login </button>
-                    </div>
-                </div>
-            </form>
+              <div class="col-md-6">
+                  <div class="form-group">
+                      <div>
+                          <button id="login-button" class="btn btn-primary" type="submit"> Login </button>
+                      </div>
+                  </div>
+              </div>
+              <div class="col-md-6">
+                  <a href="#" class="toggle-login-ui">Did you forget your password?</a>
+              </div>
+          </form>
+
+          <form class="form-horizontal" id="password-reset-form">
+            <div class="form-group">
+              <label for="login-username">Username</label>
+              <div>
+                  <input name="username" id="login-username" placeholder="Username" type="text" class="form-control">
+              </div>
+            </div>
+              <div class="col-md-6">
+                  <div class="form-group">
+                      <div>
+                          <button id="reset-password-button" class="btn btn-primary" type="submit">Reset Password</button>
+                      </div>
+                  </div>
+              </div>
+              <div class="col-md-6">
+                  <a href="#" class="toggle-login-ui">Ready to try again?</a>
+              </div>
+          </form>
         </div>
     </div>
 </div>
