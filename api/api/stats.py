@@ -116,6 +116,16 @@ def get_problems_by_category():
     return result
 
 def get_team_member_stats(tid):
+    """
+    Gets the solved problems for each member of a given team.
+
+    Args:
+        tid: the team id
+
+    Returns:
+        A dict of username:[problem list]
+    """
+
     members = api.team.get_team_members(tid=tid)
 
     return {member['username']: _get_problem_names(api.problem.get_solved_problems(uid=member['uid'])) for member in members}

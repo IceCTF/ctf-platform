@@ -160,6 +160,10 @@ def create_user(username, email, password_hash, tid, teacher=False):
 
 def get_all_users(show_teachers=False):
     """
+    Finds all the users in the database
+
+    Args:
+        show_teachers: whether or not to include teachers in the response
     Returns:
         Returns the uid, username, and email of all users.
     """

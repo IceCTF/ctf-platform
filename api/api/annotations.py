@@ -73,6 +73,10 @@ def api_wrapper(f):
     return wrapper
 
 def require_login(f):
+    """
+    Wraps routing functions that require a user to be logged in
+    """
+
     @wraps(f)
     def wrapper(*args, **kwds):
         if not api.auth.is_logged_in():
@@ -84,6 +88,10 @@ def require_login(f):
     return wrapper
 
 def require_teacher(f):
+    """
+    Wraps routing functions that require a user to be a teacher
+    """
+
     @require_login
     @wraps(f)
     def wrapper(*args, **kwds):
@@ -116,6 +124,10 @@ def deny_blacklisted(f):
     return wrapper
 
 def require_admin(f):
+    """
+    Wraps routing functions that require a user to be an admin
+    """
+
     @wraps(f)
     def wrapper(*args, **kwds):
         if not session.get('admin', False):
@@ -124,6 +136,9 @@ def require_admin(f):
     return wrapper
 
 def block_before_competition(return_result):
+    """
+    Wraps a routing function that should be blocked before the start time of the competition
+    """
 
     def decorator(f):
         """
@@ -142,6 +157,9 @@ def block_before_competition(return_result):
     return decorator
 
 def block_after_competition(return_result):
+    """
+    Wraps a routing function that should be blocked after the end time of the competition
+    """
 
     def decorator(f):
         """

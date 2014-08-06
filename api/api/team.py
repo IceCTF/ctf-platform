@@ -107,6 +107,16 @@ def get_team_members(tid=None, name=None):
     return list(db.users.find({"tid": tid}, {"_id": 0, "uid": 1, "username": 1}))
 
 def get_team_uids(tid=None, name=None):
+    """
+    Gets the list of uids that belong to a team
+
+    Args:
+        tid: the team id
+        name: the team name
+    Returns:
+        A list of uids
+    """
+
     return [team['uid'] for team in get_team_members(tid=tid, name=name)]
 
 def get_team_information(tid=None):

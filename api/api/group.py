@@ -67,7 +67,7 @@ def get_group(gid=None, name=None):
 def get_member_information(gid):
     """
     Retrieves the team information for all teams in a group.
-    
+
     Args:
         gid: the group id
     Returns:

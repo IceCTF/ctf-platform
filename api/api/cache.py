@@ -117,6 +117,10 @@ def set(key, value, timeout=None, fast=False):
     db.cache.update(key, update, upsert=True)
 
 def timed_out(info):
+    """
+    Determines if a fast_cache entry has been timed out
+    """
+
     return int(time.time()) - info['set_time'] > info['timeout']
 
 def memoize(timeout=None, fast=False):
