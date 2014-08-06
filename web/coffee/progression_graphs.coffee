@@ -6,7 +6,7 @@ divFromSelector = (selector) ->
 topTeamsGraphOptions = {
   title: "Top Team Score Progression",
   legend: {
-    position: "none"
+    position: "top"
   },
   vAxis: {
     title: "Score"
@@ -90,7 +90,7 @@ progressionDataToPoints = (data, bucketWindow, dataPoints) ->
   div = divFromSelector selector
   apiCall "GET", "/api/stats/top_teams/score_progression", {}
   .done (data) ->
-    if data.data.length > 0
+    if data.data.length >= 2
 
       scoreData = (team.score_progression for team in data.data)
       dataPoints = _.zip.apply _, progressionDataToPoints scoreData, 60, 100
