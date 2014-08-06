@@ -2,6 +2,7 @@
 layout: default
 title: Scoreboard
 post_scripts:
+ - js/progression_graphs.js
  - js/scoreboard.js
 startup_functions:
 ---
@@ -23,6 +24,7 @@ startup_functions:
   <div class="tab-content">
     <div id="public" class="tab-pane fade in active">
       <h3>Public</h3>
+      <div id="top-team-score-progression-graph"></div>
       <%= renderScoreboard({scoreboard: data.public}) %>
     </div>
     <% _.each(data.groups, function(group) { %>

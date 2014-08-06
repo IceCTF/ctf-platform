@@ -10,6 +10,8 @@ load_scoreboard = ->
           data: data.data
           renderScoreboard: renderScoreboard
         })
+
+        window.drawTopTeamsProgressionGraph "#top-team-score-progression-graph"
       when 0
         apiNotify(data)
 
