@@ -11,7 +11,9 @@ teacherLoggedIn =
     FAQ: "/faq"
     Sponsors: "/sponsors"
     News: "/news"
-  Logout: "/logout"
+  Account:
+    Manage: "/account"
+    Logout: "/logout"
 
 userLoggedIn =
   Game: "/game"
@@ -22,7 +24,9 @@ userLoggedIn =
     FAQ: "/faq"
     Sponsors: "/sponsors"
     News: "/news"
-  Logout: "/logout"
+  Account:
+    Manage: "/account"
+    Logout: "/logout"
 
 userNotLoggedIn =
   Registration: "/registration"
