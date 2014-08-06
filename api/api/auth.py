@@ -1,10 +1,4 @@
-__author__ = ["Collin Petty", "Peter Chapman"]
-__copyright__ = "Carnegie Mellon University"
-__license__ = "MIT"
-__maintainer__ = ["Collin Petty", "Peter Chapman"]
-__credits__ = ["David Brumley", "Collin Petty", "Peter Chapman", "Tyler Nighswander", "Garrett Barboza"]
-__email__ = ["collin@cmu.edu", "peter@cmu.edu"]
-__status__ = "Production"
+""" Module dealing with authentication to the api """
 
 import bcrypt
 import api
@@ -29,6 +23,16 @@ user_login_schema = Schema({
     )
 })
 
+def confirm_password(attempt, password_hash):
+    """
+    Verifies the password attempt
+
+    Args:
+        attempt: the password attempt
+        password_hash: the real password pash
+    """
+    return bcrypt.hashpw(attempt, password_hash) == password_hash
+
 @log_action
 def login(username, password):
     """
@@ -45,8 +49,7 @@ def login(username, password):
     if user is None:
         raise WebException("Incorrect username.")
 
-    password_hash = user['password_hash']
-    if bcrypt.hashpw(password, password_hash) == password_hash:
+    if confirm_password(password, user['password_hash']):
         if debug_disable_general_login:
             if session.get('debugaccount', False):
                 raise WebException("Correct credentials! But the game has not started yet...")

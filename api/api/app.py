@@ -51,7 +51,6 @@ def after_request(response):
     response.mimetype = 'application/json'
     return response
 
-
 @app.route("/api/sitemap", methods=["GET"])
 @api_wrapper
 def site_map_hook():
@@ -72,21 +71,32 @@ def create_user_hook():
     api.user.create_user_request(api.common.flat_multi(request.form))
     return WebSuccess("User '{}' registered successfully!".format(request.form["username"]))
 
-@app.route('/api/user/updatepassword', methods=['POST'])
+@app.route('/api/user/update_password', methods=['POST'])
 @api_wrapper
 @require_login
 def update_password_hook():
-    uid = api.user.get_user()["uid"]
-    password = request.form.get("password")
-    confirm = request.form.get("confirm")
-
-    if password != confirm:
-        return WebError("Your passwords do not match.")
-
-    api.user.update_password(uid, password)
+    api.user.update_password_request(api.common.flat_multi(request.form), check_current=True)
     return WebSuccess("Your password has been successfully updated!")
 
-@app.route('/api/user/getsshacct', methods=['GET'])
+@app.route('/api/user/reset_password', methods=['GET'])
+@api_wrapper
+def reset_password_hook():
+    username = request.args.get("username", None)
+
+    api.utilities.request_password_reset(username)
+    return WebSuccess("A password reset link has been sent to the email address provided during registration.")
+
+@app.route('/api/user/confirm_password_reset', methods=['POST'])
+@api_wrapper
+def confirm_password_reset_hook():
+    password = request.form.get("new-password")
+    confirm = request.form.get("new-password-confirmation")
+    token = request.form.get("token")
+
+    api.utilities.reset_password(token, password, confirm)
+    return WebSuccess("Your password has been reset")
+
+@app.route('/api/user/get_ssh_account', methods=['GET'])
 @api_wrapper
 @require_login
 def get_ssh_account_hook():

@@ -277,6 +277,42 @@ def is_teacher(uid=None):
     user = get_user(uid=uid)
     return user.get('teacher', False)
 
+def set_password_reset_token(uid, token):
+    """
+    Sets the password reset token for the user in mongo
+
+    Args:
+        uid: the user id
+        token: the token to set
+    """
+
+    db = api.common.get_conn()
+    db.users.update({'uid': uid}, {'$set': {'password_reset_token': token}})
+
+def delete_password_reset_token(uid):
+    """
+    Removes the password reset token for the user in mongo
+
+    Args:
+        uid: the user id
+    """
+
+    db = api.common.get_conn()
+    db.users.update({'uid': uid}, {'$unset': {'password_reset_token':''}})
+
+def find_user_by_reset_token(token):
+    """
+    Searches the database for a team with the given password reset token
+    """
+
+    db = api.common.get_conn()
+    user = db.users.find_one({'password_reset_token': token})
+
+    if user is None:
+        raise WebException("That is not a valid password reset token!")
+
+    return user
+
 def update_password(uid, password):
     """
     Updates an account's password.
@@ -289,26 +325,32 @@ def update_password(uid, password):
     db = api.common.get_conn()
     db.users.update({'uid': uid}, {'$set': {'password_hash': hash_password(password)}})
 
-def update_password_request(params, uid=None):
+def update_password_request(params, uid=None, check_current=False):
     """
     Update account password.
-    Assumes all args are keys in params.
+    Assumes args are keys in params.
 
     Args:
-        password: the new password.
-        confirm-password: confirmation of passwod.
+        uid: uid to reset
+        check_current: whether to ensure that current-password is correct
+        params:
+            current-password: the users current password
+            new-password: the new password
+            new-password-confirmation: confirmation of password
     """
 
-    if uid is None:
-        uid = get_user()["uid"]
+    user = get_user(uid=uid)
 
-    if params["password"] != params["confirm-password"]:
+    if check_current and not api.auth.confirm_password(params["current-password"], user['password_hash']):
+        raise WebException("Your current password is incorrect.")
+
+    if params["new-password"] != params["new-password-confirmation"]:
         raise WebException("Your passwords do not match.")
 
-    if len(params["password"]) == 0:
+    if len(params["new-password"]) == 0:
         raise WebException("Your password cannot be empty.")
 
-    update_password(uid, params["password"])
+    update_password(user['uid'], params["new-password"])
 
 def get_ssh_account(uid):
     """
