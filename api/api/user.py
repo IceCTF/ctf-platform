@@ -351,23 +351,3 @@ def update_password_request(params, uid=None, check_current=False):
         raise WebException("Your password cannot be empty.")
 
     update_password(user['uid'], params["new-password"])
-
-def get_ssh_account(uid):
-    """
-    Gets a webshell account for the user.
-
-    Args:
-        uid: the user's user id
-    Returns:
-        A dict with the username and password of the account.
-    """
-
-    db = api.common.get_conn()
-    sshacct = db.sshaccts.find_one({'uid': uid})
-    if sshacct is not None:
-        return {'username': sshacct['user'], 'password': sshacct['password']}
-    sshacct = db.sshaccts.find_one({'$or': [{'uid': ''}, {'uid': {'$exists': False}}]})
-    if sshacct is not None:
-        db.sshaccts.update({'_id': sshacct['_id']}, {'$set': {'uid': uid}})
-        return {'username': sshacct['user'], 'password': sshacct['password']}
-    raise WebException("No free SSH accounts were found, please notify and administrator.")
