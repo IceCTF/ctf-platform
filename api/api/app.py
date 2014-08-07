@@ -1,4 +1,4 @@
-from flask import Flask, url_for, request, session
+from flask import Flask, url_for, request, session, abort
 
 app = Flask(__name__)
 
@@ -135,7 +135,9 @@ def status_hook():
     status = {
         "logged_in": api.auth.is_logged_in(),
         "admin": api.auth.is_admin(),
-        "teacher": api.auth.is_logged_in() and api.user.is_teacher()
+        "teacher": api.auth.is_logged_in() and api.user.is_teacher(),
+        "enable_teachers": api.config.enable_teachers,
+        "enable_feedback": api.config.enable_feedback
     }
 
     return WebSuccess(data=status)

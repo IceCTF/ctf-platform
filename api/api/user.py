@@ -210,6 +210,9 @@ def create_user_request(params):
 
     #Why are these strings? :o
     if params.get("create-new-teacher", "false") == "true":
+        if not api.config.enable_teachers:
+            raise WebException("Could not create account")
+
         validate(teacher_schema, params)
 
         tid = api.team.create_team({
