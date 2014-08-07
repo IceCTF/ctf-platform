@@ -2,10 +2,7 @@
 
 import api
 
-from api.common import cache, APIException
-
 _get_problem_names = lambda problems: [problem['name'] for problem in problems]
-
 top_teams = 10
 
 @api.cache.memoize()

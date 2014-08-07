@@ -95,7 +95,7 @@ def require_teacher(f):
     @require_login
     @wraps(f)
     def wrapper(*args, **kwds):
-        if not api.user.is_teacher():
+        if not api.user.is_teacher() or not api.config.enable_teachers:
             abort(403)
 
         return f(*args, **kwds)

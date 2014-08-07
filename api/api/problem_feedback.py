@@ -1,15 +1,14 @@
 """ Module for handling problem feedback """
 
 import pymongo
-
 import api
 
 from api.common import validate, check, safe_fail, InternalException, SevereInternalException, WebException
 
-def get_problem_feedback(pid=None, tid=None, uid=None):
+def get_problem_feedback(pid, tid=None, uid=None):
     """
     Retrieve feedback for a given problem. pid is required.
-    
+
     Args:
         pid: the problem id
         tid: the team id
@@ -19,15 +18,10 @@ def get_problem_feedback(pid=None, tid=None, uid=None):
     """
 
     db = api.common.get_conn()
-
-    if not pid:
-        raise InternalException("pid must be supplied to get problem feedback.")
-
     match = {"pid": pid}
 
     if tid:
         match.update({"tid": tid})
-
     if uid:
         match.update({"uid": uid})
 
@@ -47,9 +41,7 @@ def add_problem_feedback(pid, uid, feedback):
 
     #Make sure the problem actually exists.
     api.problem.get_problem(pid=pid)
-
     team = api.user.get_team(uid=uid)
-    
     solved = pid in api.problems.get_solved_pids(tid=team["tid"])
 
     db.problem_feedback.insert({
@@ -58,4 +50,3 @@ def add_problem_feedback(pid, uid, feedback):
         "tid": team["tid"],
         "feedback": feedback
     })
-
