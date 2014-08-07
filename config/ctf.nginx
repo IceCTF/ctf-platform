@@ -10,13 +10,13 @@ server {
 
         location ~ ^/(problems|login|logout|compete|registration|team|scoreboard|classroom|account)$
         {
-		    default_type text/html;
-		    alias /srv/http/ctf/$1.html;
-		}
+            default_type text/html;
+            alias /srv/http/ctf/$1.html;
+        }
 
         location ~ /api/ {
-		    proxy_pass http://localhost:8000;
-		    proxy_set_header  X-Real-IP  $remote_addr;
-		    proxy_redirect off;
-	    }
+            proxy_pass http://localhost:8000;
+            proxy_set_header  X-Real-IP  $remote_addr;
+            proxy_redirect off;
+        }
 }
