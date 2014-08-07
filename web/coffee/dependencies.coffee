@@ -28,9 +28,14 @@ getStyle = (data) ->
       style = "success"
   return style
 
-@apiNotify = (data) ->
+@apiNotify = (data, redirect) ->
   style = getStyle data
   $.notify data.message, style
+
+  if redirect and data.status is 1
+    setTimeout (->
+        window.location = redirect
+      ), 1000
 
 @numericalSort = (data) ->
   data.sort (a, b) ->
