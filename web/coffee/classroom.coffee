@@ -12,7 +12,7 @@ loadGroupSelection = (groups) ->
 
   $("#group-selector").on "change", (e) ->
     selectedGroupName = $("#group-selector").val()
-    
+
     #Clears the pane on none selected.
     if selectedGroupName == "none-selected"
       $("#team-selection").html ""

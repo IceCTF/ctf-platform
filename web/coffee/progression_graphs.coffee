@@ -14,7 +14,9 @@ topTeamsGraphOptions = {
   hAxis: {
     ticks: []
   },
-  pointSize: 3
+  pointSize: 3,
+  areaOpacity: 0.0,
+  enableInteractivity: false
 }
 
 teamGraphOptions = {
@@ -44,12 +46,12 @@ timestampsToBuckets = (samples, key, min, max, seconds) ->
 
   buckets = _.groupBy samples, (sample) ->
     bucketNumber sample[key]
-  
+
   return _.extend continuousBucket, buckets
 
 maxValuesFromBucketsExtended = (buckets, sampleKey) ->
   maxValues = []
-  
+
   lastInsertedValue = 0
 
   _.each buckets, (samples) ->
@@ -80,7 +82,7 @@ progressionDataToPoints = (data, bucketWindow, dataPoints) ->
 
     if steps.length > dataPoints
       steps = _.rest(steps, steps.length - dataPoints)
-    
+
     dataSets.push steps
 
   #Avoid returning a two dimensional array with 1 element
@@ -93,10 +95,10 @@ progressionDataToPoints = (data, bucketWindow, dataPoints) ->
     if data.data.length >= 2
 
       scoreData = (team.score_progression for team in data.data)
-      dataPoints = _.zip.apply _, progressionDataToPoints scoreData, 60, 100
+      dataPoints = _.zip.apply _, progressionDataToPoints scoreData, 2, 360
 
       teamNameData = (team.name for team in data.data)
-  
+
       graphData = [["Score"].concat(teamNameData)]
       _.each dataPoints, (dataPoint) ->
         graphData.push [""].concat(dataPoint)
@@ -115,12 +117,11 @@ progressionDataToPoints = (data, bucketWindow, dataPoints) ->
       graphData = [
         ["Time", "Score", {role: "tooltip"}]
       ]
-      
-      steps = progressionDataToPoints data.data, 60, 100
+
+      steps = progressionDataToPoints data.data, 2, 360
       (graphData.push(["", score, score]) for score in steps)
 
       packagedData = google.visualization.arrayToDataTable graphData
 
       chart = new google.visualization.SteppedAreaChart(div)
       chart.draw(packagedData, teamGraphOptions)
-
