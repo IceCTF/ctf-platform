@@ -213,6 +213,7 @@ def get_solved_problems_hook():
 @require_login
 @api_wrapper
 @block_before_competition(WebError("The competition has not begun yet!"))
+@block_after_competition(WebError("The competition is over!"))
 def submit_key_hook():
     user_account = api.user.get_user()
     tid = user_account['tid']
@@ -239,12 +240,6 @@ def get_single_problem_hook(pid):
 @api_wrapper
 def load_news_hook():
     return utilities.load_news()
-
-@app.route('/api/lookupteamname', methods=['POST'])
-@api_wrapper
-def lookup_team_names_hook():
-    email = request.form.get('email', '')
-    return utilities.lookup_team_names(email)
 
 @app.route('/api/game/categorystats', methods=['GET'])
 @api_wrapper
