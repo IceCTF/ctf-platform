@@ -168,7 +168,7 @@ def block_after_competition(return_result):
 
         @wraps(f)
         def wrapper(*args, **kwds):
-            if datetime.utcnow().timestamp < api.config.end_time.timestamp():
+            if datetime.utcnow().timestamp() < api.config.end_time.timestamp():
                 return f(*args, **kwds)
             else:
                 return return_result
