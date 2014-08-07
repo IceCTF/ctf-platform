@@ -28,24 +28,30 @@ startup_functions:
       <div class="problem-body panel-body">
         <p class="problem-description">
           <%= problem.description %>
-          <% if(problem.hint) { %>
-              <div class="row">
-                <div class="col-md-11">
-                  <em class="problem-hint pull-left" id="<%= problem.pid %>-hint">
-                    <strong><h4>Hint:</h4></strong>
-                    <%= problem.hint %>
-                  </em>
-                </div>
-                <div class="col-md-1">
-                  <span data-pid="<%= problem.pid %>" class="glyphicon glyphicon-info-sign pull-right info-span"></span>
-                </div>
-              </div>
-          <% } %>
+
+          <div class="row">
+            <div class="col-md-11">
+              <% if(problem.hint) { %>
+                <em class="problem-hint pull-left" id="<%= problem.pid %>-hint">
+                  <strong><h4>Hint:</h4></strong>
+                  <%= problem.hint %>
+                </em>
+              <% } %>
+            </div>
+            <div class="col-md-1">
+              <% if(!problem.solved) { %>
+                <span data-pid="<%= problem.pid %>" class="glyphicon glyphicon-comment problem-review-span"></span>
+              <% } %>
+              <% if(problem.hint) { %>
+                <span data-pid="<%= problem.pid %>" class="glyphicon glyphicon-info-sign info-span"></span>
+              <% } %>
+            </div>
+          </div>
         </p>
         <% if(!problem.solved) { %>
           <%= renderProblemSubmit({problem: problem}) %>
         <% } else { %>
-          <%= renderProblemReview({problem: problem}) %>
+          <%= renderProblemReview({problem: problem, hidden: false}) %>
         <% } %>
       </div>
     </div>
@@ -65,34 +71,45 @@ startup_functions:
 </script>
 
 <script type="text/template" id="problem-submit-template">
-  <form class="problem-submit">
-    <div class="input-group input-group-sm">
-      <span class="input-group-btn">
-        <button class="btn btn-default" type="submit">Submit!</button>
-      </span>
-      <input type="text" data-pid="<%- problem.pid %>" class="form-control">
-    </div>
-  </form>
+  <div class="row">
+    <form class="problem-submit">
+      <div class="input-group input-group-sm">
+        <span class="input-group-btn">
+          <button class="btn btn-default" type="submit">Submit!</button>
+        </span>
+        <input type="text" data-pid="<%- problem.pid %>" class="form-control">
+      </div>
+    </form>
+  </div>
 </script>
 
 <script type="text/template" id="problem-review-template">
-  <form class="problem-review">
-    <% var ratings = ["difficulty", "enjoyment"]; %>
-    <h4>Optional Feedback</h4>
-    <% _.each(ratings, function(rating) { %>
-      <div class="row">
-        <div class="col-md-4">
-          <p><%- rating %></p>
-        </div>
-        <div class="col-md-8">
-          <input data-rating="<%= rating %>" type="number" class="rating">
-        </div>
-      </div>
-    <% }) %>
+  <div class="well problem-review-holder <%= hidden ? 'hidden' : '' %>">
     <div class="row">
-      <textarea class="form-control" id="description" name=""></textarea>
+      <form class="problem-review">
+        <% var ratings = ["difficulty", "enjoyment", "educational value"]; %>
+        <h4>Problem Feedback</h4>
+        <div class="col-md-6">
+          <% _.each(ratings, function(rating) { %>
+            <div class="row">
+              <div class="col-md-6">
+                <%- rating %>
+              </div>
+              <div class="col-md-6">
+                  <input data-rating-name="<%= rating %>" type="number" class="problem-rating form-control">
+              </div>
+            </div>
+          <% }) %>
+        </div>
+        <div class="col-md-6">
+          <textarea class="form-control" id="description" name=""></textarea>
+          <span class="input-group-btn">
+            <button class="btn btn-default" type="submit">Submit!</button>
+          </span>
+        </div>
+      </form>
     </div>
-  </form>
+  </div>
 </script>
 
 <div class="container">

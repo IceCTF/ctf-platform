@@ -29,11 +29,12 @@ loadProblems = ->
           renderProblemSubmit: renderProblemSubmit,
           renderProblemReview: renderProblemReview
         })
+
         $(".problem-hint").hide()
         $(".problem-submit").on "submit", submitProblem
         $(".info-span").on "click", toggleHint
 
-        $(".rating").rating({
+        $(".problem-rating").rating({
           showClear: false,
           min: 0,
           max: 5,
