@@ -299,16 +299,25 @@ def get_group_hook():
 @api_wrapper
 @require_teacher
 def get_memeber_information_hook(gid=None):
-    return WebSuccess(data=api.group.get_member_information(gid=request.args.get("gid")))
+    gid = request.args.get("gid")
+    if api.user.get_team()["tid"] not in api.group.get_group(gid=gid)["owners"]:
+        return WebError("You do not own that group!")
+
+    return WebSuccess(data=api.group.get_member_information(gid=gid))
 
 @app.route('/api/group/score', methods=['GET'])
 @api_wrapper
 @require_teacher
 def get_group_score_hook():
-    score = api.stats.get_group_score(name=request.form.get("group-name"))
-    if score is not None:
-        return WebSuccess(data={'score': score})
-    return WebError("There was an error retrieving your score.")
+    name = request.args.get("group-name")
+    if api.user.get_team()["tid"] not in api.group.get_group(name=name)["owners"]:
+        return WebError("You do not own that group!")
+
+    score = api.stats.get_group_score(name=name)
+    if score is None:
+        return WebError("There was an error retrieving your score.")
+
+    return WebSuccess(data={'score': score})
 
 @app.route('/api/group/create', methods=['POST'])
 @api_wrapper
