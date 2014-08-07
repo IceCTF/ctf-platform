@@ -11,8 +11,6 @@ from voluptuous import Schema, Length, Required, Range
 from bson import json_util
 from os.path import join, isfile
 
-import api.cache
-
 grader_base_path = "./graders"
 
 submission_schema = Schema({
@@ -78,6 +76,7 @@ def get_all_categories(show_disabled=False):
 
     return db.problems.find(match).distinct("category")
 
+#TODO: Sanity checks for autogen
 def analyze_problems():
     """
     Checks the sanity of inserted problems.
