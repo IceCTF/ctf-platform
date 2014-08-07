@@ -66,13 +66,14 @@ maxValuesFromBucketsExtended = (buckets, sampleKey) ->
 
   return maxValues
 
-progressionDataToPoints = (data, bucketWindow, dataPoints) ->
+progressionDataToPoints = (data, dataPoints) ->
 
   sortedData = _.sortBy _.flatten(data), (submission) ->
     return submission.time
 
   min = _.first(sortedData).time
   max = _.last(sortedData).time
+  bucketWindow = Math.max(Math.floor((max - min) / dataPoints), 1)
 
   dataSets = []
 
@@ -95,7 +96,7 @@ progressionDataToPoints = (data, bucketWindow, dataPoints) ->
     if data.data.length >= 2
 
       scoreData = (team.score_progression for team in data.data)
-      dataPoints = _.zip.apply _, progressionDataToPoints scoreData, 2, 360
+      dataPoints = _.zip.apply _, progressionDataToPoints scoreData, 360
 
       teamNameData = (team.name for team in data.data)
 
@@ -118,7 +119,7 @@ progressionDataToPoints = (data, bucketWindow, dataPoints) ->
         ["Time", "Score", {role: "tooltip"}]
       ]
 
-      steps = progressionDataToPoints data.data, 2, 360
+      steps = progressionDataToPoints data.data, 360
       (graphData.push(["", score, score]) for score in steps)
 
       packagedData = google.visualization.arrayToDataTable graphData
