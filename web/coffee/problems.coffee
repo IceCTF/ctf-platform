@@ -3,6 +3,8 @@ renderProblem = _.template($("#problem-template").remove().text())
 renderProblemSubmit = _.template($("#problem-submit-template").remove().text())
 renderProblemReview = _.template($("#problem-review-template").remove().text())
 
+@ratingMetrics = ["difficulty", "enjoyment", "educational-value"]
+
 submitProblem = (e) ->
   e.preventDefault()
   input = $(e.target).find("input")
@@ -11,6 +13,27 @@ submitProblem = (e) ->
     apiNotify(data)
     if data['status'] is 1
       loadProblems()
+
+addProblemReview = (e) ->
+  e.preventDefault()
+  
+  feedback = {
+    metrics: {}
+    comment: ""
+  }
+
+  serialized = $(e.target).serializeObject()
+
+  _.each serialized, (value, key) ->
+    match = key.match(/^rating-(.+)/)
+    if match and match.length == 2
+      feedback.metrics[match[1]] = parseInt(value)
+    else
+      feedback.comment = value
+
+  apiCall "POST", "/api/problems/feedback", {feedback: feedback}
+  .done (data) ->
+    apiNotify data
 
 toggleHint = (e) ->
   pid = $(e.target).data("pid")
@@ -42,6 +65,8 @@ loadProblems = ->
           size: "xs",
           showCaption: false
         })
+
+        $(".problem-review-form").on "submit", addProblemReview
 
 $ ->
   loadProblems()
