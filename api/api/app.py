@@ -96,11 +96,11 @@ def confirm_password_reset_hook():
     api.utilities.reset_password(token, password, confirm)
     return WebSuccess("Your password has been reset")
 
-@app.route('/api/user/get_ssh_account', methods=['GET'])
+@app.route('/api/team/get_ssh_account', methods=['GET'])
 @api_wrapper
 @require_login
 def get_ssh_account_hook():
-    data = api.user.get_ssh_account(api.user.get_user()['uid'])
+    data = api.team.get_ssh_account(api.user.get_team()['tid'])
     return WebSuccess(data=data)
 
 @app.route('/api/user/login', methods=['POST'])

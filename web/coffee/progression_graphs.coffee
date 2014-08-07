@@ -96,7 +96,7 @@ progressionDataToPoints = (data, dataPoints) ->
     if data.data.length >= 2
 
       scoreData = (team.score_progression for team in data.data)
-      dataPoints = _.zip.apply _, progressionDataToPoints scoreData, 360
+      dataPoints = _.zip.apply _, progressionDataToPoints scoreData, 720
 
       teamNameData = (team.name for team in data.data)
 
@@ -119,7 +119,7 @@ progressionDataToPoints = (data, dataPoints) ->
         ["Time", "Score", {role: "tooltip"}]
       ]
 
-      steps = progressionDataToPoints data.data, 360
+      steps = progressionDataToPoints data.data, 720
       (graphData.push(["", score, score]) for score in steps)
 
       packagedData = google.visualization.arrayToDataTable graphData
