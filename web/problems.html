@@ -28,7 +28,6 @@ startup_functions:
       <div class="problem-body panel-body">
         <p class="problem-description">
           <%= problem.description %>
-
           <div class="row">
             <div class="col-md-11">
               <% if(problem.hint) { %>
@@ -39,9 +38,6 @@ startup_functions:
               <% } %>
             </div>
             <div class="col-md-1">
-              <% if(!problem.solved) { %>
-                <span data-pid="<%= problem.pid %>" class="glyphicon glyphicon-comment problem-review-span"></span>
-              <% } %>
               <% if(problem.hint) { %>
                 <span data-pid="<%= problem.pid %>" class="glyphicon glyphicon-info-sign info-span"></span>
               <% } %>
@@ -86,26 +82,29 @@ startup_functions:
 <script type="text/template" id="problem-review-template">
   <div class="well problem-review-holder <%= hidden ? 'hidden' : '' %>">
     <div class="row">
-      <form class="problem-review">
-        <% var ratings = ["difficulty", "enjoyment", "educational value"]; %>
+      <form class="form-horizontal problem-review-form">
         <h4>Problem Feedback</h4>
-        <div class="col-md-6">
-          <% _.each(ratings, function(rating) { %>
-            <div class="row">
-              <div class="col-md-6">
-                <%- rating %>
+        <div class="form-group">
+          <div class="col-md-6">
+            <% _.each(window.ratingMetrics, function(rating) { %>
+              <div class="row">
+                <div class="col-md-6">
+                  <%- rating %>
+                </div>
+                <div class="col-md-6">
+                    <input name="rating-<%= rating %>" type="number" class="problem-rating">
+                </div>
               </div>
-              <div class="col-md-6">
-                  <input data-rating-name="<%= rating %>" type="number" class="problem-rating form-control">
-              </div>
+            <% }) %>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <textarea name="feedback" class="form-control"></textarea>
             </div>
-          <% }) %>
-        </div>
-        <div class="col-md-6">
-          <textarea class="form-control" id="description" name=""></textarea>
-          <span class="input-group-btn">
-            <button class="btn btn-default" type="submit">Submit!</button>
-          </span>
+            <span class="input-group-btn">
+              <button class="btn btn-default feedback-button" type="submit">Send Feedback</button>
+            </span>
+          </div>
         </div>
       </form>
     </div>
