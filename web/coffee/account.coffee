@@ -7,7 +7,7 @@ updatePassword = (e) ->
 resetPassword = (e) ->
   e.preventDefault()
   form = $("#password-reset-form").serializeObject()
-  form.token = window.location.hash.substring(1)
+  form["reset-token"] = window.location.hash.substring(1)
   apiCall "POST", "/api/user/confirm_password_reset", form
   .done (data) ->
     apiNotify data, "/login"
