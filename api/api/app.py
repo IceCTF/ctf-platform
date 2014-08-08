@@ -1,11 +1,11 @@
-from flask import Flask, url_for, request, session, abort
+from flask import Flask, url_for, request, session
 
 app = Flask(__name__)
 
 import api
 
 from api.common import WebSuccess, WebError
-from api.annotations import api_wrapper, require_login, require_teacher, require_admin
+from api.annotations import api_wrapper, require_login, require_teacher, require_admin, check_csrf
 from api.annotations import block_before_competition, block_after_competition
 
 log = api.logger.use(__name__)
@@ -30,9 +30,7 @@ def config_app(*args, **kwargs):
 
 @app.after_request
 def after_request(response):
-    #if (request.headers.get('Origin', '') in
-    #        ['http://picoctf.com',
-    #         'http://www.picoctf.com']):
+    #if request.headers.get('Origin', '') in api.config.competition_urls:
     #    response.headers.add('Access-Control-Allow-Origin',
     #                         request.headers['Origin'])
     response.headers.add('Access-Control-Allow-Methods', 'GET, POST')
@@ -53,8 +51,8 @@ def after_request(response):
 
 @app.route("/api/sitemap", methods=["GET"])
 @api_wrapper
+@require_admin
 def site_map_hook():
-    print("Building sitemap")
     links = []
     for rule in app.url_map._rules:
         if "GET" in rule.methods or "POST" in rule.methods:
@@ -73,6 +71,7 @@ def create_user_hook():
 
 @app.route('/api/user/update_password', methods=['POST'])
 @api_wrapper
+@check_csrf
 @require_login
 def update_password_hook():
     api.user.update_password_request(api.common.flat_multi(request.form), check_current=True)
@@ -88,10 +87,11 @@ def reset_password_hook():
 
 @app.route('/api/user/confirm_password_reset', methods=['POST'])
 @api_wrapper
+@check_csrf
 def confirm_password_reset_hook():
     password = request.form.get("new-password")
     confirm = request.form.get("new-password-confirmation")
-    token = request.form.get("token")
+    token = request.form.get("reset-token")
 
     api.utilities.reset_password(token, password, confirm)
     return WebSuccess("Your password has been reset")
@@ -120,15 +120,6 @@ def logout_hook():
     else:
         return WebError("You do not appear to be logged in.")
 
-@app.route('/api/user/score', methods=['GET'])
-@require_login
-@api_wrapper
-def get_user_score_hook():
-    score = api.stats.get_score(uid=api.user.get_user()['uid'])
-    if score is not None:
-        return WebSuccess(data={'score': score})
-    return WebError("There was an error retrieving your score.")
-
 @app.route('/api/user/status', methods=['GET'])
 @api_wrapper
 def status_hook():
@@ -149,8 +140,8 @@ def team_information_hook():
     return WebSuccess(data=api.team.get_team_information())
 
 @app.route('/api/team/score', methods=['GET'])
-@require_login
 @api_wrapper
+@require_login
 def get_team_score_hook():
     score = api.stats.get_score(tid=api.user.get_user()['tid'])
     if score is not None:
@@ -158,8 +149,8 @@ def get_team_score_hook():
     return WebError("There was an error retrieving your score.")
 
 @app.route('/api/stats/team/solved_problems', methods=['GET'])
-@require_login
 @api_wrapper
+@require_login
 def get_team_solved_problems_hook():
     tid = request.args.get("tid", "")
     stats = {
@@ -169,9 +160,9 @@ def get_team_solved_problems_hook():
 
     return WebSuccess(data=stats)
 
-@app.route('/api/stats/team/score_progression')
-@require_login
+@app.route('/api/stats/team/score_progression', methods=['GET'])
 @api_wrapper
+@require_login
 def get_team_score_progression():
     category = request.form.get("category", None)
 
@@ -198,22 +189,23 @@ def get_all_users_hook():
     return WebSuccess(data=users)
 
 @app.route('/api/problems', methods=['GET'])
-@require_login
 @api_wrapper
+@require_login
 @block_before_competition(WebError("The competition has not begun yet!"))
 def get_unlocked_problems_hook():
     return WebSuccess(data=api.problem.get_unlocked_problems(api.user.get_user()['tid']))
 
 @app.route('/api/problems/solved', methods=['GET'])
-@require_login
 @api_wrapper
+@require_login
 @block_before_competition(WebError("The competition has not begun yet!"))
 def get_solved_problems_hook():
     return WebSuccess(api.problem.get_solved_problems(api.user.get_user()['tid']))
 
 @app.route('/api/problems/submit', methods=['POST'])
-@require_login
 @api_wrapper
+@check_csrf
+@require_login
 @block_before_competition(WebError("The competition has not begun yet!"))
 @block_after_competition(WebError("The competition is over!"))
 def submit_key_hook():
@@ -232,8 +224,8 @@ def submit_key_hook():
         return WebError(result['message'])
 
 @app.route('/api/problems/<path:pid>', methods=['GET'])
-@require_login
 @api_wrapper
+@require_login
 def get_single_problem_hook(pid):
     problem_info = api.problem.get_problem(pid, tid=api.user.get_user()['tid'])
     return WebSuccess(data=problem_info)
@@ -318,6 +310,7 @@ def get_group_score_hook():
 
 @app.route('/api/group/create', methods=['POST'])
 @api_wrapper
+@check_csrf
 @require_teacher
 def create_group_hook():
     gid = api.group.create_group_request(api.common.flat_multi(request.form))
@@ -325,6 +318,7 @@ def create_group_hook():
 
 @app.route('/api/group/join', methods=['POST'])
 @api_wrapper
+@check_csrf
 @require_login
 def join_group_hook():
     api.group.join_group_request(api.common.flat_multi(request.form))
@@ -332,6 +326,7 @@ def join_group_hook():
 
 @app.route('/api/group/leave', methods=['POST'])
 @api_wrapper
+@check_csrf
 @require_login
 def leave_group_hook():
     api.group.leave_group_request(api.common.flat_multi(request.form))
@@ -339,6 +334,7 @@ def leave_group_hook():
 
 @app.route('/api/group/delete', methods=['POST'])
 @api_wrapper
+@check_csrf
 @require_teacher
 def delete_group_hook():
     api.group.delete_group_request(api.common.flat_multi(request.form))
