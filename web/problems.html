@@ -10,50 +10,6 @@ startup_functions:
 <script src="/js/libs/star-rating.min.js"></script>
 <link href="/css/star-rating.min.css" rel="stylesheet" type="text/css"/>
 
-<script type="text/template" id="problem-template">
-  <%
-    var panelClass = problem.solved ? 'solved' : '';
-    var collapseClass = problem.solved ? '' : 'in';
-    var title = problem.name +  " - " + problem.score;
-    var status = (problem.solved ? "Solved" : "Unsolved");
-  %>
-  <div class="problem <%= panelClass %> panel panel-default">
-    <div class="problem-header panel-heading" data-toggle="collapse" data-target="#<%- problem.pid %>">
-      <h4 class="panel-title">
-        <%- title %>
-        <div class="pull-right"><%- status %></div>
-      </h4>
-    </div>
-    <div class="panel-collapse collapse <%= collapseClass %>" id="<%= problem.pid %>">
-      <div class="problem-body panel-body">
-        <p class="problem-description">
-          <%= problem.description %>
-          <div class="row">
-            <div class="col-md-11">
-              <% if(problem.hint) { %>
-                <em class="problem-hint pull-left" id="<%= problem.pid %>-hint">
-                  <strong><h4>Hint:</h4></strong>
-                  <%= problem.hint %>
-                </em>
-              <% } %>
-            </div>
-            <div class="col-md-1">
-              <% if(problem.hint) { %>
-                <span data-pid="<%= problem.pid %>" class="glyphicon glyphicon-info-sign info-span"></span>
-              <% } %>
-            </div>
-          </div>
-        </p>
-        <% if(!problem.solved) { %>
-          <%= renderProblemSubmit({problem: problem}) %>
-        <% } else { %>
-          <%= renderProblemReview({problem: problem, hidden: false}) %>
-        <% } %>
-      </div>
-    </div>
-  </div>
-</script>
-
 <script type="text/template" id="problem-list-template">
   <div class="problem-list panel-group">
     <% _.each(problems, function(problem) { %>
@@ -66,7 +22,69 @@ startup_functions:
   </div>
 </script>
 
+<script type="text/template" id="problem-template">
+  <%
+    var panel = {
+      className: problem.solved ? "solved" : "",
+      collapseClass: problem.solved ? "" : "in",
+      title: problem.name + " - " + problem.score,
+      status: problem.solved ? "Solved" : "Unsolved"
+    };
+    
+    var pill = {
+      solveId: problem.pid + "solve",
+      reviewId: problem.pid + "review",
+      solveClassName: problem.solved ? "disabled" : "active",
+      reviewClassName: problem.solved ? "active" : ""
+    };
+  %>
+
+  <div class="problem <%= panel.className %> panel panel-default">
+    <div class="problem-header panel-heading" data-toggle="collapse" data-target="#<%- problem.pid %>">
+      <h4 class="panel-title">
+        <%- panel.title %>
+        <div class="pull-right"><%- panel.status %></div>
+      </h4>
+    </div>
+
+    <div class="panel-collapse collapse <%= panel.collapseClass %>" id="<%= problem.pid %>">
+      <div class="problem-body panel-body">
+        <ul class="nav nav-tabs">
+          <li class="<%= pill.solveClassName %>"><a href="#<%= pill.solveId %>" data-toggle="tab">Solve</a></li>
+          <li class="<%= pill.reviewClassName %>"><a href="#<%= pill.reviewId %>" data-toggle="tab">Review</a></li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane <%= pill.solveClassName %>" id="<%= pill.solveId %>">
+            <%= renderProblemSubmit({problem: problem}) %>
+          </div>
+          <div class="tab-pane <%= pill.reviewClassName %>" id="<%= pill.reviewId %>">
+            <%= renderProblemReview({problem: problem}) %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</script>
+
 <script type="text/template" id="problem-submit-template">
+  <p class="problem-description">
+    <%= problem.description %>
+    <div class="row">
+      <div class="col-md-11">
+        <% if(problem.hint) { %>
+          <em class="problem-hint pull-left" id="<%= problem.pid %>-hint">
+            <strong><h4>Hint:</h4></strong>
+            <%= problem.hint %>
+          </em>
+        <% } %>
+      </div>
+      <div class="col-md-1">
+        <% if(problem.hint) { %>
+          <span data-pid="<%= problem.pid %>" class="glyphicon glyphicon-info-sign info-span"></span>
+        <% } %>
+      </div>
+    </div>
+  </p>
   <div class="row">
     <form class="problem-submit">
       <div class="input-group input-group-sm">
@@ -79,8 +97,9 @@ startup_functions:
   </div>
 </script>
 
+
 <script type="text/template" id="problem-review-template">
-  <div class="well problem-review-holder <%= hidden ? 'hidden' : '' %>">
+  <div class="well problem-review-holder">
     <div class="row">
       <form class="form-horizontal problem-review-form">
         <h4>Problem Feedback</h4>
