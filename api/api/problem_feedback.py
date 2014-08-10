@@ -3,7 +3,23 @@
 import pymongo
 import api
 
+from datetime import datetime
+
+from voluptuous import Schema, Required, Length
 from api.common import validate, check, safe_fail, InternalException, SevereInternalException, WebException
+
+feedback_schema = Schema({
+    Required("metrics"): check(
+        ("metrics must include difficulty, enjoyment, and educational-value", [
+            lambda metrics: "difficulty" in metrics,
+            lambda metrics: "enjoyment" in metrics,
+            lambda metrics: "educational-value" in metrics
+        ])
+    ),
+    "comment": check(
+        ("The comment must be no more than 500 characters",[str, Length(max=500)])
+    )
+})
 
 def get_problem_feedback(pid, tid=None, uid=None):
     """
@@ -42,11 +58,15 @@ def add_problem_feedback(pid, uid, feedback):
     #Make sure the problem actually exists.
     api.problem.get_problem(pid=pid)
     team = api.user.get_team(uid=uid)
-    solved = pid in api.problems.get_solved_pids(tid=team["tid"])
+    solved = pid in api.problem.get_solved_pids(tid=team["tid"])
+
+    validate(feedback_schema, feedback)
 
     db.problem_feedback.insert({
         "pid": pid,
         "uid": uid,
         "tid": team["tid"],
+        "solved": solved,
+        "timestamp": datetime.utcnow(),
         "feedback": feedback
     })

@@ -230,6 +230,19 @@ def get_single_problem_hook(pid):
     problem_info = api.problem.get_problem(pid, tid=api.user.get_user()['tid'])
     return WebSuccess(data=problem_info)
 
+@app.route('/api/problems/feedback', methods=['GET'])
+@api_wrapper
+@require_login
+def problem_feedback_hook(pid):
+    feedback = request.form.get("feedback", None)
+    pid = request.get("pid", None)
+
+    if feedback is None or pid is None:
+        return WebErorr("Please supply a pid and feedback.")
+
+    api.problem_feedback.add_problem_feedback(pid, api.auth.get_uid(), feedback)
+    return WebSuccess("Your feedback has been accepted.")
+
 @app.route('/api/news', methods=['GET'])
 @api_wrapper
 def load_news_hook():

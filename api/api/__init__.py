@@ -16,6 +16,7 @@ import api.stats
 import api.utilities
 import api.game
 import api.autogen
+import api.problem_feedback
 
 # MUST BE LAST
 import api.config
