@@ -49,16 +49,20 @@ startup_functions:
 
     <div class="panel-collapse collapse <%= panel.collapseClass %>" id="<%= problem.pid %>">
       <div class="problem-body panel-body">
-        <ul class="nav nav-tabs">
+        <ul class="nav nav-pills">
           <li class="<%= pill.solveClassName %>"><a href="#<%= pill.solveId %>" data-toggle="tab">Solve</a></li>
           <li class="<%= pill.reviewClassName %>"><a href="#<%= pill.reviewId %>" data-toggle="tab">Review</a></li>
         </ul>
         <div class="tab-content">
           <div class="tab-pane <%= pill.solveClassName %>" id="<%= pill.solveId %>">
+            <div class="well">
             <%= renderProblemSubmit({problem: problem}) %>
+            </div>
           </div>
           <div class="tab-pane <%= pill.reviewClassName %>" id="<%= pill.reviewId %>">
+            <div class="well">
             <%= renderProblemReview({problem: problem}) %>
+            </div>
           </div>
         </div>
       </div>
@@ -99,34 +103,33 @@ startup_functions:
 
 
 <script type="text/template" id="problem-review-template">
-  <div class="well problem-review-holder">
-    <div class="row">
-      <form class="form-horizontal problem-review-form">
-        <h4>Problem Feedback</h4>
-        <div class="form-group">
-          <div class="col-md-6">
-            <% _.each(window.ratingMetrics, function(rating) { %>
-              <div class="row">
-                <div class="col-md-6">
-                  <%- rating %>
-                </div>
-                <div class="col-md-6">
-                    <input name="rating-<%= rating %>" type="number" class="problem-rating">
-                </div>
-              </div>
-            <% }) %>
-          </div>
-          <div class="col-md-6">
-            <div class="form-group">
-              <textarea name="feedback" class="form-control"></textarea>
-            </div>
-            <span class="input-group-btn">
-              <button class="btn btn-default feedback-button" type="submit">Send Feedback</button>
-            </span>
-          </div>
+  <div class="row">
+    <form class="form-horizontal problem-review-form">
+      <div class="form-group">
+        <div class="col-md-6" bgcolor="red">
+          <table>
+            <tbody>
+              <% _.each(window.ratingMetrics, function(metric) { %>
+                <tr>
+                  <td><%- metric %></td>
+                  <td>
+                    <input name="rating-<%= metric %>" type="number" class="problem-rating">
+                  </td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
         </div>
-      </form>
-    </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <textarea name="feedback" class="form-control" placeholder="Lave a comment here!"></textarea>
+          </div>
+          <span class="input-group-btn">
+            <button class="btn btn-default feedback-button" type="submit">Send Feedback</button>
+          </span>
+        </div>
+      </div>
+    </form>
   </div>
 </script>
 
