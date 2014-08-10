@@ -21,9 +21,9 @@ feedback_schema = Schema({
     )
 })
 
-def get_problem_feedback(pid, tid=None, uid=None):
+def get_problem_feedback(pid=None, tid=None, uid=None):
     """
-    Retrieve feedback for a given problem. pid is required.
+    Retrieve feedback for a given problem, team, or user
 
     Args:
         pid: the problem id
@@ -34,14 +34,33 @@ def get_problem_feedback(pid, tid=None, uid=None):
     """
 
     db = api.common.get_conn()
-    match = {"pid": pid}
+    match = {}
 
-    if tid:
+    if pid is not None:
+        match.update({"pid": pid})
+    if tid is not None:
         match.update({"tid": tid})
-    if uid:
+    if uid is not None:
         match.update({"uid": uid})
 
     return list(db.problem_feedback.find(match, {"_id": 0}))
+
+def get_reviewed_pids(uid=None):
+    """
+    Gets the list of pids reviewed by the user
+
+    Args:
+        uid: the user id
+    Returns:
+        A list of pids
+    """
+
+    db = api.common.get_conn()
+
+    if uid is None:
+        uid = api.user.get_user()['uid']
+
+    return [entry["pid"] for entry in get_problem_feedback(uid=uid)]
 
 def add_problem_feedback(pid, uid, feedback):
     """

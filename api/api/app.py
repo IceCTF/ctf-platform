@@ -230,7 +230,7 @@ def get_single_problem_hook(pid):
     problem_info = api.problem.get_problem(pid, tid=api.user.get_user()['tid'])
     return WebSuccess(data=problem_info)
 
-@app.route('/api/problems/feedback', methods=['GET'])
+@app.route('/api/problems/feedback', methods=['POST'])
 @api_wrapper
 @require_login
 def problem_feedback_hook(pid):
@@ -242,6 +242,12 @@ def problem_feedback_hook(pid):
 
     api.problem_feedback.add_problem_feedback(pid, api.auth.get_uid(), feedback)
     return WebSuccess("Your feedback has been accepted.")
+
+@app.route('/api/problems/feedback/reviewed', methods=['GET'])
+@api_wrapper
+@require_login
+def problem_reviews_hook(pid):
+    return WebSuccess(data=api.problem_feedback.get_reviewed_pids())
 
 @app.route('/api/news', methods=['GET'])
 @api_wrapper
