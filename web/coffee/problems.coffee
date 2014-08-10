@@ -35,7 +35,7 @@ addProblemReview = (e) ->
 
   console.log {feedback: feedback, pid: pid}
 
-  apiCall "POST", "/api/problems/feedback", {feedback: feedback, pid: pid}
+  apiCall "POST", "/api/problems/feedback", JSON.stringify({feedback: feedback, pid: pid})
   .done (data) ->
     apiNotify data
 
