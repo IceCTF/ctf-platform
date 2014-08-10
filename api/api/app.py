@@ -238,7 +238,7 @@ def problem_feedback_hook(pid):
     pid = request.get("pid", None)
 
     if feedback is None or pid is None:
-        return WebErorr("Please supply a pid and feedback.")
+        return WebError("Please supply a pid and feedback.")
 
     api.problem_feedback.add_problem_feedback(pid, api.auth.get_uid(), feedback)
     return WebSuccess("Your feedback has been accepted.")
