@@ -233,7 +233,7 @@ def get_single_problem_hook(pid):
 @app.route('/api/problems/feedback', methods=['POST'])
 @api_wrapper
 @require_login
-def problem_feedback_hook(pid):
+def problem_feedback_hook():
     feedback = request.form.get("feedback", None)
     pid = request.get("pid", None)
 
@@ -246,7 +246,7 @@ def problem_feedback_hook(pid):
 @app.route('/api/problems/feedback/reviewed', methods=['GET'])
 @api_wrapper
 @require_login
-def problem_reviews_hook(pid):
+def problem_reviews_hook():
     return WebSuccess(data=api.problem_feedback.get_reviewed_pids())
 
 @app.route('/api/news', methods=['GET'])
