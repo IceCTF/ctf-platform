@@ -52,6 +52,9 @@ loadProblems = ->
           renderProblemSubmit: renderProblemSubmit,
           renderProblemReview: renderProblemReview
         })
+  
+        #Should solved problem descriptions still be able to be viewed?
+        #$("li.disabled>a").removeAttr "href"
 
         $(".problem-hint").hide()
         $(".problem-submit").on "submit", submitProblem
