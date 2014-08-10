@@ -56,12 +56,12 @@ startup_functions:
         <div class="tab-content">
           <div class="tab-pane <%= pill.solveClassName %>" id="<%= pill.solveId %>">
             <div class="well">
-            <%= renderProblemSubmit({problem: problem}) %>
+              <%= renderProblemSubmit({problem: problem}) %>
             </div>
           </div>
           <div class="tab-pane <%= pill.reviewClassName %>" id="<%= pill.reviewId %>">
             <div class="well">
-            <%= renderProblemReview({problem: problem}) %>
+              <%= renderProblemReview({problem: problem}) %>
             </div>
           </div>
         </div>
@@ -100,7 +100,6 @@ startup_functions:
     </form>
   </div>
 </script>
-
 
 <script type="text/template" id="problem-review-template">
   <div class="row">
