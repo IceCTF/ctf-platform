@@ -52,7 +52,8 @@ loadProblems = ->
           renderProblemSubmit: renderProblemSubmit,
           renderProblemReview: renderProblemReview
         })
-
+  
+        $("li.disabled>a").removeAttr "href"
         $(".problem-hint").hide()
         $(".problem-submit").on "submit", submitProblem
         $(".info-span").on "click", toggleHint
