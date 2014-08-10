@@ -31,7 +31,11 @@ addProblemReview = (e) ->
     else
       feedback.comment = value
 
-  apiCall "POST", "/api/problems/feedback", {feedback: feedback}
+  pid = $(e.target).data("pid")
+
+  console.log {feedback: feedback, pid: pid}
+
+  apiCall "POST", "/api/problems/feedback", {feedback: feedback, pid: pid}
   .done (data) ->
     apiNotify data
 
@@ -46,30 +50,33 @@ loadProblems = ->
       when 0
         apiNotify(data)
       when 1
-        $("#problem-list-holder").html renderProblemList({
-          problems: data.data,
-          renderProblem: renderProblem,
-          renderProblemSubmit: renderProblemSubmit,
-          renderProblemReview: renderProblemReview
-        })
+        apiCall "GET", "/api/problems/feedback/reviewed", {}
+        .done (reviewData) ->
+          $("#problem-list-holder").html renderProblemList({
+            problems: data.data,
+            reviewData: reviewData,
+            renderProblem: renderProblem,
+            renderProblemSubmit: renderProblemSubmit,
+            renderProblemReview: renderProblemReview
+          })
   
-        #Should solved problem descriptions still be able to be viewed?
-        #$("li.disabled>a").removeAttr "href"
+          #Should solved problem descriptions still be able to be viewed?
+          #$("li.disabled>a").removeAttr "href"
 
-        $(".problem-hint").hide()
-        $(".problem-submit").on "submit", submitProblem
-        $(".info-span").on "click", toggleHint
+          $(".problem-hint").hide()
+          $(".problem-submit").on "submit", submitProblem
+          $(".info-span").on "click", toggleHint
 
-        $(".problem-rating").rating({
-          showClear: false,
-          min: 0,
-          max: 5,
-          step: 0.5,
-          size: "xs",
-          showCaption: false
-        })
+          $(".problem-rating").rating({
+            showClear: false,
+            min: 0,
+            max: 5,
+            step: 0.5,
+            size: "xs",
+            showCaption: false
+          })
 
-        $(".problem-review-form").on "submit", addProblemReview
+          $(".problem-review-form").on "submit", addProblemReview
 
 $ ->
   loadProblems()
