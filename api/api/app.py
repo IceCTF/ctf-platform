@@ -168,7 +168,7 @@ def get_team_score_progression():
 
     tid = api.user.get_team()["tid"]
 
-    return WebSuccess(data=[api.stats.get_score_over_time(tid=tid, category=category)])
+    return WebSuccess(data=[api.stats.get_score_progression(tid=tid, category=category)])
 
 @app.route('/api/admin/getallproblems', methods=['GET'])
 @api_wrapper
