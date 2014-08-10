@@ -235,7 +235,7 @@ def get_single_problem_hook(pid):
 @require_login
 def problem_feedback_hook():
     feedback = request.form.get("feedback", None)
-    pid = request.get("pid", None)
+    pid = request.form.get("pid", None)
 
     if feedback is None or pid is None:
         return WebError("Please supply a pid and feedback.")
