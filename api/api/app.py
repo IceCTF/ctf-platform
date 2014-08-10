@@ -3,6 +3,7 @@ from flask import Flask, url_for, request, session
 app = Flask(__name__)
 
 import api
+import json
 
 from api.common import WebSuccess, WebError
 from api.annotations import api_wrapper, require_login, require_teacher, require_admin, check_csrf
@@ -232,12 +233,11 @@ def get_single_problem_hook(pid):
 
 @app.route('/api/problems/feedback', methods=['POST'])
 @api_wrapper
-#@check_csrf
+@check_csrf
 @require_login
 def problem_feedback_hook():
-    data = request.get_json(force=True)
-    feedback = data.get("feedback", None)
-    pid = data.get("pid", None)
+    feedback = json.loads(request.form.get("feedback", ""))
+    pid = request.form.get("pid", None)
 
     if feedback is None or pid is None:
         return WebError("Please supply a pid and feedback.")
