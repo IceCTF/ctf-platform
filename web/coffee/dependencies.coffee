@@ -1,4 +1,6 @@
 @apiCall = (type, url, data) ->
+  if data
+    data.token = $.cookie("token")
   $.ajax {url: url, type: type, data: data, cache: false}
   .fail (jqXHR, text) ->
     $.notify "API is offline. :(", "error"

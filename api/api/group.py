@@ -11,7 +11,7 @@ register_group_schema = Schema({
         ("A group with that name already exists!", [
             lambda name: safe_fail(get_group, name=name) is None])
     )
-})
+}, extra=True)
 
 join_group_schema = Schema({
     Required("group-name"): check(
@@ -19,7 +19,7 @@ join_group_schema = Schema({
         ("No group exists with that name!", [
             lambda name: safe_fail(get_group, name=name) is not None]),
     )
-})
+}, extra=True)
 
 leave_group_schema = Schema({
     Required("group-name"): check(
@@ -27,7 +27,7 @@ leave_group_schema = Schema({
         ("No group exists with that name!", [
             lambda name: safe_fail(get_group, name=name) is not None ]),
     )
-})
+}, extra=True)
 
 delete_group_schema = Schema({
     Required("group-name"): check(
@@ -35,7 +35,7 @@ delete_group_schema = Schema({
         ("No group exists with that name!", [
             lambda name: safe_fail(get_group, name=name) is not None]),
     )
-})
+}, extra=True)
 
 def get_group(gid=None, name=None):
     """

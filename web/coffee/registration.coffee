@@ -5,7 +5,7 @@ submit_registration = (e) ->
   registrationData["create-new-team"] = $("#new-team").hasClass("active")
   registrationData["create-new-teacher"] = $("#new-teacher").hasClass("active")
 
-  $.post "/api/user/create", registrationData
+  apiCall "POST", "/api/user/create", registrationData
   .done (data) ->
     switch data['status']
       when 0

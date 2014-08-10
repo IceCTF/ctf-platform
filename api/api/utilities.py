@@ -116,7 +116,7 @@ def request_password_reset(username):
     api.user.set_password_reset_token(user['uid'], token)
 
     msgBody = """We recently received a request to reset the password for the following {0} account:\n\n\t{2}\n\nOur records show that this is the email address used to register the above account.  If you did not request to reset the password for the above account then you need not take any further steps.  If you did request the password reset please follow the link below to set your new password. \n\n {1}/reset#{3} \n\n Best of luck! \n\n ~The {0} Team
-    """.format(api.config.competition_name, api.config.competition_url, username, token)
+    """.format(api.config.competition_name, api.config.competition_urls[0], username, token)
 
     send_email(user['email'], "{} Password Reset".format(api.config.competition_name), msgBody)
 

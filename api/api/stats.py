@@ -58,6 +58,7 @@ def get_group_average_score(gid=None, name=None):
     total_score = sum([entry['score'] for entry in group_scores])
     return int(total_score / len(group_scores)) if len(group_scores) > 0 else 0
 
+# Stored by the cache_stats daemon
 @api.cache.memoize()
 def get_all_team_scores():
     """
@@ -128,7 +129,7 @@ def get_team_member_stats(tid):
     return {member['username']: _get_problem_names(api.problem.get_solved_problems(uid=member['uid'])) for member in members}
 
 @api.cache.memoize()
-def get_score_over_time(tid=None, uid=None, category=None):
+def get_score_progression(tid=None, uid=None, category=None):
     """
     Finds the score and time after each correct submission of a team or user.
     NOTE: this is slower than get_score. Do not use this for getting current score.
@@ -166,6 +167,7 @@ def get_top_teams():
     all_teams = api.stats.get_all_team_scores()
     return all_teams if len(all_teams) < top_teams else all_teams[:top_teams]
 
+# Stored by the cache_stats daemon
 @api.cache.memoize()
 def get_top_teams_score_progressions():
     """
@@ -178,5 +180,5 @@ def get_top_teams_score_progressions():
 
     return [{
         "name": team["name"],
-        "score_progression": get_score_over_time(tid=team["tid"]),
+        "score_progression": get_score_progression(tid=team["tid"]),
     } for team in get_top_teams()]

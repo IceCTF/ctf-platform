@@ -2,7 +2,7 @@ renderTeamInformation = _.template($("#team-info-template").remove().text())
 renderGroupInformation = _.template($("#group-info-template").remove().text())
 
 load_team_info = ->
-  $.get "/api/team"
+  apiCall "GET", "/api/team"
   .done (data) ->
     switch data["status"]
       when 0
@@ -11,7 +11,7 @@ load_team_info = ->
         $("#team-info").html renderTeamInformation({data: data.data})
 
 load_group_info = ->
-  $.get "/api/group/list"
+  apiCall "GET", "/api/group/list"
   .done (data) ->
     switch data["status"]
       when 0
@@ -24,14 +24,14 @@ load_group_info = ->
           leave_group $(e.target).data("group-name")
 
 join_group = (group_name) ->
-  $.post "/api/group/join", {"group-name": group_name}
+  apiCall "POST", "/api/group/join", {"group-name": group_name}
   .done (data) ->
     apiNotify(data)
     if data['status'] is 1
       load_group_info()
 
 leave_group = (group_name) ->
-  $.post "/api/group/leave", {"group-name": group_name}
+  apiCall "POST", "/api/group/leave", {"group-name": group_name}
   .done (data) ->
     apiNotify(data)
     if data['status'] is 1

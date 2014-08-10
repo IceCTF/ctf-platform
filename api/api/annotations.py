@@ -61,7 +61,7 @@ def api_wrapper(f):
             message = _get_message(error)
             if type(error) == SevereInternalException:
                 wrapper_log.critical(message)
-                web_result = WebError("There was a critical internal error. It's Tim's fault.")
+                web_result = WebError("There was a critical internal error. Contact an administrator.")
             else:
                 wrapper_log.error(message)
                 web_result = WebError(message)
@@ -80,10 +80,7 @@ def require_login(f):
     @wraps(f)
     def wrapper(*args, **kwds):
         if not api.auth.is_logged_in():
-            abort(403)
-
-        #if not auth.csrf_check(request.headers):
-        #   abort(403)
+            raise WebException("You must be logged in")
         return f(*args, **kwds)
     return wrapper
 
@@ -96,8 +93,7 @@ def require_teacher(f):
     @wraps(f)
     def wrapper(*args, **kwds):
         if not api.user.is_teacher() or not api.config.enable_teachers:
-            abort(403)
-
+            raise WebException("You must be a teacher!")
         return f(*args, **kwds)
     return wrapper
 
@@ -106,11 +102,11 @@ def check_csrf(f):
     @require_login
     def wrapper(*args, **kwds):
         if 'token' not in session:
-            abort(403)
+            raise InternalException("CSRF token not in session")
         if 'token' not in request.form:
-            abort(403)
+            raise InternalException("CSRF token not in form")
         if session['token'] != request.form['token']:
-            abort(403)
+            raise InternalException("CSRF token is not correct")
         return f(*args, **kwds)
     return wrapper
 
@@ -131,7 +127,7 @@ def require_admin(f):
     @wraps(f)
     def wrapper(*args, **kwds):
         if not session.get('admin', False):
-            abort(403)
+            raise WebException("You must be an admin!")
         return f(*args, **kwds)
     return wrapper
 
@@ -151,9 +147,7 @@ def block_before_competition(return_result):
                 return f(*args, **kwds)
             else:
                 return return_result
-
         return wrapper
-
     return decorator
 
 def block_after_competition(return_result):
@@ -172,7 +166,5 @@ def block_after_competition(return_result):
                 return f(*args, **kwds)
             else:
                 return return_result
-
         return wrapper
-
     return decorator
