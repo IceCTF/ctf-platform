@@ -15,6 +15,7 @@ startup_functions:
     <% _.each(problems, function(problem) { %>
       <%= renderProblem({
             problem: problem,
+            reviewData: reviewData,
             renderProblemReview: renderProblemReview,
             renderProblemSubmit: renderProblemSubmit
           }) %>
@@ -24,9 +25,10 @@ startup_functions:
 
 <script type="text/template" id="problem-template">
   <%
+    var alreadyReviewed = $.inArray(problem.pid, reviewData);
     var panel = {
       className: problem.solved ? "solved" : "",
-      collapseClass: problem.solved ? "" : "in",
+      collapseClass: problem.solved && alreadyReviewed ? "" : "in",
       title: problem.name + " - " + problem.score,
       status: problem.solved ? "Solved" : "Unsolved"
     };
@@ -103,7 +105,7 @@ startup_functions:
 
 <script type="text/template" id="problem-review-template">
   <div class="row">
-    <form class="form-horizontal problem-review-form">
+    <form class="form-horizontal problem-review-form" data-pid="<%= problem.pid %>">
       <div class="form-group">
         <div class="col-md-4">
           <table>
@@ -112,7 +114,7 @@ startup_functions:
                 <tr>
                   <td><%- metric %></td>
                   <td>
-                    <input name="rating-<%= metric %>" type="number" class="problem-rating">
+                    <input name="rating-<%= metric %>" class="problem-rating" novalidate>
                   </td>
                 </tr>
               <% }) %>
