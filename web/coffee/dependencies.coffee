@@ -1,5 +1,5 @@
 @apiCall = (type, url, data) ->
-  $.ajax {url: url, type: type, data: data, cache: false, contentType: "application/json"}
+  $.ajax {url: url, type: type, data: data, cache: false}
   .fail (jqXHR, text) ->
     $.notify "API is offline. :(", "error"
 

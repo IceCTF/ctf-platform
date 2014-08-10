@@ -232,10 +232,12 @@ def get_single_problem_hook(pid):
 
 @app.route('/api/problems/feedback', methods=['POST'])
 @api_wrapper
+#@check_csrf
 @require_login
 def problem_feedback_hook():
-    feedback = request.form.get("feedback", None)
-    pid = request.form.get("pid", None)
+    data = request.get_json(force=True)
+    feedback = data.get("feedback", None)
+    pid = data.get("pid", None)
 
     if feedback is None or pid is None:
         return WebError("Please supply a pid and feedback.")
