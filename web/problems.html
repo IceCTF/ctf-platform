@@ -84,7 +84,7 @@ startup_functions:
       </div>
       <div class="col-md-1">
         <% if(problem.hint) { %>
-          <span data-pid="<%= problem.pid %>" class="glyphicon glyphicon-info-sign info-span"></span>
+          <span data-pid="<%= problem.pid %>" class="glyphicon glyphicon-info-sign info-span pull-right"></span>
         <% } %>
       </div>
     </div>
@@ -106,7 +106,7 @@ startup_functions:
   <div class="row">
     <form class="form-horizontal problem-review-form">
       <div class="form-group">
-        <div class="col-md-6" bgcolor="red">
+        <div class="col-md-4">
           <table>
             <tbody>
               <% _.each(window.ratingMetrics, function(metric) { %>
@@ -120,7 +120,7 @@ startup_functions:
             </tbody>
           </table>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-8">
           <div class="form-group">
             <textarea name="feedback" class="form-control" placeholder="Lave a comment here!"></textarea>
           </div>
