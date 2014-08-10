@@ -33,9 +33,9 @@ addProblemReview = (e) ->
 
   pid = $(e.target).data("pid")
 
-  console.log {feedback: feedback, pid: pid}
+  postData = {feedback: JSON.stringify(feedback), pid: pid}
 
-  apiCall "POST", "/api/problems/feedback", JSON.stringify({feedback: feedback, pid: pid})
+  apiCall "POST", "/api/problems/feedback", postData
   .done (data) ->
     apiNotify data
 
