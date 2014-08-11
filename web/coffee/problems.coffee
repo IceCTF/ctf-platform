@@ -37,6 +37,7 @@ addProblemReview = (e) ->
 
   apiCall "POST", "/api/problems/feedback", postData
   .done (data) ->
+    loadProblems()
     apiNotify data
 
 toggleHint = (e) ->
@@ -54,7 +55,7 @@ loadProblems = ->
         .done (reviewData) ->
           $("#problem-list-holder").html renderProblemList({
             problems: data.data,
-            reviewData: reviewData,
+            reviewData: reviewData.data,
             renderProblem: renderProblem,
             renderProblemSubmit: renderProblemSubmit,
             renderProblemReview: renderProblemReview
