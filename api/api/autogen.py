@@ -15,6 +15,7 @@ from api.common import InternalException
 
 log = api.logger.use(__name__)
 
+modifiable_problem_fields = ["score", "description", "name"]
 seed = ""
 
 def is_autogen_problem(pid):
@@ -292,6 +293,10 @@ def get_problem_instance(pid, tid):
     n = get_instance_number(pid, tid)
 
     metadata = read_metadata(pid, n)
+    
+    if not set(metadata).issubset(modifiable_problem_fields):
+        invalid_keys = set(metadata).difference(modifiable_problem_fields)
+        raise InternalException("{}'s instance attempted to modify these fields: {}".format(pid, invalid_keys))
 
     problem.update(metadata)
 
