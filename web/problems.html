@@ -25,10 +25,10 @@ startup_functions:
 
 <script type="text/template" id="problem-template">
   <%
-    var alreadyReviewed = $.inArray(problem.pid, reviewData);
+    var alreadyReviewed = $.inArray(problem.pid, reviewData) !== -1;
     var panel = {
       className: problem.solved ? "solved" : "",
-      collapseClass: problem.solved && alreadyReviewed ? "" : "in",
+      collapseClass: (problem.solved && alreadyReviewed) ? "" : "in",
       title: problem.name + " - " + problem.score,
       status: problem.solved ? "Solved" : "Unsolved"
     };
@@ -122,9 +122,7 @@ startup_functions:
           </table>
         </div>
         <div class="col-md-8">
-          <div class="form-group">
-            <textarea name="feedback" class="form-control" placeholder="Lave a comment here!"></textarea>
-          </div>
+          <textarea name="feedback" class="form-control" placeholder="Lave a comment here!"></textarea>
           <span class="input-group-btn">
             <button class="btn btn-default feedback-button" type="submit">Send Feedback</button>
           </span>
