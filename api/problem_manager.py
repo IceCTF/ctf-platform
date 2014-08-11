@@ -125,7 +125,7 @@ def main():
     parser.add_argument("-d", action="store_true", dest="debug", help="Debug mode", default=False)
     parser.add_argument("-o", action="store", dest="output_file", help="Output file.", default=sys.stdout)
     parser.add_argument("--no-confirm", action="store_true", dest="no_confirm", help="Remove confirmation and assume default action.")
-    parser.add_argument("--drop-collections", dest="collections_string", action="store", help="Remove all entries from the listed collections in the database.")
+    parser.add_argument("-c", "--drop-collections", dest="collections_string", action="store", help="Remove all entries from the listed collections in the database.")
 
     parser.add_argument("files", nargs="*", help="Files containing problems to insert.")
 
