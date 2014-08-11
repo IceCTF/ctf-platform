@@ -19,7 +19,8 @@ load_group_info = ->
       when 1
         $("#group-info").html renderGroupInformation({data: data.data})
 
-        $("#group-request-form").on "submit", group_request
+        $("#join-group").on "click", group_request
+        $("#group-request-form").on "submit", join_group_request
         $(".leave-group-span").on "click", (e) ->
           leave_group $(e.target).data("group-name")
 
@@ -27,18 +28,27 @@ join_group = (group_name) ->
   apiCall "POST", "/api/group/join", {"group-name": group_name}
   .done (data) ->
     apiNotify(data)
-    if data['status'] is 1
+    if data["status"] is 1
       load_group_info()
 
 leave_group = (group_name) ->
   apiCall "POST", "/api/group/leave", {"group-name": group_name}
   .done (data) ->
     apiNotify(data)
-    if data['status'] is 1
+    if data["status"] is 1
       load_group_info()
 
-#Could be simplified without this function
 group_request = (e) ->
+  e.preventDefault()
+  form = $(this).closest "form"
+  $("#confirm-group-join").modal {backdrop: "static", keyboard: false}
+  .one "click", "#join-group", (e) ->
+    form.trigger "submit"
+    return
+  return
+
+
+join_group_request = (e) ->
   e.preventDefault()
 
   group_name = $("#group-name-input").val()
