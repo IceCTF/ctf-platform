@@ -157,19 +157,38 @@ def get_all_teams(show_ineligible=False):
     db = api.common.get_conn()
     return list(db.teams.find(match, {"_id": 0}))
 
+def get_shell_account(tid=None):
+    """
+    Retrieves a team's shell account credentials.
+
+    Args:
+        tid: the team id. If no tid is specified, will try to get the active user's tid.
+    Returns:
+        The shell object. {username, password, hostname, port}
+    """
+
+    db = api.common.get_conn()
+
+    tid = get_team(tid)["tid"]
+
+    shell_account = db.ssh.find_one({"tid": tid}, {"_id": 0, "tid": 0})
+
+    if shell_account is None:
+        raise InternalException("Team {} was not assigned a shell account.".format(tid))
+
+    return shell_account
+
 def assign_shell_account(tid):
     """
     Assigns a webshell account for the team.
 
     Args:
         tid: the team id
-    Returns:
-        A dict with the username and password of the account.
     """
 
     db = api.common.get_conn()
 
-    tid = get_team(tid=tid)
+    tid = get_team(tid=tid)["tid"]
 
     if db.ssh.find({"tid": tid}).count() > 0:
         raise InternalException("Team {} was already assigned a shell account.")
@@ -177,5 +196,4 @@ def assign_shell_account(tid):
     if db.ssh.find({"tid": {"$exists": False}}).count() == 0:
         raise InternalException("There are no available shell accounts.")
 
-
-    db.ssh.update({"tid": {"$exists": False}}, {"tid": tid}, multi=False)
+    db.ssh.update({"tid": {"$exists": False}}, {"$set": {"tid": tid}}, multi=False)
