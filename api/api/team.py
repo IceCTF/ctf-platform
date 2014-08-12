@@ -87,6 +87,9 @@ def create_team(params):
 
     db.teams.insert(params)
 
+    if api.config.shell_enabled:
+        assign_shell_account(tid)
+
     return params['tid']
 
 def get_team_members(tid=None, name=None):
