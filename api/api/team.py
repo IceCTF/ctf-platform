@@ -178,7 +178,7 @@ def get_shell_account(tid=None):
 
     return shell_account
 
-def assign_shell_account(tid):
+def assign_shell_account(tid=None):
     """
     Assigns a webshell account for the team.
 
@@ -191,7 +191,7 @@ def assign_shell_account(tid):
     tid = get_team(tid=tid)["tid"]
 
     if db.ssh.find({"tid": tid}).count() > 0:
-        raise InternalException("Team {} was already assigned a shell account.")
+        raise InternalException("Team {} was already assigned a shell account.".format(tid))
 
     if db.ssh.find({"tid": {"$exists": False}}).count() == 0:
         raise InternalException("There are no available shell accounts.")
