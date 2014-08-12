@@ -51,18 +51,18 @@ startup_functions:
 
     <div class="panel-collapse collapse <%= panel.collapseClass %>" id="<%= problem.pid %>">
       <div class="problem-body panel-body">
-        <ul class="nav nav-pills">
+        <ul class="nav nav-tabs">
           <li class="<%= pill.solveClassName %>"><a href="#<%= pill.solveId %>" data-toggle="tab">Solve</a></li>
           <li class="<%= pill.reviewClassName %>"><a href="#<%= pill.reviewId %>" data-toggle="tab">Review</a></li>
         </ul>
         <div class="tab-content">
           <div class="tab-pane <%= pill.solveClassName %>" id="<%= pill.solveId %>">
-            <div class="well">
+            <div class="panel-body">
               <%= renderProblemSubmit({problem: problem}) %>
             </div>
           </div>
           <div class="tab-pane <%= pill.reviewClassName %>" id="<%= pill.reviewId %>">
-            <div class="well">
+            <div class="panel-body">
               <%= renderProblemReview({problem: problem}) %>
             </div>
           </div>
