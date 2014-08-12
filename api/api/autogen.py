@@ -15,7 +15,7 @@ from api.common import InternalException
 
 log = api.logger.use(__name__)
 
-modifiable_problem_fields = ["score", "description", "name"]
+modifiable_problem_fields = ["description"]
 seed = ""
 
 def is_autogen_problem(pid):
