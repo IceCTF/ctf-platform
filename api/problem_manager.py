@@ -114,7 +114,7 @@ def get_output_file(output):
             exit(1)
 
 def main():
-    parser = argparse.ArgumentParser(description='picoCTF problem manager')
+    parser = argparse.ArgumentParser(description="{} problem manager".format(api.config.competition_name))
 
 
     parser.add_argument("-l", action="store_true", dest="show_list", help="View problem list")

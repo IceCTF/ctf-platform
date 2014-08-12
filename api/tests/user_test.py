@@ -272,7 +272,7 @@ class TestUsers(object):
         old_hash = api.user.get_user(uid=uid)["password_hash"]
         assert old_hash == "HASH", "Was unable to confirm password was stored correctly."
 
-        api.user.update_password_request({"password":"HACK", "confirm-password":"HACK"}, uid)
+        api.user.update_password_request({"new-password":"HACK", "new-password-confirmation":"HACK"}, uid)
 
         new_hash = api.user.get_user(uid=uid)["password_hash"]
 
@@ -280,7 +280,7 @@ class TestUsers(object):
             "Password does not match hashed plaintext after changing it."
 
         with pytest.raises(WebException):
-            api.user.update_password_request({"password": "", "confirm-password":""}, uid)
+            api.user.update_password_request({"new-password": "", "new-password-confirmation":""}, uid)
             assert False, "Should not be able to update password to nothing."
 
     @ensure_empty_collections("users", "teams")

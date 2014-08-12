@@ -1,12 +1,40 @@
 #!/usr/bin/python3
-import glob, imp
+import api
+
+import glob, imp, argparse, time
 from os.path import splitext, basename
 
 def load_modules(directory):
     files = glob.glob("{}/*.py".format(directory))
     return [imp.load_source(splitext(basename(module))[0], module) for module in files]
 
+def run_modules(modules, interval):
+    while True:
+        start_time = time.time()
+        for module in modules:
+            module.run()
+        time.sleep(max(interval - (time.time() - start_time), 0))
+
 def main():
+    parser = argparse.ArgumentParser(description="{} daemon manager".format(api.config.competition_name))
+    parser.add_argument("-l", action="store_true", dest="show_list", help="List all daemons")
+    parser.add_argument("-a", "--all", dest="run_all", action="store_true", help="Run all daemons")
+    parser.add_argument("-i", "--interval", action="store", type=int, help="The interval in which to run the daemons", default=60)
+    parser.add_argument("-S", "--session-name", action="store", help="The name of the tmux session started")
+    parser.add_argument("modules", nargs="*", help="The daemon modules to run")
+
+    args = parser.parse_args()
+
     modules = load_modules("daemons")
+
+    if args.show_list:
+        for module in modules:
+            print(module.__name__)
+            exit(0)
+    elif args.run_all:
+        run_modules(modules, args.interval)
+    else:
+        selected_modules = [m for m in modules if m.__name__ in args.modules]
+        run_modules(selected_modules, args.interval)
 
 main()
