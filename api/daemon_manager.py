@@ -21,7 +21,7 @@ def main():
     parser.add_argument("-a", "--all", dest="run_all", action="store_true", help="Run all daemons")
     parser.add_argument("-i", "--interval", action="store", type=int, help="The interval in which to run the daemons", default=60)
     parser.add_argument("-S", "--session-name", action="store", help="The name of the tmux session started")
-    parser.add_argument("modules", nargs="*", help="The daemon modules to run")
+    parser.add_argument("modules", nargs="+", help="The daemon modules to run")
 
     args = parser.parse_args()
 
