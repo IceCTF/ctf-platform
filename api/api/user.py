@@ -2,8 +2,7 @@
 API functions relating to user management and registration.
 """
 
-import bcrypt
-import re
+import bcrypt, re, urllib, flask
 
 import api
 
@@ -179,6 +178,25 @@ def get_all_users(show_teachers=False):
 
     return list(db.users.find(match, projection))
 
+def _validate_captcha(data):
+    """
+    Validates a captcha with google's reCAPTCHA.
+
+    Args:
+        data: the posted form data
+    """
+
+    post_data = urllib.parse.urlencode({
+        "privatekey": api.config.reCAPTCHA_private_key,
+        "remoteip": flask.request.remote_addr,
+        "challenge": data["recaptcha_challenge_field"],
+        "response": data["recaptcha_response_field"]
+    }).encode("utf-8")
+
+    request = urllib.request.Request(api.config.captcha_url, post_data)
+    response = urllib.request.urlopen(request).read().decode("utf-8")
+    return response.split("\n")[0].lower() == "true"
+
 @log_action
 def create_user_request(params):
     """
@@ -207,6 +225,9 @@ def create_user_request(params):
     """
 
     validate(user_schema, params)
+
+    if api.config.enable_captcha and not _validate_captcha(params):
+        raise WebException("Incorrect captcha!")
 
     #Why are these strings? :o
     if params.get("create-new-teacher", "false") == "true":
