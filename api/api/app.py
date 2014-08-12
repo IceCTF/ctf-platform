@@ -134,7 +134,8 @@ def status_hook():
         "admin": api.auth.is_admin(),
         "teacher": api.auth.is_logged_in() and api.user.is_teacher(),
         "enable_teachers": api.config.enable_teachers,
-        "enable_feedback": api.config.enable_feedback
+        "enable_feedback": api.config.enable_feedback,
+        "shell": api.config.enable_shell
     }
 
     return WebSuccess(data=status)
