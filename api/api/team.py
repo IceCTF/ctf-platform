@@ -157,9 +157,9 @@ def get_all_teams(show_ineligible=False):
     db = api.common.get_conn()
     return list(db.teams.find(match, {"_id": 0}))
 
-def get_ssh_account(tid):
+def assign_shell_account(tid):
     """
-    Gets a webshell account for the team.
+    Assigns a webshell account for the team.
 
     Args:
         tid: the team id
@@ -168,15 +168,14 @@ def get_ssh_account(tid):
     """
 
     db = api.common.get_conn()
-    account = db.ssh.find_one({'tid': tid})
 
-    if account is not None:
-        return {'username': account['user'], 'password': account['password']}
+    tid = get_team(tid=tid)
 
-    free_account = db.ssh.find_one({'$or': [{'tid': ''}, {'tid': {'$exists': False}}]})
+    if db.ssh.find({"tid": tid}).count() > 0:
+        raise InternalException("Team {} was already assigned a shell account.")
 
-    if free_account is None:
-        raise WebException("No free SSH accounts were found, please notify an administrator.")
+    if db.ssh.find({"tid": {"$exists": False}}).count() == 0:
+        raise InternalException("There are no available shell accounts.")
 
-    db.ssh.update({'_id': free_account['_id']}, {'$set': {'tid': tid}})
-    return {'username': free_account['user'], 'password': free_account['password']}
+
+    db.ssh.update({"tid": {"$exists": False}}, {"tid": tid}, multi=False)
