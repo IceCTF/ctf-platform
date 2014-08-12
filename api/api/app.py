@@ -67,7 +67,7 @@ def site_map_hook():
 @app.route('/api/user/shell', methods=['GET'])
 @api_wrapper
 def get_shell_account_hook():
-    return WebSuccess(api.team.get_shell_account())
+    return WebSuccess(data=api.team.get_shell_account())
 
 @app.route('/api/user/create', methods=['POST'])
 @api_wrapper
