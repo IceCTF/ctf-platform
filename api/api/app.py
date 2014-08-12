@@ -64,6 +64,11 @@ def site_map_hook():
                 pass
     return WebSuccess("This is a message.", links)
 
+@app.route('/api/user/shell', methods=['GET'])
+@api_wrapper
+def get_shell_account_hook():
+    return WebSuccess(api.team.get_shell_account())
+
 @app.route('/api/user/create', methods=['POST'])
 @api_wrapper
 def create_user_hook():
