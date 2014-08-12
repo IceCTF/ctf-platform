@@ -17,7 +17,8 @@ startup_functions:
             problem: problem,
             reviewData: reviewData,
             renderProblemReview: renderProblemReview,
-            renderProblemSubmit: renderProblemSubmit
+            renderProblemSubmit: renderProblemSubmit,
+            sanitizeMetricName: sanitizeMetricName
           }) %>
     <% }); %>
   </div>
@@ -63,7 +64,10 @@ startup_functions:
           </div>
           <div class="tab-pane <%= pill.reviewClassName %>" id="<%= pill.reviewId %>">
             <div class="panel-body">
-              <%= renderProblemReview({problem: problem}) %>
+              <%= renderProblemReview({
+                    problem: problem,
+                    sanitizeMetricName: sanitizeMetricName
+                  }) %>
             </div>
           </div>
         </div>
@@ -114,7 +118,7 @@ startup_functions:
                 <tr>
                   <td><%- metric %></td>
                   <td>
-                    <input name="rating-<%= metric %>" class="problem-rating" novalidate>
+                    <input name="rating-<%= sanitizeMetricName(metric) %>" class="problem-rating" novalidate>
                   </td>
                 </tr>
               <% }) %>

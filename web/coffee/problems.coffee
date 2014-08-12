@@ -3,7 +3,10 @@ renderProblem = _.template($("#problem-template").remove().text())
 renderProblemSubmit = _.template($("#problem-submit-template").remove().text())
 renderProblemReview = _.template($("#problem-review-template").remove().text())
 
-@ratingMetrics = ["difficulty", "enjoyment", "educational-value"]
+@ratingMetrics = ["Difficulty", "Enjoyment", "Educational Value"]
+
+sanitizeMetricName = (metric) ->
+  metric.toLowerCase().replace(" ", "-")
 
 submitProblem = (e) ->
   e.preventDefault()
@@ -58,7 +61,8 @@ loadProblems = ->
             reviewData: reviewData.data,
             renderProblem: renderProblem,
             renderProblemSubmit: renderProblemSubmit,
-            renderProblemReview: renderProblemReview
+            renderProblemReview: renderProblemReview,
+            sanitizeMetricName: sanitizeMetricName
           })
   
           #Should solved problem descriptions still be able to be viewed?
