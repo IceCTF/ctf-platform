@@ -3,6 +3,7 @@ layout: default
 title: Registration
 post_scripts:
  - js/registration.js
+ - http://www.google.com/recaptcha/api/js/recaptcha_ajax.js
 startup_functions:
  - redirectIfLoggedIn()
 ---
@@ -28,7 +29,7 @@ startup_functions:
                         <input id="password" name="password" placeholder="Password" type="password" class="form-control">
                     </div>
                 </div>
-                
+
                 <ul class="nav nav-tabs">
                   <li class="active"><a data-toggle="tab" href="#new-team">New Team</a></li>
                   <li><a data-toggle="tab" href="#join-team">Join Team</a></li>
@@ -97,7 +98,7 @@ startup_functions:
                     </div>
                   </div>
                 </div>
-                
+                <div id="captcha"></div>
                 <div class="form-group">
                     <div class="controls registration-controls">
                         <button id="register-button" type="submit" class="btn btn-primary">

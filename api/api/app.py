@@ -136,6 +136,7 @@ def status_hook():
         "enable_teachers": api.config.enable_teachers,
         "enable_feedback": api.config.enable_feedback,
         "shell": api.config.enable_shell
+        "enable_captcha": api.config.enable_captcha
     }
 
     return WebSuccess(data=status)
