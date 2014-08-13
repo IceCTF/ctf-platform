@@ -133,16 +133,6 @@ def main():
 
     files = {}
 
-    #Check that all listed files exist.
-    for file_path in args.files:
-        if not path.isfile(file_path):
-            print("{}: File does not exist!".format(file_path))
-            exit(1)
-        with open(file_path, "r") as f:
-            files[file_path] = f.readlines()
-
-    output_file = get_output_file(args.output_file)
-
     if args.collections_string:
         collections = map(lambda s: s.strip(), args.collections_string.split(","))
         drop_collections(collections)
@@ -150,7 +140,21 @@ def main():
         build_autogen(args.build_autogen)
     if args.show_list:
         list_problems()
+
+    #Check that all listed files exist.
+    if len(args.files) == 0: 
+        parser.print_help()
+        exit(1)
+
+    for file_path in args.files:
+        if not path.isfile(file_path):
+            print("{}: File does not exist!".format(file_path))
+            exit(1)
+        with open(file_path, "r") as f:
+            files[file_path] = f.readlines()
+
     if args.migrate:
+        output_file = get_output_file(args.output_file)
         migrate_problems(files, output_file, args.debug)
     else:
         insert_problems(files)

@@ -21,7 +21,7 @@ def main():
     parser.add_argument("-a", "--all", dest="run_all", action="store_true", help="Run all daemons")
     parser.add_argument("-i", "--interval", action="store", type=int, help="The interval in which to run the daemons", default=60)
     parser.add_argument("-d", "--daemon-directory", action="store", help="The directory which contains the daemons", default="daemons")
-    parser.add_argument("modules", nargs="?", help="The daemon modules to run")
+    parser.add_argument("modules", nargs="*", help="The daemon modules to run")
 
     args = parser.parse_args()
 
@@ -35,11 +35,14 @@ def main():
         run_modules(modules, args.interval)
 
     else:
-        if args.modules is None:
+        if len(args.modules) == 0:
             parser.print_help()
             exit(1)
 
         selected_modules = [m for m in modules if m.__name__ in args.modules]
+        if len(selected_modules) == 0:
+            parser.print_help()
+            exit(1)
         run_modules(selected_modules, args.interval)
 
 main()

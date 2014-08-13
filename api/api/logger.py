@@ -2,7 +2,7 @@
 Manage loggers for the api.
 """
 
-import logging
+import logging, logging.handlers, time
 import api
 
 from bson import json_util
@@ -13,6 +13,7 @@ from flask import logging as flask_logging
 from sys import stdout
 from datetime import datetime
 
+critical_error_timeout = 600
 log = logging.getLogger(__name__)
 
 #TODO: Add configuration for this.
@@ -68,8 +69,31 @@ class StatsHandler(logging.StreamHandler):
 
                 information["action"].update(action_result)
 
-            print(json_util.dumps(information, indent=4))
             api.common.get_conn().statistics.insert(information)
+
+class SevereHandler(logging.handlers.SMTPHandler):
+
+    messages = {}
+
+    def __init__(self):
+        logging.handlers.SMTPHandler.__init__(
+            self,
+            mailhost=api.utilities.smtp_url,
+            fromaddr=api.utilities.from_addr,
+            toaddrs=admin_emails,
+            subject="Critical Error in {}".format(api.config.competition_name),
+            credentials=(api.utilities.email_username, api.utilities.email_password),
+            secure=()
+        )
+
+    def emit(self, record):
+        """
+        Don't excessively emit the same message.
+        """
+        last_time = self.messages.get(record.msg, None)
+        if last_time is None or time.time() - last_time > critical_error_timeout:
+            super(SevereHandler, self).emit(record)
+            self.messages[record.msg] = time.time()
 
 def set_level(name, level):
     """
@@ -151,14 +175,15 @@ def setup_logs(args):
 
     internal_error_log = logging.StreamHandler(stdout)
     internal_error_log.setLevel(logging.ERROR)
+    log.root.setLevel(level)
+    log.root.addHandler(internal_error_log)
 
-    severe_error_log = logging.StreamHandler(stdout)
-    severe_error_log.setLevel(logging.CRITICAL)
+    if api.utilities.enable_email:
+        severe_error_log = SevereHandler()
+        severe_error_log.setLevel(logging.CRITICAL)
+        log.root.addHandler(severe_error_log)
 
     stats_log = StatsHandler()
     stats_log.setLevel(logging.INFO)
 
-    log.root.setLevel(level)
-    log.root.addHandler(internal_error_log)
-    log.root.addHandler(severe_error_log)
     log.root.addHandler(stats_log)
