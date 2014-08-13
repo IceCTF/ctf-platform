@@ -5,7 +5,11 @@
     <meta name="author" content="Carnegie Mellon Univeristy">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>{% if page.title %}{{ site.title }} - {{ page.title }}{% else %}{{ site.title }}{% endif %}</title>
-    <link href="css/main.css" rel="stylesheet" media="screen">
+    <link href="/css/main.css" rel="stylesheet" media="screen">
+    {% for css_file in page.css_files %}
+        <link href="{{ css_file }}" rel="stylesheet" media="screen">
+    {% endfor %}
+
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 
@@ -17,4 +21,8 @@
     <script src="/js/libs/notify.min.js"></script>
     <script src="/js/dependencies.js"></script>
     <script src="/js/navbar.js"></script>
+
+    {% for js_file in page.pre_scripts %}
+        <script src="{{ js_file }}"></script>
+    {% endfor %}
 </head>

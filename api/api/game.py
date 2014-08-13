@@ -33,7 +33,7 @@ def get_category_statistics():
     for p in api.problem.get_solved_problems(api.user.get_team()['tid']):
         category_scores[p['category']]['solved'] += 1
 
-    return WebSuccess(category_scores)
+    return WebSuccess(data=category_scores)
 
 
 # The index of the problem corresponds to its etc id
@@ -74,9 +74,6 @@ def get_game_problem(etcid):
     except (IndexError, ValueError):
         raise WebException("Invalid Problem")
     p = api.problem.get_problem(pid=pid, tid=useracct['tid'])
-    p['type'] = p['category']
-    p['points'] = p['score']
-    p['ans'] = 'test'
     return WebSuccess(data=p)
 
 
