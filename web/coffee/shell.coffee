@@ -3,5 +3,5 @@ renderShellAccountCredentials = _.template($("#shell-account-credentials-templat
 $ ->
   apiCall "GET", "/api/user/shell", {}
   .done (data) ->
-    console.log data
-    $("#shell-account-credentials").html renderShellAccountCredentials({account: data.data})
+    if data.data
+      $("#shell-account-credentials").html renderShellAccountCredentials({account: data.data})
