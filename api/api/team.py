@@ -87,8 +87,8 @@ def create_team(params):
 
     db.teams.insert(params)
 
-    if api.config.shell_enabled:
-        assign_shell_account(tid)
+    if api.config.enable_shell:
+        assign_shell_account(params["tid"])
 
     return params['tid']
 
