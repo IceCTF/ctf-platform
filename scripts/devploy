@@ -5,7 +5,7 @@ echo "Transpiling Coffeescript"
 coffee -c -o /home/vagrant/web/js/ /home/vagrant/web/coffee/
 
 # Run minigames devploy (this should be removed for release)
-/home/vagrant/minigames/scripts/ipf-devploy
+#/home/vagrant/minigames/scripts/ipf-devploy
 
 # Shutdown the server
 echo "Shutting down nginx"
