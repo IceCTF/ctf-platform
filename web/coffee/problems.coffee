@@ -13,9 +13,12 @@ submitProblem = (e) ->
   input = $(e.target).find("input")
   apiCall "POST", "/api/problems/submit", {pid: input.data("pid"), key: input.val()}
   .done (data) ->
-    apiNotify(data)
     if data['status'] is 1
       loadProblems()
+      apiNotify(data)
+      setTimeout( ->
+        $("div[data-target='#" + input.data("pid") + "']").click()
+      , 100)
 
 addProblemReview = (e) ->
   e.preventDefault()

@@ -29,7 +29,7 @@ startup_functions:
     var alreadyReviewed = $.inArray(problem.pid, reviewData) !== -1;
     var panel = {
       className: problem.solved ? "solved" : "",
-      collapseClass: (problem.solved && alreadyReviewed) ? "" : "in",
+      collapseClass: problem.solved ? "" : "in",
       title: problem.name + " - " + problem.score,
       status: problem.solved ? "Solved" : "Unsolved"
     };
@@ -66,6 +66,7 @@ startup_functions:
             <div class="panel-body">
               <%= renderProblemReview({
                     problem: problem,
+                    alreadyReviewed: alreadyReviewed,
                     sanitizeMetricName: sanitizeMetricName
                   }) %>
             </div>
@@ -110,6 +111,11 @@ startup_functions:
 <script type="text/template" id="problem-review-template">
   <div class="row">
     <form class="form-horizontal problem-review-form" data-pid="<%= problem.pid %>">
+      <% if(alreadyReviewed) { %>
+        <div class="row">
+          <p><span class="label label-default">You have already reviewed this problem. Feel free to provide additional feedback.</span></p>
+        </div>
+      <% } %>
       <div class="form-group">
         <div class="col-md-4">
           <table>
