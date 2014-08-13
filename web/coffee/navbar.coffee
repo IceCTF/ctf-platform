@@ -3,7 +3,7 @@ apiOffline =
   News: "/news"
 
 teacherLoggedIn =
-  Game: "/game"
+  Game: "/game/"
   Problems: "/problems"
   Scoreboard: "/scoreboard"
   Classroom: "/classroom"
@@ -16,7 +16,7 @@ teacherLoggedIn =
     Logout: "/logout"
 
 userLoggedIn =
-  Game: "/game"
+  Game: "/game/"
   Problems: "/problems"
   Team: "/team"
   Scoreboard: "/scoreboard"
