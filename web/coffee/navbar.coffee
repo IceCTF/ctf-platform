@@ -5,6 +5,7 @@ apiOffline =
 teacherLoggedIn =
   Game: "/game/"
   Problems: "/problems"
+  Shell: "/shell"
   Scoreboard: "/scoreboard"
   Classroom: "/classroom"
   About:
@@ -18,6 +19,7 @@ teacherLoggedIn =
 userLoggedIn =
   Game: "/game/"
   Problems: "/problems"
+  Shell: "/shell"
   Team: "/team"
   Scoreboard: "/scoreboard"
   About:

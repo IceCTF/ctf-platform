@@ -4,7 +4,7 @@ API functions relating to team management.
 
 import api
 
-from api.common import safe_fail, WebException, InternalException
+from api.common import safe_fail, WebException, InternalException, SevereInternalException
 
 max_team_users = 5
 
@@ -83,6 +83,9 @@ def create_team(params):
 
     db = api.common.get_conn()
 
+    if not shell_accounts_available() and api.config.enable_shell:
+        raise SevereInternalException("There are no shell accounts available.")    
+
     params['tid'] = api.common.token()
 
     db.teams.insert(params)
@@ -160,6 +163,18 @@ def get_all_teams(show_ineligible=False):
     db = api.common.get_conn()
     return list(db.teams.find(match, {"_id": 0}))
 
+def shell_accounts_available():
+    """
+    Determines whether or not shell accounts are available.
+
+    Returns:
+        Whether or not accounts are available.
+    """
+
+    db = api.common.get_conn()
+
+    return db.ssh.find({"tid": {"$exists": False}}).count() > 0
+
 def get_shell_account(tid=None):
     """
     Retrieves a team's shell account credentials.
@@ -196,7 +211,7 @@ def assign_shell_account(tid=None):
     if db.ssh.find({"tid": tid}).count() > 0:
         raise InternalException("Team {} was already assigned a shell account.".format(tid))
 
-    if db.ssh.find({"tid": {"$exists": False}}).count() == 0:
+    if not shell_accounts_available():
         raise InternalException("There are no available shell accounts.")
 
     db.ssh.update({"tid": {"$exists": False}}, {"$set": {"tid": tid}}, multi=False)
