@@ -181,7 +181,7 @@ def get_earned_achievements(tid=None, uid=None):
         List of solved achievement dictionaries
     """
 
-    achievements = [get_achievement(aid=aid) for aid in get_earned_achievement_entries(tid=tid, uid=uid)]
+    achievements = [get_achievement(aid=achievement["aid"]) for achievement in get_earned_achievement_entries(tid=tid, uid=uid)]
     set_earned_achievements_seen(tid=tid, uid=uid)
 
     for achievement in achievements:
@@ -295,7 +295,7 @@ def process_achievements(*events, condition=None):
         def wrapper(*args, **kwargs):
             result = f(*args, **kwargs)
 
-            if result:
+            if condition is None or condition(result):
                 user = api.user.get_user()
                 tid = user["tid"]
                 uid = user["uid"]
@@ -308,7 +308,8 @@ def process_achievements(*events, condition=None):
 
                     for achievement in eligible_achievements:
                         aid = achievement["aid"]
-                        if (condition is None or condition(result)) and process_achievement(aid, uid=uid):
+
+                        if process_achievement(aid, uid=uid):
                             insert_earned_achievement(aid, tid, uid)
 
             return result

@@ -297,6 +297,7 @@ def grade_problem(pid, key, tid=None):
         "message": message
     }
 
+@api.achievement.process_achievements("submit", condition=lambda result: result["correct"])
 def submit_key(tid, pid, key, uid=None, ip=None):
     """
     User problem submission. Problem submission is inserted into the database.
