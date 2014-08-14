@@ -16,25 +16,22 @@ from api.common import APIException, InternalException
 from os import path
 from bson import json_util
 
-def insert_problems(files):
-    problems = get_problems(files)
-    for problem in problems:
+def insert_objects(f, files):
+    objects = get_json_objects(files)
+    for obj in objects:
         try:
-            api.problem.insert_problem(problem)
+            f(obj)
         except APIException as error:
             raise
             exit(1)
-    errors = api.problem.analyze_problems()
-    for error in errors:
-        print(error)
 
-def get_problems(files):
-    problems = []
+def get_json_objects(files):
+    objects = []
     for contents in files.values():
         for line in contents:
-            problem = json_util.loads(line.strip())
-            problems.append(problem)
-    return problems
+            obj = json_util.loads(line.strip())
+            objects.append(obj)
+    return objects
 
 def migrate_problems(files, output_file, debug):
 
@@ -52,7 +49,7 @@ def migrate_problems(files, output_file, debug):
 
     deletion_key = ["_id", "pid", "generator", "submissiontype", "devnotes"]
 
-    problems = get_problems(files)
+    problems = get_json_objects(files)
     output = ""
 
     def get_display_name_from_pid(problems, pid):
@@ -101,7 +98,6 @@ def drop_collections(collections):
     db = api.common.get_conn()
     for collection in collections:
         db[collection].remove()
-        print("Dropped -> {}".format(collection))
 
 def get_output_file(output):
     if output == sys.stdout:
@@ -125,6 +121,7 @@ def main():
     parser.add_argument("-d", action="store_true", dest="debug", help="Debug mode", default=False)
     parser.add_argument("-o", action="store", dest="output_file", help="Output file.", default=sys.stdout)
     parser.add_argument("--no-confirm", action="store_true", dest="no_confirm", help="Remove confirmation and assume default action.")
+    parser.add_argument("-a", action="store_true", dest="achievements", help="Assume files contain achievements.")
     parser.add_argument("-c", "--drop-collections", dest="collections_string", action="store", help="Remove all entries from the listed collections in the database.")
 
     parser.add_argument("files", nargs="*", help="Files containing problems to insert.")
@@ -157,5 +154,11 @@ def main():
         output_file = get_output_file(args.output_file)
         migrate_problems(files, output_file, args.debug)
     else:
-        insert_problems(files)
+        if args.achievements:
+            insert_objects(api.achievements.insert_achievement, files)
+        else:
+            insert_objects(api.problem.insert_problem, files)
+            errors = api.problem.analyze_problems()
+            for error in errors:
+                print(error)
 main()
