@@ -5,8 +5,10 @@ import pymongo
 
 import api
 
+from os.path import join
+from datetime import datetime
 from voluptuous import Schema, Required, Range
-from api.common import check, InternalException, SevereInternalException
+from api.common import check, InternalException, SevereInternalException, validate, safe_fail
 
 processor_base_path = "./processors"
 
@@ -17,17 +19,18 @@ achievement_schema = Schema({
         ("Score must be a positive integer.", [int, Range(min=0)])),
     Required("event"): check(
         ("Type must be a string.", [str])),
+    Required("description"): check(
+        ("The description must be a string.", [str])),
     Required("processor"): check(
         ("The processor path must be a string.", [str])),
     Required("hidden"): check(
         ("An achievement's hidden state is either True or False.", [
-            lambda disabled: event(disabled) == bool])),
+            lambda hidden: type(hidden) == bool])),
     Required("image"): check(
-        ("An achievement's image path must be a string.", [
-            lambda disabled: event(disabled) == bool])),
+        ("An achievement's image path must be a string.", [str])),
     "disabled": check(
         ("An achievement's disabled state is either True or False.", [
-            lambda disabled: event(disabled) == bool])),
+            lambda disabled: type(disabled) == bool])),
     "aid": check(
         ("You should not specify a aid for an achievement.", [lambda _: False])),
     "_id": check(
@@ -225,12 +228,119 @@ def set_achievement_disabled(aid, disabled):
         The updated achievement object.
     """
 
-    return update_achievement(aid, {"disabled": disabled})
+def get_processor(aid):
+    """
+    Returns the processor module for a given achievement.
 
-def process_achievements(event):
+    Args:
+        aid: the achievement id
+    Returns:
+        The processor module
     """
-    Annotations for processing achievements of a givent event type
+
+    try:
+        path = get_achievement(aid=aid, show_disabled=True)["grader"]
+        return imp.load_source(path[:-3], join(achievement_base_path, path))
+    except FileNotFoundError:
+        raise InternalException("Achievement processor is offline.")
+
+def process_achievement(aid, uid=None):
     """
+    Determines whether or not an achievement has been earned.
+
+    Args:
+        aid: the achievement id
+        uid: the user id
+    """
+
+    if uid is None:
+        uid = api.user.get_user()["uid"]
+
+    tid = api.user.get_user(uid=uid)["tid"]
+
+    achievement = get_achievement(aid=aid, show_disabled=True)
+    processor = get_processor(aid)
+
+    return processor.process(api, tid, uid)
+
+def insert_earned_achievement(aid, tid, uid):
+    """
+    Store earned achievement for a user/team.
+
+    Args:
+        aid: the achievement id
+        tid: the team id
+        uid: the user id
+    """
+
+    db = api.common.get_conn()
+
+    db.earned_achievements.insert({
+        "aid": aid,
+        "tid": tid,
+        "uid": uid,
+        "timestamp": datetime.utcnow(),
+        "seen": False
+    })
+
+def process_achievements(*events):
+    """
+    Annotations for processing achievements of a given event type.
+    """
+
+    def clear(f):
+
+        @wraps(f)
+        def wrapper(*args, **kwargs):
+            result = f(*args, **kwargs)
+
+            user = api.user.get_user()
+            tid = user["tid"]
+            uid = user["uid"]
+
+            for event in events:
+
+                eligible_achievements = [
+                    achievement for achievement in get_all_achievements(event=event) \
+                        if achievement not in get_earned_achievements(tid=tid)]
+
+                for achievement in eligible_achievements:
+                    if process_achievement(aid, uid=uid):
+                        insert_earned_achievement(aid, tid, uid)
+
+            return result
+
+        return wrapper
+
+    return clear
+
+def insert_achievement(achievement):
+    """
+    Inserts an achievement object into the database.
+
+    Args:
+        achievement: the achievement object loaded from json.
+    Returns:
+        The achievment's aid.
+    """
+
+    db = api.common.get_conn()
+    validate(achievement_schema, achievement)
+
+    achievement["disabled"] = achievement.get("disabled", False)
+
+    achievement["aid"] = api.common.hash(achievement["name"])
+
+    if safe_fail(get_achievement, aid=achievement["aid"]) is not None:
+        raise WebException("achievement with identical aid already exists.")
+
+    if safe_fail(get_achievement, name=achievement["name"]) is not None:
+        raise WebException("achievement with identical name already exists.")
+
+    db.achievements.insert(achievement)
+    api.cache.fast_cache.clear()
+
+    return achievement["aid"]
 
 def update_achievement(aid, updated_achievement):
     """
