@@ -132,7 +132,7 @@ def get_earned_achievement_entries(tid=None, uid=None, aid=None):
     if aid is not None:
         match.update({"aid": aid})
 
-    return list(db.achievements.find(match, {"_id":0}))
+    return list(db.earned_achievements.find(match, {"_id":0}))
 
 def get_earned_aids(tid=None, uid=None, aid=None):
     """
@@ -147,6 +147,28 @@ def get_earned_aids(tid=None, uid=None, aid=None):
 
     return [a["aid"] for a in get_earned_achievement_entries(tid=tid, uid=uid, aid=None)]
 
+def set_earned_achievements_seen(tid=None, uid=None):
+    """
+    Sets all earned achievements from a team or user seen.
+
+    Args:
+        tid: the team id
+        uid: the user id
+    """
+
+    db = api.common.get_conn()
+
+    match = {}
+
+    if tid is not None:
+        match.update({"tid": tid})
+    elif uid is not None:
+        match.update({"uid": uid})
+    else:
+        raise InternalException("You must specify either a tid or uid")
+
+    db.earned_achievements.update(match, {"$set": {"seen": True}}, multi=True)
+
 def get_earned_achievements(tid=None, uid=None):
     """
     Gets the solved achievements for a given team or user.
@@ -158,9 +180,16 @@ def get_earned_achievements(tid=None, uid=None):
         List of solved achievement dictionaries
     """
 
-    return [get_achievement(aid=aid) for aid in get_earned_achievement_entries(tid=tid, uid=uid)]
+    achievements = [get_achievement(aid=aid) for aid in get_earned_achievement_entries(tid=tid, uid=uid)]
+    set_earned_achievements_seen(tid=tid, uid=uid)
 
-def reevaluate_earned_achievements(aid=None):
+    for achievement in achievements:
+        if achievement["hidden"]:
+            achievement["description"] = ""
+
+    return achievements
+
+def reevaluate_earned_achievements(aid):
     """
     In the case of the achievement or processor being updated, this will reevaluate earned achievements for an achievement.
 
@@ -168,10 +197,25 @@ def reevaluate_earned_achievements(aid=None):
         aid: the aid of the achievement to be reevaluated.
     """
 
+    db = api.common.get_conn()
+
+    get_achievement(aid=aid, show_disabled=True)
+
+    keys = []
+    for earned_achievement in get_earned_achievements(aid=aid):
+        if not process_achievement(aid, tid=earned_achievement["tid"]):
+            keys.append({"aid": aid, "tid":tid})
+
+    db.earned_achievements.remove({"$or": keys})
+
 def reevaluate_all_earned_acheivements():
     """
     In the case of the achievement or processor being updated, this will reevaluate all earned achievements.
     """
+
+    api.cache.clear_all()
+    for achievement in get_earned_achievements(show_disabled=True):
+        reevaluate_earned_achievements(achievement["aid"])
 
 def set_achievement_disabled(aid, disabled):
     """
@@ -297,3 +341,35 @@ def insert_achievement(achievement):
     api.cache.fast_cache.clear()
 
     return achievement["aid"]
+
+def update_achievement(aid, updated_achievement):
+    """
+    Updates a achievement with new properties.
+
+    Args:
+        aid: the aid of the achievement to update.
+        updated_achievement: an updated achievement object.
+    Returns:
+        The updated achievement object.
+    """
+
+    db = api.common.get_conn()
+
+    if updated_achievement.get("name", None) is not None:
+        if safe_fail(get_achievement, name=updated_achievement["name"]) is not None:
+            raise WebException("Achievement with identical name already exists.")
+
+    achievement = get_achievement(aid=aid, show_disabled=True).copy()
+    achievement.update(updated_achievement)
+
+    # pass validation by removing/readding aid
+    achievement.pop("aid", None)
+    validate(achievement_schema, achievement)
+    achievement["aid"] = aid
+
+
+
+    db.achievements.update({"aid": aid}, achievement)
+    api.cache.fast_cache.clear()
+
+    return achievement
