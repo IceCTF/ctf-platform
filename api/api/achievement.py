@@ -182,10 +182,36 @@ def set_achievement_disabled(aid, disabled):
         The updated achievement object.
     """
 
-def process_achievements(event):
+def process_achievements(*events):
     """
-    Annotations for processing achievements of a givent event type
+    Annotations for processing achievements of a given event type.
     """
+
+    def clear(f):
+        @wraps(f)
+        def wrapper(*args, **kwargs):
+            db = api.common.get_conn()
+            result = f(*args, **kwargs)
+
+            tid = api.team.get_team()["tid"]
+            uid = api.user.get_user()["uid"]
+
+            for event in events:
+
+                eligible_achievements = [
+                    achievement for achievement in get_all_achievements(event=event) \
+                        if achievement not in get_earned_achievements(tid=tid)]
+
+                for achievement in eligible_achievements:
+                    aid = achievement["aid"]
+
+                    processor = get_processor(aid=aid)
+                    if processor.process(api, tid, uid):
+                        insert_earned_achievement(aid, tid, uid)
+
+            return result
+        return wrapper
+    return clear
 
 def insert_achievement(achievement):
     """
