@@ -5,6 +5,9 @@ import pymongo
 
 import api
 
+from voluptuous import Schema, Required, Range
+from api.common import check, InternalException, SevereInternalException
+
 processor_base_path = "./processors"
 
 achievement_schema = Schema({
