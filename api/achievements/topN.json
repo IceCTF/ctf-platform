@@ -1,0 +1,1 @@
+{"name": "The 31337", "description": "Your team made it to the scoreboard graph!", "event": "scoreboard", "hidden": false, "score": 500, "processor": "topN/topN.py", "image": "topN/badge.png"}
