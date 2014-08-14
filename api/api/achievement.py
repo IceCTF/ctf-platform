@@ -129,7 +129,7 @@ def get_earned_achievement_entries(tid=None, uid=None, aid=None):
     if aid is not None:
         match.update({"aid": aid})
 
-    return list(db.achievements.find(match, {"_id":0}))
+    return list(db.earned_achievements.find(match, {"_id":0}))
 
 def get_earned_aids(tid=None, uid=None, aid=None):
     """
