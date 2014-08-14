@@ -4,6 +4,7 @@ Imports and setup functionality
 
 import api.logger
 import api.setup
+import api.achievement
 import api.user
 import api.team
 import api.group
@@ -17,7 +18,6 @@ import api.utilities
 import api.game
 import api.autogen
 import api.problem_feedback
-import api.achievement
 
 # MUST BE LAST
 import api.config

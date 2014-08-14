@@ -9,7 +9,7 @@ from functools import wraps
 from os.path import join
 from datetime import datetime
 from voluptuous import Schema, Required, Range
-from api.common import check, InternalException, SevereInternalException, validate, safe_fail
+from api.common import check, InternalException, SevereInternalException, validate, safe_fail, WebException
 
 processor_base_path = "./processors"
 
@@ -146,7 +146,7 @@ def get_earned_aids(tid=None, uid=None, aid=None):
         List of solved achievement ids
     """
 
-    return [a["aid"] for a in get_earned_achievement_entries(tid=tid, uid=uid, aid=None)]
+    return [a["aid"] for a in get_earned_achievement_entries(tid=tid, uid=uid, aid=aid)]
 
 def set_earned_achievements_seen(tid=None, uid=None):
     """
@@ -181,7 +181,7 @@ def get_earned_achievements(tid=None, uid=None):
         List of solved achievement dictionaries
     """
 
-    achievements = [get_achievement(aid=aid) for aid in get_earned_achievement_entries(tid=tid, uid=uid)]
+    achievements = [get_achievement(aid=achievement["aid"]) for achievement in get_earned_achievement_entries(tid=tid, uid=uid)]
     set_earned_achievements_seen(tid=tid, uid=uid)
 
     for achievement in achievements:
@@ -203,9 +203,9 @@ def reevaluate_earned_achievements(aid):
     get_achievement(aid=aid, show_disabled=True)
 
     keys = []
-    for earned_achievement in get_earned_achievements(aid=aid):
+    for earned_achievement in get_earned_achievements():
         if not process_achievement(aid, uid=earned_achievement["uid"]):
-            keys.append({"aid": aid, "tid":tid})
+            keys.append({"aid": aid, "tid":earned_achievement["tid"]})
 
     db.earned_achievements.remove({"$or": keys})
 
@@ -215,7 +215,7 @@ def reevaluate_all_earned_acheivements():
     """
 
     api.cache.clear_all()
-    for achievement in get_earned_achievements(show_disabled=True):
+    for achievement in get_earned_achievements():
         reevaluate_earned_achievements(achievement["aid"])
 
 def set_achievement_disabled(aid, disabled):
@@ -259,7 +259,7 @@ def process_achievement(aid, uid=None):
 
     tid = api.user.get_user(uid=uid)["tid"]
 
-    achievement = get_achievement(aid=aid, show_disabled=True)
+    get_achievement(aid=aid, show_disabled=True)
     processor = get_processor(aid)
 
     return processor.process(api, tid, uid)
@@ -284,7 +284,7 @@ def insert_earned_achievement(aid, tid, uid):
         "seen": False
     })
 
-def process_achievements(*events):
+def process_achievements(*events, condition=None):
     """
     Annotations for processing achievements of a given event type.
     """
@@ -295,7 +295,7 @@ def process_achievements(*events):
         def wrapper(*args, **kwargs):
             result = f(*args, **kwargs)
 
-            if result:
+            if condition is None or condition(result):
                 user = api.user.get_user()
                 tid = user["tid"]
                 uid = user["uid"]
@@ -308,6 +308,7 @@ def process_achievements(*events):
 
                     for achievement in eligible_achievements:
                         aid = achievement["aid"]
+
                         if process_achievement(aid, uid=uid):
                             insert_earned_achievement(aid, tid, uid)
 
