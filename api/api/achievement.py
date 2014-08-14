@@ -157,7 +157,7 @@ def get_earned_achievements(tid=None, uid=None):
 
     return [get_achievement(aid=aid) for aid in get_earned_achievement_entries(tid=tid, uid=uid)]
 
-def reevaluate_earned_achievements(aid=None):
+def reevaluate_earned_achievements(aid):
     """
     In the case of the achievement or processor being updated, this will reevaluate earned achievements for an achievement.
 
@@ -165,10 +165,25 @@ def reevaluate_earned_achievements(aid=None):
         aid: the aid of the achievement to be reevaluated.
     """
 
+    db = api.common.get_conn()
+
+    get_problem(aid=aid, show_disabled=True)
+
+    keys = []
+    for earned_achievement in get_earned_achievements(aid=aid):
+        if not process_achievement(aid, tid=earned_achievement["tid"]):
+            keys.append({"aid": aid, "tid":tid})
+
+    db.earned_achievements.remove({"$or": keys})
+
 def reevaluate_all_earned_acheivements():
     """
     In the case of the achievement or processor being updated, this will reevaluate all earned achievements.
     """
+
+    api.cache.clear_all()
+    for achievement in get_earned_achievements(show_disabled=True):
+        reevaluate_earned_achievements(achievement["aid"])
 
 def set_achievement_disabled(aid, disabled):
     """
