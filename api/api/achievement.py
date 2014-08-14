@@ -155,7 +155,12 @@ def get_earned_achievements(tid=None, uid=None):
         List of solved achievement dictionaries
     """
 
-    return [get_achievement(aid=aid) for aid in get_earned_achievement_entries(tid=tid, uid=uid)]
+    achievements = [get_achievement(aid=aid) for aid in get_earned_achievement_entries(tid=tid, uid=uid)]
+    for achievement in achievements:
+        if achievement["hidden"]:
+            achievement["description"] = ""
+
+    return achievements
 
 def reevaluate_earned_achievements(aid):
     """

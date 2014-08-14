@@ -145,6 +145,9 @@ def get_team_information(tid=None):
     team_info["score"] = api.stats.get_score(tid=tid)
     team_info["members"] = [member["username"] for member in get_team_members(tid=tid)]
 
+    if api.config.enable_achievements:
+        team_info["achievements"] = api.achievement.get_earned_achievements(tid=tid)
+
     return team_info
 
 def get_all_teams(show_ineligible=False):
