@@ -6,6 +6,7 @@ import pymongo
 import api
 
 from os.path import join
+from datetime import datetime
 from voluptuous import Schema, Required, Range
 from api.common import check, InternalException, SevereInternalException, validate, safe_fail
 
@@ -218,15 +219,35 @@ def process_achievement(aid, uid=None):
 
     return processor.process(api, tid, uid)
 
+def insert_earned_achievement(aid, tid, uid):
+    """
+    Store earned achievement for a user/team.
+
+    Args:
+        aid: the achievement id
+        tid: the team id
+        uid: the user id
+    """
+
+    db = api.common.get_conn()
+
+    db.earned_achievements.insert({
+        "aid": aid,
+        "tid": tid,
+        "uid": uid,
+        "timestamp": datetime.utcnow(),
+        "seen": False
+    })
+
 def process_achievements(*events):
     """
     Annotations for processing achievements of a given event type.
     """
 
     def clear(f):
+
         @wraps(f)
         def wrapper(*args, **kwargs):
-            db = api.common.get_conn()
             result = f(*args, **kwargs)
 
             user = api.user.get_user()
@@ -240,12 +261,13 @@ def process_achievements(*events):
                         if achievement not in get_earned_achievements(tid=tid)]
 
                 for achievement in eligible_achievements:
-                    aid = achievement["aid"]
-
+                    if process_achievement(aid, uid=uid):
                         insert_earned_achievement(aid, tid, uid)
 
             return result
+
         return wrapper
+
     return clear
 
 def insert_achievement(achievement):
