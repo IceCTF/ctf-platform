@@ -167,7 +167,7 @@ def reevaluate_earned_achievements(aid):
 
     db = api.common.get_conn()
 
-    get_problem(aid=aid, show_disabled=True)
+    get_achievement(aid=aid, show_disabled=True)
 
     keys = []
     for earned_achievement in get_earned_achievements(aid=aid):
@@ -196,7 +196,41 @@ def set_achievement_disabled(aid, disabled):
         The updated achievement object.
     """
 
+    return update_achievement(aid, {"disabled": disabled})
+
 def process_achievements(event):
     """
     Annotations for processing achievements of a givent event type
     """
+
+def update_achievement(aid, updated_achievement):
+    """
+    Updates a achievement with new properties.
+
+    Args:
+        aid: the aid of the achievement to update.
+        updated_achievement: an updated achievement object.
+    Returns:
+        The updated achievement object.
+    """
+
+    db = api.common.get_conn()
+
+    if updated_achievement.get("name", None) is not None:
+        if safe_fail(get_achievement, name=updated_achievement["name"]) is not None:
+            raise WebException("Achievement with identical name already exists.")
+
+    achievement = get_achievement(aid=aid, show_disabled=True).copy()
+    achievement.update(updated_achievement)
+
+    # pass validation by removing/readding aid
+    achievement.pop("aid", None)
+    validate(achievement_schema, achievement)
+    achievement["aid"] = aid
+
+
+
+    db.achievements.update({"aid": aid}, achievement)
+    api.cache.fast_cache.clear()
+
+    return achievement
