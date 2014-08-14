@@ -204,7 +204,7 @@ def reevaluate_earned_achievements(aid):
 
     keys = []
     for earned_achievement in get_earned_achievements(aid=aid):
-        if not process_achievement(aid, tid=earned_achievement["tid"]):
+        if not process_achievement(aid, uid=earned_achievement["uid"]):
             keys.append({"aid": aid, "tid":tid})
 
     db.earned_achievements.remove({"$or": keys})
