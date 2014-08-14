@@ -5,6 +5,7 @@ import pymongo
 
 import api
 
+from os.path import join
 from voluptuous import Schema, Required, Range
 from api.common import check, InternalException, SevereInternalException, validate, safe_fail
 
@@ -182,6 +183,41 @@ def set_achievement_disabled(aid, disabled):
         The updated achievement object.
     """
 
+def get_processor(aid):
+    """
+    Returns the processor module for a given achievement.
+
+    Args:
+        aid: the achievement id
+    Returns:
+        The processor module
+    """
+
+    try:
+        path = get_achievement(aid=aid, show_disabled=True)["grader"]
+        return imp.load_source(path[:-3], join(achievement_base_path, path))
+    except FileNotFoundError:
+        raise InternalException("Achievement processor is offline.")
+
+def process_achievement(aid, uid=None):
+    """
+    Determines whether or not an achievement has been earned.
+
+    Args:
+        aid: the achievement id
+        uid: the user id
+    """
+
+    if uid is None:
+        uid = api.user.get_user()["uid"]
+
+    tid = api.user.get_user(uid=uid)["tid"]
+
+    achievement = get_achievement(aid=aid, show_disabled=True)
+    processor = get_processor(aid)
+
+    return processor.process(api, tid, uid)
+
 def process_achievements(*events):
     """
     Annotations for processing achievements of a given event type.
@@ -193,8 +229,9 @@ def process_achievements(*events):
             db = api.common.get_conn()
             result = f(*args, **kwargs)
 
-            tid = api.team.get_team()["tid"]
-            uid = api.user.get_user()["uid"]
+            user = api.user.get_user()
+            tid = user["tid"]
+            uid = user["uid"]
 
             for event in events:
 
@@ -205,8 +242,6 @@ def process_achievements(*events):
                 for achievement in eligible_achievements:
                     aid = achievement["aid"]
 
-                    processor = get_processor(aid=aid)
-                    if processor.process(api, tid, uid):
                         insert_earned_achievement(aid, tid, uid)
 
             return result
