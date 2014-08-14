@@ -155,7 +155,7 @@ def main():
         migrate_problems(files, output_file, args.debug)
     else:
         if args.achievements:
-            insert_objects(api.achievements.insert_achievement, files)
+            insert_objects(api.achievement.insert_achievement, files)
         else:
             insert_objects(api.problem.insert_problem, files)
             errors = api.problem.analyze_problems()
