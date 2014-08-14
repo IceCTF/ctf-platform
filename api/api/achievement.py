@@ -5,6 +5,7 @@ import pymongo
 
 import api
 
+from functools import wraps
 from os.path import join
 from datetime import datetime
 from voluptuous import Schema, Required, Range
@@ -294,19 +295,21 @@ def process_achievements(*events):
         def wrapper(*args, **kwargs):
             result = f(*args, **kwargs)
 
-            user = api.user.get_user()
-            tid = user["tid"]
-            uid = user["uid"]
+            if result:
+                user = api.user.get_user()
+                tid = user["tid"]
+                uid = user["uid"]
 
-            for event in events:
+                for event in events:
 
-                eligible_achievements = [
-                    achievement for achievement in get_all_achievements(event=event) \
-                        if achievement not in get_earned_achievements(tid=tid)]
+                    eligible_achievements = [
+                        achievement for achievement in get_all_achievements(event=event) \
+                            if achievement not in get_earned_achievements(tid=tid)]
 
-                for achievement in eligible_achievements:
-                    if process_achievement(aid, uid=uid):
-                        insert_earned_achievement(aid, tid, uid)
+                    for achievement in eligible_achievements:
+                        aid = achievement["aid"]
+                        if process_achievement(aid, uid=uid):
+                            insert_earned_achievement(aid, tid, uid)
 
             return result
 
