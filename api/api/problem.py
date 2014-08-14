@@ -400,25 +400,29 @@ def clear_all_submissions():
     db = api.common.get_conn()
     db.submissions.remove()
 
-def clear_submissions(uid=None, tid=None):
+def clear_submissions(uid=None, tid=None, pid=None):
     """
-    Clear submissions from a given team or user.
+    Clear submissions for a given team, user, or problems.
 
     Args:
         uid: the user's uid to clear from.
         tid: the team's tid to clear from.
+        pid: the pid to clear from.
     """
 
     db = api.common.get_conn()
 
     match = {}
 
-    if uid is not None:
+
+    if pid is not None:
+        match.update({"pid", pid})
+    elif uid is not None:
         match.update({"uid": uid})
     elif tid is not None:
         match.update({"tid": tid})
     else:
-        raise InternalException("You must supply either a tid or uid")
+        raise InternalException("You must supply either a tid, uid, or pid")
 
     return db.submissions.remove(match)
 
