@@ -6,7 +6,7 @@ import pymongo
 import api
 
 from voluptuous import Schema, Required, Range
-from api.common import check, InternalException, SevereInternalException
+from api.common import check, InternalException, SevereInternalException, validate, safe_fail
 
 processor_base_path = "./processors"
 
@@ -17,17 +17,18 @@ achievement_schema = Schema({
         ("Score must be a positive integer.", [int, Range(min=0)])),
     Required("event"): check(
         ("Type must be a string.", [str])),
+    Required("description"): check(
+        ("The description must be a string.", [str])),
     Required("processor"): check(
         ("The processor path must be a string.", [str])),
     Required("hidden"): check(
         ("An achievement's hidden state is either True or False.", [
-            lambda disabled: event(disabled) == bool])),
+            lambda hidden: type(hidden) == bool])),
     Required("image"): check(
-        ("An achievement's image path must be a string.", [
-            lambda disabled: event(disabled) == bool])),
+        ("An achievement's image path must be a string.", [str])),
     "disabled": check(
         ("An achievement's disabled state is either True or False.", [
-            lambda disabled: event(disabled) == bool])),
+            lambda disabled: type(disabled) == bool])),
     "aid": check(
         ("You should not specify a aid for an achievement.", [lambda _: False])),
     "_id": check(
@@ -185,3 +186,31 @@ def process_achievements(event):
     """
     Annotations for processing achievements of a givent event type
     """
+
+def insert_achievement(achievement):
+    """
+    Inserts an achievement object into the database.
+
+    Args:
+        achievement: the achievement object loaded from json.
+    Returns:
+        The achievment's aid.
+    """
+
+    db = api.common.get_conn()
+    validate(achievement_schema, achievement)
+
+    achievement["disabled"] = achievement.get("disabled", False)
+
+    achievement["aid"] = api.common.hash(achievement["name"])
+
+    if safe_fail(get_achievement, aid=achievement["aid"]) is not None:
+        raise WebException("achievement with identical aid already exists.")
+
+    if safe_fail(get_achievement, name=achievement["name"]) is not None:
+        raise WebException("achievement with identical name already exists.")
+
+    db.achievements.insert(achievement)
+    api.cache.fast_cache.clear()
+
+    return achievement["aid"]
