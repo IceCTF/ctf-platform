@@ -144,6 +144,28 @@ def get_earned_aids(tid=None, uid=None, aid=None):
 
     return [a["aid"] for a in get_earned_achievement_entries(tid=tid, uid=uid, aid=None)]
 
+def set_earned_achievements_seen(tid=None, uid=None):
+    """
+    Sets all earned achievements from a team or user seen.
+
+    Args:
+        tid: the team id
+        uid: the user id
+    """
+
+    db = api.common.get_conn()
+
+    match = {}
+
+    if tid is not None:
+        match.update({"tid": tid})
+    elif uid is not None:
+        match.update({"uid": uid})
+    else:
+        raise InternalException("You must specify either a tid or uid")
+
+    db.earned_achievements.update(match, {"$set": {"seen": True}}, multi=True)
+
 def get_earned_achievements(tid=None, uid=None):
     """
     Gets the solved achievements for a given team or user.
@@ -156,6 +178,8 @@ def get_earned_achievements(tid=None, uid=None):
     """
 
     achievements = [get_achievement(aid=aid) for aid in get_earned_achievement_entries(tid=tid, uid=uid)]
+    set_earned_achievements_seen(tid=tid, uid=uid)
+
     for achievement in achievements:
         if achievement["hidden"]:
             achievement["description"] = ""
