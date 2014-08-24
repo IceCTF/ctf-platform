@@ -133,16 +133,16 @@ def main():
     if args.collections_string:
         collections = map(lambda s: s.strip(), args.collections_string.split(","))
         drop_collections(collections)
-	exit(0)
+        exit(0)
     if args.build_autogen > 0:
         build_autogen(args.build_autogen)
-	exit(0)
+        exit(0)
     if args.show_list:
         list_problems()
-	exit(0)
+        exit(0)
 
     #Check that all listed files exist.
-    if len(args.files) == 0: 
+    if len(args.files) == 0:
         parser.print_help()
         exit(1)
 
