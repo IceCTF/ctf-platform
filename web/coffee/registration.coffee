@@ -9,8 +9,8 @@ submitRegistration = (e) ->
   e.preventDefault()
 
   registrationData = $("#user-registration-form").serializeObject()
-  registrationData["create-new-team"] = $("#new-team").hasClass("active")
-  registrationData["create-new-teacher"] = $("#new-teacher").hasClass("active")
+  registrationData["create-new-team"] = $("#registration-new-team-page").is(":visible")
+  registrationData["create-new-teacher"] = $("#registration-adviser-page").is(":visible")
 
   apiCall "POST", "/api/user/create", registrationData
   .done (data) ->
@@ -45,18 +45,18 @@ $ ->
 
   pageTransitionSpeed = 200
 
-  $("#button-new-team").click () ->    
-    $("#registration-join-team-page").hide "slide", { direction: "up" }, pageTransitionSpeed, () -> 
-        $("#registration-adviser-page").hide "slide", { direction: "up" }, pageTransitionSpeed, () -> 
+  $("#button-new-team").click () ->
+    $("#registration-join-team-page").hide "slide", { direction: "up" }, pageTransitionSpeed, () ->
+        $("#registration-adviser-page").hide "slide", { direction: "up" }, pageTransitionSpeed, () ->
             $("#registration-new-team-page").show "slide", { direction: "up" }, pageTransitionSpeed
 
-  $("#button-join-team").click () ->    
-    $("#registration-new-team-page").hide "slide", { direction: "up" }, pageTransitionSpeed, () -> 
-        $("#registration-adviser-page").hide "slide", { direction: "up" }, pageTransitionSpeed, () -> 
+  $("#button-join-team").click () ->
+    $("#registration-new-team-page").hide "slide", { direction: "up" }, pageTransitionSpeed, () ->
+        $("#registration-adviser-page").hide "slide", { direction: "up" }, pageTransitionSpeed, () ->
             $("#registration-join-team-page").show "slide", { direction: "up" }, pageTransitionSpeed
   
-  $("#button-adviser").click () ->    
-    $("#registration-new-team-page").hide "slide", { direction: "up" }, pageTransitionSpeed, () ->         
+  $("#button-adviser").click () ->
+    $("#registration-new-team-page").hide "slide", { direction: "up" }, pageTransitionSpeed, () ->
         $("#registration-join-team-page").hide "slide", { direction: "up" }, pageTransitionSpeed, () ->
             $("#registration-adviser-page").show "slide", { direction: "up" }, pageTransitionSpeed
 
