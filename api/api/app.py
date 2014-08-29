@@ -329,14 +329,16 @@ def get_group_list_hook():
 @api_wrapper
 @require_login
 def get_group_hook():
+    name = request.form.get("group-name")
+    if not api.group.is_member_of_group(name=name):
+        return WebError("You are not a member of this group.")
     return WebSuccess(data=api.group.get_group(name=request.form.get("group-name")))
 
 @app.route('/api/group/member_information', methods=['GET'])
 @api_wrapper
-@require_teacher
 def get_memeber_information_hook(gid=None):
     gid = request.args.get("gid")
-    if api.user.get_team()["tid"] not in api.group.get_group(gid=gid)["owners"]:
+    if not api.group.is_owner_of_group(gid=gid):
         return WebError("You do not own that group!")
 
     return WebSuccess(data=api.group.get_member_information(gid=gid))
@@ -346,10 +348,11 @@ def get_memeber_information_hook(gid=None):
 @require_teacher
 def get_group_score_hook():
     name = request.args.get("group-name")
-    if api.user.get_team()["tid"] not in api.group.get_group(name=name)["owners"]:
+    if not api.group.is_owner_of_group(gid=name):
         return WebError("You do not own that group!")
 
-    score = api.stats.get_group_score(name=name)
+    #TODO: Investigate!
+    score = api.stats.get_group_scores(name=name)
     if score is None:
         return WebError("There was an error retrieving your score.")
 
