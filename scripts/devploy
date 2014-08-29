@@ -16,7 +16,7 @@ echo "Cleaning up old files"
 sudo rm -rf /srv/http/ctf/*
 
 # Copy files to the server
-sudo chmod a+w /home/vagrant/web *
+sudo chmod -R a+w /home/vagrant/web *
 dos2unix /home/vagrant/web/*.html > /dev/null 2>&1
 echo "Building site with Jekyll"
 cd /home/vagrant/web
