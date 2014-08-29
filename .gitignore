@@ -9,4 +9,5 @@ web/index.html
 web/faq.html
 web/contact.html
 web/game.html
+web/teachers.html
 api/graders/autogentest/instances/*
