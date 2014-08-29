@@ -57,5 +57,5 @@ join_group_request = (e) ->
 $ ->
   load_team_info()
   load_group_info()
-  window.drawTeamProgressionGraph "#team-progression-graph"
+  window.drawTeamProgressionGraph("#team-progression-graph", "#team-progression-graph-container")
   return

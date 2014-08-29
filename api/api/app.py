@@ -135,8 +135,9 @@ def status_hook():
         "teacher": api.auth.is_logged_in() and api.user.is_teacher(),
         "enable_teachers": api.config.enable_teachers,
         "enable_feedback": api.config.enable_feedback,
-        "shell": api.config.enable_shell
-        "enable_captcha": api.config.enable_captcha
+        "shell": api.config.enable_shell,
+        "enable_captcha": api.config.enable_captcha,
+        "competition_active": api.utilities.check_competition_active()
     }
 
     return WebSuccess(data=status)
@@ -159,6 +160,7 @@ def get_team_score_hook():
 @app.route('/api/stats/team/solved_problems', methods=['GET'])
 @api_wrapper
 @require_login
+@block_before_competition(WebError("The competition has not begun yet!"))
 def get_team_solved_problems_hook():
     tid = request.args.get("tid", "")
     stats = {
@@ -171,6 +173,7 @@ def get_team_solved_problems_hook():
 @app.route('/api/stats/team/score_progression', methods=['GET'])
 @api_wrapper
 @require_login
+@block_before_competition(WebError("The competition has not begun yet!"))
 def get_team_score_progression():
     category = request.form.get("category", None)
 
@@ -234,6 +237,8 @@ def submit_key_hook():
 @app.route('/api/problems/<path:pid>', methods=['GET'])
 @api_wrapper
 @require_login
+@block_before_competition(WebError("The competition has not begun yet!"))
+@block_after_competition(WebError("The competition is over!"))
 def get_single_problem_hook(pid):
     problem_info = api.problem.get_problem(pid, tid=api.user.get_user()['tid'])
     return WebSuccess(data=problem_info)
@@ -242,6 +247,7 @@ def get_single_problem_hook(pid):
 @api_wrapper
 @check_csrf
 @require_login
+@block_before_competition(WebError("The competition has not begun yet!"))
 def problem_feedback_hook():
     feedback = json.loads(request.form.get("feedback", ""))
     pid = request.form.get("pid", None)
@@ -255,6 +261,7 @@ def problem_feedback_hook():
 @app.route('/api/problems/feedback/reviewed', methods=['GET'])
 @api_wrapper
 @require_login
+@block_before_competition(WebError("The competition has not begun yet!"))
 def problem_reviews_hook():
     return WebSuccess(data=api.problem_feedback.get_reviewed_pids())
 
@@ -266,36 +273,48 @@ def load_news_hook():
 @app.route('/api/game/categorystats', methods=['GET'])
 @api_wrapper
 @require_login
+@block_before_competition(WebError("The competition has not begun yet!"))
+@block_after_competition(WebError("The competition is over!"))
 def get_category_statistics_hook():
     return api.game.get_category_statistics()
 
 @app.route('/api/game/solvedindices', methods=['GET'])
 @api_wrapper
 @require_login
+@block_before_competition(WebError("The competition has not begun yet!"))
+@block_after_competition(WebError("The competition is over!"))
 def get_solved_indices_hook():
     return api.game.get_solved_indices()
 
 @app.route('/api/game/getproblem/<path:etcid>', methods=['GET'])
 @api_wrapper
 @require_login
+@block_before_competition(WebError("The competition has not begun yet!"))
+@block_after_competition(WebError("The competition is over!"))
 def get_game_problem_hook(etcid):
     return api.game.get_game_problem(etcid)
 
 @app.route('/api/game/to_pid/<path:etcid>', methods=['GET'])
 @api_wrapper
 @require_login
+@block_before_competition(WebError("The competition has not begun yet!"))
+@block_after_competition(WebError("The competition is over!"))
 def etcid_to_pid_hook(etcid):
     return api.game.etcid_to_pid(etcid)
 
 @app.route('/api/game/get_state', methods=['GET'])
 @api_wrapper
 @require_login
+@block_before_competition(WebError("The competition has not begun yet!"))
+@block_after_competition(WebError("The competition is over!"))
 def get_state_hook():
     return api.game.get_state()
 
 @app.route('/api/game/update_state', methods=['POST'])
 @api_wrapper
 @require_login
+@block_before_competition(WebError("The competition has not begun yet!"))
+@block_after_competition(WebError("The competition is over!"))
 def update_state_hook():
     return api.game.update_state(request.form.get('avatar'),request.form.get('eventid'),
             request.form.get('level'))
@@ -370,6 +389,7 @@ def delete_group_hook():
 
 @app.route('/api/stats/scoreboard', methods=['GET'])
 @api_wrapper
+@block_before_competition(WebError("The competition has not begun yet!"))
 def get_scoreboard_hook():
     result = {}
     result['public'] = api.stats.get_all_team_scores()

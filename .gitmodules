@@ -6,4 +6,7 @@
 	url = ssh://git@github.com/picoCTF/picoCTF-2014-Game.git 
 [submodule "minigames"]
 	path = minigames
-	url = ssh://git@github.com/picoCTF/picoCTF-2014-Interactive-Problem-Framework.git 
+	url = ssh://git@github.com/picoCTF/picoCTF-2014-Interactive-Problem-Framework.git
+[submodule "webex"]
+	path = webex
+	url = git@github.com:picoCTF/picoCTF-2014-Web-Extras.git

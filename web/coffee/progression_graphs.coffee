@@ -113,20 +113,25 @@ progressionDataToPoints = (data, dataPoints) ->
         chart = new google.visualization.SteppedAreaChart(div)
         chart.draw(packagedData, topTeamsGraphOptions)
 
-@drawTeamProgressionGraph = (selector) ->
+@drawTeamProgressionGraph = (selector, container_selector) ->
   div = divFromSelector selector
   apiCall "GET", "/api/stats/team/score_progression", {}
   .done (data) ->
-    if data.data.length > 0
+    if data.status == 1 
+        if data.data.length > 0
 
-      graphData = [
-        ["Time", "Score", {role: "tooltip"}]
-      ]
+          graphData = [
+            ["Time", "Score", {role: "tooltip"}]
+          ]
 
-      steps = progressionDataToPoints data.data, 720
-      (graphData.push(["", score, score]) for score in steps)
+          steps = progressionDataToPoints data.data, 720
+          (graphData.push(["", score, score]) for score in steps)
 
-      packagedData = google.visualization.arrayToDataTable graphData
+          packagedData = google.visualization.arrayToDataTable graphData
 
-      chart = new google.visualization.SteppedAreaChart(div)
-      chart.draw(packagedData, teamGraphOptions)
+          chart = new google.visualization.SteppedAreaChart(div)
+          chart.draw(packagedData, teamGraphOptions)          
+        else
+          $(container_selector).hide()
+    else
+        $(container_selector).hide()

@@ -16,14 +16,22 @@ echo "Cleaning up old files"
 sudo rm -rf /srv/http/ctf/*
 
 # Copy files to the server
-dos2unix /home/vagrant/web/*.html
+sudo chmod a+w /home/vagrant/web *
+dos2unix /home/vagrant/web/*.html > /dev/null 2>&1
 echo "Building site with Jekyll"
 cd /home/vagrant/web
 cp /home/vagrant/game/game.html .
+# Block writing to copied in HTML to avoid mistakes
+sudo chmod a-w game.html
+sudo chmod -R a-w /home/vagrant/webex/web/*
+cp -p -r /home/vagrant/webex/web/* .
+sudo chmod -R a+w /home/vagrant/webex/web/*
 sudo jekyll build
 cd -
 
 echo "Copying files to server"
+sudo cp -r /home/vagrant/webex/img/* /srv/http/ctf/img
+sudo cp -r /home/vagrant/webex/css/* /srv/http/ctf/css
 sudo cp -r /home/vagrant/minigames /srv/http/ctf
 sudo cp -r /home/vagrant/game /srv/http/ctf
 sudo mv /srv/http/ctf/game.html /srv/http/ctf/game/index.html

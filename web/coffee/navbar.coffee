@@ -16,6 +16,15 @@ teacherLoggedIn =
     Manage: "/account"
     Logout: "/logout"
 
+teacherLoggedInNoCompetition =  
+  Classroom: "/classroom"  
+  FAQ: "/faq"    
+  News: "/news"
+  Contact: "/contact"
+  Account:
+    Manage: "/account"
+    Logout: "/logout"
+
 userLoggedIn =
   Game: "/game/"
   Problems: "/problems"
@@ -30,13 +39,26 @@ userLoggedIn =
     Manage: "/account"
     Logout: "/logout"
 
+userLoggedInNoCompetition =       
+  Team: "/team"  
+  FAQ: "/faq"    
+  News: "/news"
+  Contact: "/contact"
+  Account:
+    Manage: "/account"
+    Logout: "/logout"
+
+
 userNotLoggedIn =
   Registration: "/registration"
-  Scoreboard: "/scoreboard"
-  About:
-    FAQ: "/faq"
-    Sponsors: "/sponsors"
-    News: "/news"
+  # Scoreboard: "/scoreboard"  
+  # About:
+  #  FAQ: "/faq"
+  #  Sponsors: "/sponsors"
+  #  News: "/news"
+  FAQ: "/faq"
+  News: "/news"
+  Contact: "/contact"
   Login: "/login"
 
 loadNavbar = (renderNavbarLinks, renderNestedNavbarLinks) ->
@@ -52,9 +74,15 @@ loadNavbar = (renderNavbarLinks, renderNestedNavbarLinks) ->
 
     if data["status"] == 1
       if data.data["teacher"]
-        navbarLayout.links = teacherLoggedIn
-      else if data.data["logged_in"]
-        navbarLayout.links = userLoggedIn
+        if data.data["competition_active"]
+           navbarLayout.links = teacherLoggedIn
+        else
+           navbarLayout.links = teacherLoggedInNoCompetition
+      else if data.data["logged_in"]  
+         if data.data["competition_active"]
+            navbarLayout.links = userLoggedIn
+         else
+            navbarLayout.links = userLoggedInNoCompetition
 
     $("#navbar-links").html renderNavbarLinks(navbarLayout)
 

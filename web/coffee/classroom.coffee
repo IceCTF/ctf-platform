@@ -28,7 +28,12 @@ teamSelectionHandler = (e) ->
 
   apiCall "GET", "/api/stats/team/solved_problems", {tid: tid}
   .done (data) ->
-    drawTeamSolvedVisualization data.data, tid
+    if data.status == 1
+      drawTeamSolvedVisualization data.data, tid
+    else
+      elementString = "##{tid}>.panel-body>div>.team-visualizer"
+      $(elementString).empty()
+      $(elementString).append("<img class='faded-chart' src='img/classroom_graph.png'>")
 
 loadTeamSelection = (gid) ->
   apiCall "GET", "/api/group/member_information", {gid: gid}

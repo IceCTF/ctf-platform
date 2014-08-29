@@ -10,7 +10,9 @@ import api
 
 from api.common import check, validate, safe_fail
 from voluptuous import Required, Length, Schema
-enable_email = False 
+from datetime import datetime
+
+enable_email = False
 smtp_url = ''
 email_username = ''
 email_password = ''
@@ -119,6 +121,13 @@ def request_password_reset(username):
     """.format(api.config.competition_name, api.config.competition_urls[0], username, token)
 
     send_email(user['email'], "{} Password Reset".format(api.config.competition_name), msgBody)
+
+def check_competition_active():
+    """
+    Is the competition currently running
+    """
+
+    return api.config.start_time.timestamp() < datetime.utcnow().timestamp() < api.config.end_time.timestamp()
 
 def load_news():
     """
