@@ -28,6 +28,7 @@ sudo chmod -R a-w /home/vagrant/webex/includes/*
 cp -p -r /home/vagrant/webex/web/* .
 cp -p -r /home/vagrant/webex/includes/* _includes/
 sudo chmod -R a+w /home/vagrant/webex/web/*
+sudo chmod -R a+w /home/vagrant/webex/includes/*
 sudo jekyll build
 cd -
 
