@@ -24,7 +24,9 @@ cp /home/vagrant/game/game.html .
 # Block writing to copied in HTML to avoid mistakes
 sudo chmod a-w game.html
 sudo chmod -R a-w /home/vagrant/webex/web/*
+sudo chmod -R a-w /home/vagrant/webex/includes/*
 cp -p -r /home/vagrant/webex/web/* .
+cp -p -r /home/vagrant/webex/includes/* _includes/
 sudo chmod -R a+w /home/vagrant/webex/web/*
 sudo jekyll build
 cd -

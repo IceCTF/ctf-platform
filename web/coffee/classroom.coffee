@@ -25,7 +25,6 @@ loadGroupSelection = (groups) ->
 
 teamSelectionHandler = (e) ->
   tid = $(e.target).data("tid")
-
   apiCall "GET", "/api/stats/team/solved_problems", {tid: tid}
   .done (data) ->
     if data.status == 1

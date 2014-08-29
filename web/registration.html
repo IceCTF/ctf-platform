@@ -9,152 +9,162 @@ startup_functions:
 ---
 <div class="container-narrow">
     <div class="contentbox">
-        <div class="col-md-4 col-md-offset-4">
-            <form class="form-horizontal" id="user-registration-form">
-                <div id="registration-user-page">
-                    <div class="form-group">
-                        <label class="control-label" for="email">Email</label>
-                        <div class="controls registration-controls">
-                            <input id="email" name="email" placeholder="Email" type="email" class="form-control">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label" for="username">Username</label>
-                        <div class="controls registration-controls">
-                            <input id="username" name="username" placeholder="Username" type="text" class="form-control">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label" for="password">Password</label>
-                        <div class="controls registration-controls">
-                            <input id="password" name="password" placeholder="Password" type="password" class="form-control">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label" for="occupation-select">Background</label>
-                        <select class="form-control" id="occupation-select">
-                            <option value="student">Student</option>
-                            <option value="teacher">Teacher</option>
-                            <option value="secprof">Security Professional</option>
-                            <option value="hobbyist">CTF Hobbyist</option>
-                            <option value="other">Other</option>
-                        </select>
-                    </div>
-                    <div class="form-group" id="school-level-select-container">
-                        <label class="control-label" for="school-level-select">What type of student are you?</label>
-                        <select class="form-control" id="school-level-select">
-                            <option>Elementary School</option>
-                            <option>Middle School</option>
-                            <option>High School</option>
-                            <option>Undergraduate</option>
-                            <option>Graduate</option>
-                            <option>Other</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label" for="country-select">Where are you from?</label>
-                        <select class="form-control" id="country-select">
-                            <!-- Countries get added here -->
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <div class="checkbox">
-                            <label>
-                                <input type="checkbox"> I am a Teacher or Team Adviser
-                            </label>
-                        </div>
-                        <div class="checkbox">
-                            <label>
-                                <input type="checkbox"> Feel free to send me emails about other CTFs
-                            </label>
-                        </div>
-                    </div>
-                    <button type="button" class="btn btn-primary" id="button-new-team">Create a New Team</button>
-                    <button type="button" class="btn btn-primary" id="button-join-team">Join an Existing Team</button>
-                    <button type="button" class="btn btn-primary" id="button-adviser">Create an Adviser Account</button>
-                </div>
-                <div id="registration-new-team-page">
-                    <div id="new-team" class="tab-pane fade in active">
-                        <div id="new-team-registration" class="team-registration-form">
-                            <div class="form-group">
-                                <label class="control-label" for="team-name-new">Team Name</label>
-                                <div class="controls registration-controls">
-                                    <input id="team-name-new" name="team-name-new" placeholder="Team Name" type="text" class="form-control">
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="control-label" for="team-password-new">Team Password</label>
-                                <div class="controls registration-controls">
-                                    <input id="team-password-new" name="team-password-new" placeholder="Team Password" type="password" class="form-control">
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="control-label" for="team-school-new">School</label>
-                                <div class="controls registration-controls">
-                                    <input id="team-school-new" name="team-school-new" placeholder="School" type="text" class="form-control">
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="control-label" for="team-adv-name-new">Adviser Name</label>
-                                <div class="controls registration-controls">
-                                    <input id="team-adv-name-new" name="team-adv-name-new" placeholder="Adviser Name" type="text" class="form-control">
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="control-label" for="team-adv-email-new">Adviser Email</label>
-                                <div class="controls registration-controls">
-                                    <input id="team-adv-email-new" name="team-adv-email-new" placeholder="Adviser Email" type="text" class="form-control">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <button type="button" class="btn btn-primary back-button">
-                        Back
-                    </button>
-                    <button id="register-button" type="submit" class="btn btn-primary">
-                        Register
-                    </button>
-                </div>
-
-                <div id="registration-join-team-page">
-                    <div id="existing-team-registration" class="team-registration-form">
+        <div class="row">
+            {% include registration.html %}
+        </div>
+        <div class="row">
+            <div class="col-md-4 col-md-offset-4">
+                <form class="form-horizontal" id="user-registration-form">
+                    <div id="registration-user-page">
                         <div class="form-group">
-                            <label class="control-label" for="team-name-existing">Team Name</label>
+                            <label class="control-label" for="email">Email</label>
                             <div class="controls registration-controls">
-                                <input id="team-name-existing" name="team-name-existing" placeholder="Team Name" type="text" class="form-control">
+                                <input id="email" name="email" placeholder="Email" type="email" class="form-control">
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label" for="team-password-existing">Team Password</label>
+                            <label class="control-label" for="username">Username</label>
                             <div class="controls registration-controls">
-                                <input id="team-password-existing" name="team-password-existing" placeholder="Team Password" type="password" class="form-control">
+                                <input id="username" name="username" placeholder="Username" type="text" class="form-control">
                             </div>
                         </div>
-                    </div>
-                    <button type="button" class="btn btn-primary back-button">
-                        Back
-                    </button>
-                    <button id="register-button" type="submit" class="btn btn-primary">
-                        Register
-                    </button>
-                </div>
-                <div id="registration-adviser-page">
-                    <div id="new-teacher" class="teacher-registration">
                         <div class="form-group">
-                            <label class="control-label" for="teacher-school">School</label>
+                            <label class="control-label" for="password">Password</label>
                             <div class="controls registration-controls">
-                                <input id="teacher-school" name="teacher-school" placeholder="School" type="text" class="form-control">
+                                <input id="password" name="password" placeholder="Password" type="password" class="form-control">
                             </div>
                         </div>
+                        <div class="form-group">
+                            <label class="control-label" for="occupation-select">Background</label>
+                            <select class="form-control" id="occupation-select">
+                                <option value="student">Student</option>
+                                <option value="teacher">Teacher</option>
+                                <option value="secprof">Security Professional</option>
+                                <option value="hobbyist">CTF Hobbyist</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group" id="school-level-select-container">
+                            <label class="control-label" for="school-level-select">What type of student are you?</label>
+                            <select class="form-control" id="school-level-select">
+                                <option>Elementary School</option>
+                                <option>Middle School</option>
+                                <option>High School</option>
+                                <option>Undergraduate</option>
+                                <option>Graduate</option>
+                                <option>Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label" for="country-select">Where are you from?</label>
+                            <select class="form-control" id="country-select">
+                                <!-- Countries get added here -->
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <center>
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-primary" id="button-new-team">Create a New Team</button>
+                                    <button type="button" class="btn btn-primary" id="button-join-team">Join an Existing Team</button>
+                                    <button type="button" class="btn btn-primary" id="button-adviser">Create an Adviser Account</button>
+                                </div>
+                            </center>
+                        </div>
                     </div>
-                    <button type="button" class="btn btn-primary back-button">
-                        Back
-                    </button>
-                    <button id="register-button" type="submit" class="btn btn-primary">
-                        Register
-                    </button>
-                </div>
-            </form>
+                    <div id="registration-new-team-page" class="hidden-page">
+                        <div id="new-team" class="tab-pane fade in active">
+                            <div id="new-team-registration" class="team-registration-form">
+                                <div class="form-group">
+                                    <label class="control-label" for="team-name-new">Team Name</label>
+                                    <div class="controls registration-controls">
+                                        <input id="team-name-new" name="team-name-new" placeholder="Team Name" type="text" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label" for="team-password-new">Team Password</label>
+                                    <div class="controls registration-controls">
+                                        <input id="team-password-new" name="team-password-new" placeholder="Team Password" type="password" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label" for="team-school-new">School</label>
+                                    <div class="controls registration-controls">
+                                        <input id="team-school-new" name="team-school-new" placeholder="School" type="text" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label" for="team-adv-name-new">Adviser Name</label>
+                                    <div class="controls registration-controls">
+                                        <input id="team-adv-name-new" name="team-adv-name-new" placeholder="Adviser Name" type="text" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label" for="team-adv-email-new">Adviser Email</label>
+                                    <div class="controls registration-controls">
+                                        <input id="team-adv-email-new" name="team-adv-email-new" placeholder="Adviser Email" type="text" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox"> Feel free to send me emails about other CTFs
+                                </label>
+                            </div>
+                        </div>
+                        <button id="register-button" type="submit" class="btn btn-primary">
+                            Register
+                        </button>
+                    </div>
+                    <div id="registration-join-team-page" class="hidden-page">
+                        <div id="existing-team-registration" class="team-registration-form">
+                            <div class="form-group">
+                                <label class="control-label" for="team-name-existing">Team Name</label>
+                                <div class="controls registration-controls">
+                                    <input id="team-name-existing" name="team-name-existing" placeholder="Team Name" type="text" class="form-control">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label" for="team-password-existing">Team Password</label>
+                                <div class="controls registration-controls">
+                                    <input id="team-password-existing" name="team-password-existing" placeholder="Team Password" type="password" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox"> Feel free to send me emails about other CTFs
+                                </label>
+                            </div>
+                        </div>
+                        <button id="register-button" type="submit" class="btn btn-primary">
+                            Register
+                        </button>
+                    </div>
+                    <div id="registration-adviser-page" class="hidden-page">
+                        <div id="new-teacher" class="teacher-registration">
+                            <div class="form-group">
+                                <label class="control-label" for="teacher-school">School</label>
+                                <div class="controls registration-controls">
+                                    <input id="teacher-school" name="teacher-school" placeholder="School" type="text" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox"> Feel free to send me emails about other CTFs
+                                </label>
+                            </div>
+                        </div>
+                        <button id="register-button" type="submit" class="btn btn-primary">
+                            Register
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
         <!--<div class="form-group">
             <div id="captcha"></div>

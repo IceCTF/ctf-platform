@@ -31,31 +31,34 @@ $ ->
   $("#registration-join-team-page").hide()
   $("#registration-adviser-page").hide()
 
+  $("#checkbox-adviser").change () ->
+    if $(this).is(":checked")
+      $("#button-adviser").show()
+    else
+      $("#button-adviser").hide()
+
   $("#occupation-select").change () ->
     if this.value == "student"
       $("#school-level-select-container").show()
     else
       $("#school-level-select-container").hide()
 
-  pageTransitionSpeed = 100
+  pageTransitionSpeed = 200
 
-  $("#button-new-team").click () ->
-    $("#registration-user-page").fadeOut pageTransitionSpeed, () ->
-        $("#registration-new-team-page").fadeIn pageTransitionSpeed
+  $("#button-new-team").click () ->    
+    $("#registration-join-team-page").hide "slide", { direction: "up" }, pageTransitionSpeed, () -> 
+        $("#registration-adviser-page").hide "slide", { direction: "up" }, pageTransitionSpeed, () -> 
+            $("#registration-new-team-page").show "slide", { direction: "up" }, pageTransitionSpeed
 
-  $("#button-join-team").click () ->
-    $("#registration-user-page").fadeOut pageTransitionSpeed, () -> 
-        $("#registration-join-team-page").fadeIn pageTransitionSpeed
-
-  $("#button-adviser").click () ->
-    $("#registration-user-page").fadeOut pageTransitionSpeed, () ->
-        $("#registration-adviser-page").fadeIn(pageTransitionSpeed)
-
-  $(".back-button").click () ->
-    $("#registration-new-team-page").fadeOut pageTransitionSpeed, () ->
-        $("#registration-join-team-page").fadeOut pageTransitionSpeed, () ->
-            $("#registration-adviser-page").fadeOut pageTransitionSpeed, () ->
-                $("#registration-user-page").fadeIn pageTransitionSpeed
+  $("#button-join-team").click () ->    
+    $("#registration-new-team-page").hide "slide", { direction: "up" }, pageTransitionSpeed, () -> 
+        $("#registration-adviser-page").hide "slide", { direction: "up" }, pageTransitionSpeed, () -> 
+            $("#registration-join-team-page").show "slide", { direction: "up" }, pageTransitionSpeed
+  
+  $("#button-adviser").click () ->    
+    $("#registration-new-team-page").hide "slide", { direction: "up" }, pageTransitionSpeed, () ->         
+        $("#registration-join-team-page").hide "slide", { direction: "up" }, pageTransitionSpeed, () ->
+            $("#registration-adviser-page").show "slide", { direction: "up" }, pageTransitionSpeed
 
   $("#country-select").html('
         <option value="">Country...</option>

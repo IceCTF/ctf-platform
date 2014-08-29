@@ -2,7 +2,11 @@ body {
   padding-top: 50px;
 }
 
-.faded-chart{
+.faded-chart {
     opacity: 0.25; 
     filter: alpha(opacity=25);
+}
+
+.hidden-page {
+    display: none;   
 }
