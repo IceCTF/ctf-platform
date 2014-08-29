@@ -94,35 +94,44 @@ progressionDataToPoints = (data, dataPoints) ->
   apiCall "GET", "/api/stats/top_teams/score_progression", {}
   .done (data) ->
     if data.data.length >= 2
-
       scoreData = (team.score_progression for team in data.data)
-      dataPoints = _.zip.apply _, progressionDataToPoints scoreData, 720
 
-      teamNameData = (team.name for team in data.data)
+      #Ensure there are submissions to work with
+      if _.max(_.map(scoreData, (submissions) -> submissions.length)) > 0
 
-      graphData = [["Score"].concat(teamNameData)]
-      _.each dataPoints, (dataPoint) ->
-        graphData.push [""].concat(dataPoint)
+        dataPoints = _.zip.apply _, progressionDataToPoints scoreData, 720
 
-      packagedData = google.visualization.arrayToDataTable graphData
+        teamNameData = (team.name for team in data.data)
 
-      chart = new google.visualization.SteppedAreaChart(div)
-      chart.draw(packagedData, topTeamsGraphOptions)
+        graphData = [["Score"].concat(teamNameData)]
 
-@drawTeamProgressionGraph = (selector) ->
+        _.each dataPoints, (dataPoint) ->
+          graphData.push [""].concat(dataPoint)
+
+        packagedData = google.visualization.arrayToDataTable graphData
+
+        chart = new google.visualization.SteppedAreaChart(div)
+        chart.draw(packagedData, topTeamsGraphOptions)
+
+@drawTeamProgressionGraph = (selector, container_selector) ->
   div = divFromSelector selector
   apiCall "GET", "/api/stats/team/score_progression", {}
   .done (data) ->
-    if data.data.length > 0
+    if data.status == 1 
+        if data.data.length > 0
 
-      graphData = [
-        ["Time", "Score", {role: "tooltip"}]
-      ]
+          graphData = [
+            ["Time", "Score", {role: "tooltip"}]
+          ]
 
-      steps = progressionDataToPoints data.data, 720
-      (graphData.push(["", score, score]) for score in steps)
+          steps = progressionDataToPoints data.data, 720
+          (graphData.push(["", score, score]) for score in steps)
 
-      packagedData = google.visualization.arrayToDataTable graphData
+          packagedData = google.visualization.arrayToDataTable graphData
 
-      chart = new google.visualization.SteppedAreaChart(div)
-      chart.draw(packagedData, teamGraphOptions)
+          chart = new google.visualization.SteppedAreaChart(div)
+          chart.draw(packagedData, teamGraphOptions)          
+        else
+          $(container_selector).hide()
+    else
+        $(container_selector).hide()

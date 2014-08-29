@@ -142,7 +142,7 @@ def main():
         exit(0)
 
     #Check that all listed files exist.
-    if len(args.files) == 0: 
+    if len(args.files) == 0:
         parser.print_help()
         exit(1)
 

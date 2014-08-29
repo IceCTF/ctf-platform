@@ -14,6 +14,7 @@ Vagrant.configure("2") do |config|
   config.vm.synced_folder "scripts", "/home/vagrant/scripts"
   config.vm.synced_folder "minigames", "/home/vagrant/minigames"
   config.vm.synced_folder "game", "/home/vagrant/game"
+  config.vm.synced_folder "webex", "/home/vagrant/webex"
   config.vm.provision :shell, :path => "scripts/vagrant_setup.sh"
   config.ssh.forward_agent = true
 

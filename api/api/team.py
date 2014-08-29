@@ -55,14 +55,18 @@ def get_groups(tid=None):
     groups = []
 
     for group in list(db.groups.find({'owners': tid}, {'name': 1, 'gid': 1, 'owners': 1, 'members': 1})):
+        owners = [u['username'] for u in db.users.find({'uid': {'$in': group['owners']}}, {'username': 1})]
         groups.append({'name': group['name'],
                        'gid': group['gid'],
                        'members': group['members'],
+                       'owners': owners,
                        'score': api.stats.get_group_average_score(gid=group['gid'])})
 
-    for group in list(db.groups.find({'members': tid}, {'name': 1, 'gid': 1})):
+    for group in list(db.groups.find({'members': tid}, {'name': 1, 'gid': 1, 'owners': 1})):
+        owners = [u['username'] for u in db.users.find({'tid': {'$in': group['owners']}}, {'username': 1})]
         groups.append({'name': group['name'],
                        'gid': group['gid'],
+                       'owners': owners,
                        'score': api.stats.get_group_average_score(gid=group['gid'])})
     return groups
 
@@ -144,6 +148,8 @@ def get_team_information(tid=None):
 
     team_info["score"] = api.stats.get_score(tid=tid)
     team_info["members"] = [member["username"] for member in get_team_members(tid=tid)]
+    team_info["competition_active"] = api.utilities.check_competition_active()
+    team_info["max_team_size"] = max_team_users
 
     if api.config.enable_achievements:
         team_info["achievements"] = api.achievement.get_earned_achievements(tid=tid)

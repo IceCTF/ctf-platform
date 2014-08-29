@@ -37,6 +37,50 @@ delete_group_schema = Schema({
     )
 }, extra=True)
 
+def is_owner_of_group(gid=None, name=None, tid=None):
+    """
+    Determine whether or not a user is an owner of the group. gid or name must be specified.
+
+    Args:
+        gid: the group id
+        name: the group name
+        tid: the tid id
+    Returns:
+        Wehther or not the user is a member of the group
+    """
+
+    group = get_group(gid=gid, name=name)
+
+    if tid is None:
+        if api.auth.is_logged_in():
+            tid = api.user.get_team()["tid"]
+        else:
+            raise InternalException("can not automatically retrieve tid if you aren't logged in.")
+
+    return tid in group["owners"]
+
+def is_member_of_group(gid=None, name=None, tid=None):
+    """
+    Determine whether or not a user is a member of the group. gid or name must be specified.
+
+    Args:
+        gid: the group id
+        name: the group name
+        tid: the team id
+    Returns:
+        Wehther or not the user is a member of the group
+    """
+
+    group = get_group(gid=gid, name=name)
+
+    if tid is None:
+        if api.auth.is_logged_in():
+            tid = api.user.get_team()["tid"]
+        else:
+            raise InternalException("can not automatically retrieve tid if you aren't logged in.")
+
+    return tid in group["members"] or is_owner_of_group(group["gid"], tid)
+
 def get_group(gid=None, name=None):
     """
     Retrieve a group based on its name or gid.

@@ -4,5 +4,10 @@
 web/js/*.js
 web/node_modules/
 web/_site/
+web/_includes/registration.html
+web/index.html
+web/faq.html
+web/contact.html
 web/game.html
+web/teachers.html
 api/graders/autogentest/instances/*

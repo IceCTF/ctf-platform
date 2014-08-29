@@ -12,7 +12,7 @@ startup_functions:
   <div class="well">
     <ul class="nav nav-tabs">
       <li class="active"><a data-toggle="tab" href="#manage-groups">Group Management</a></li>
-      <li><a data-toggle="tab" href="#visualize-teams">Team Visualizations</a></li>
+      <li><a data-toggle="tab" href="#visualize-teams">Team Management</a></li>
     </ul>
     <div class="tab-content">
       <div id="manage-groups" class="tab-pane fade in active">
@@ -28,9 +28,9 @@ startup_functions:
 
 <script type="text/template" id="group-selection-template">
   <div class="panel panel-default">
-    <div class="panel-heading">
+    <!--<div class="panel-heading">
       <h3 class="panel-title">Team Visualizations</h3>
-    </div>
+    </div>-->
     <div class="panel-body">
       <% if(groups.length > 0) { %>
         <div class="form-group">
@@ -57,7 +57,7 @@ startup_functions:
       <div class="row">
         <div class="problem panel panel-primary">
           <div class="panel-heading team-visualization-enabler" data-tid="<%= team.tid %>" data-toggle="collapse" data-target="#<%= team.tid %>">
-              <%- team.team_name %> <div class="pull-right"><%- team.score %></div>
+              <%- team.team_name %> <div class="pull-right"><%- team.competition_active ? team.score : '' %></div>
           </div>
           <div class="panel-collapse collapse" id="<%= team.tid %>">
             <div class="panel-body">
@@ -68,7 +68,12 @@ startup_functions:
               </div>
               <div class="col-md-4">
                 <div class="team-information">
-                  Other information
+                    <span class="team-members">Members:</span>
+                    <ul>
+                        <% _.each(team.members, function(member) { %>
+                        <li><%- member %></li>
+                        <% }) %>
+                    </ul>
                 </div>
               </div>
             </div>
@@ -86,9 +91,9 @@ startup_functions:
 
 <script type="text/template" id="group-info-template">
   <div class="panel panel-default">
-    <div class="panel-heading">
+    <!--<div class="panel-heading">
       <h3 class="panel-title">Group Management</h3>
-    </div>
+    </div>-->
 
     <% if(data.length > 0) { %>
       <table class="table">
