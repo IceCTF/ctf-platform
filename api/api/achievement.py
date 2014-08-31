@@ -363,7 +363,7 @@ def update_achievement(aid, updated_achievement):
     achievement.update(updated_achievement)
 
     # pass validation by removing/readding aid
-    achievement.pop("aid", None)
+    achievement.pop("aid")
     validate(achievement_schema, achievement)
     achievement["aid"] = aid
 
