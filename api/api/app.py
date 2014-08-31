@@ -390,6 +390,14 @@ def delete_group_hook():
     api.group.delete_group_request(api.common.flat_multi(request.form))
     return WebSuccess("Successfully deleted group")
 
+@app.route('/api/achievements', methods=['GET'])
+@require_login
+@api_wrapper
+def get_achievements_hook():
+    tid = api.user.get_team()["tid"]
+    return WebSuccess(data=api.achievement.get_earned_achievements(tid=tid))
+    
+
 @app.route('/api/stats/scoreboard', methods=['GET'])
 @api_wrapper
 @block_before_competition(WebError("The competition has not begun yet!"))
