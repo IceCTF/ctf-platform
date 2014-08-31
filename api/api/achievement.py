@@ -187,6 +187,7 @@ def get_earned_achievements(tid=None, uid=None):
     for achievement in achievements:
         if achievement["hidden"]:
             achievement["description"] = ""
+        achievement.pop("data")
 
     return achievements
 
