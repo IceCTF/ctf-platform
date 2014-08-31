@@ -390,8 +390,12 @@ def delete_group_hook():
 @api_wrapper
 def get_achievements_hook():
     tid = api.user.get_team()["tid"]
-    return WebSuccess(data=api.achievement.get_earned_achievements(tid=tid))
-    
+    achievements = api.achievement.get_earned_achievements(tid=tid)
+
+    for achievement in achievements:
+        achievement["timestamp"] = achievement["timestamp"].timestamp()
+
+    return WebSuccess(data=achievements)
 
 @app.route('/api/stats/scoreboard', methods=['GET'])
 @api_wrapper
