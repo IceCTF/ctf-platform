@@ -265,11 +265,6 @@ def problem_feedback_hook():
 def problem_reviews_hook():
     return WebSuccess(data=api.problem_feedback.get_reviewed_pids())
 
-@app.route('/api/news', methods=['GET'])
-@api_wrapper
-def load_news_hook():
-    return utilities.load_news()
-
 @app.route('/api/game/categorystats', methods=['GET'])
 @api_wrapper
 @require_login
