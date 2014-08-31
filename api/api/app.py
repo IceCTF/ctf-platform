@@ -1,10 +1,15 @@
-from flask import Flask, url_for, request, session
+"""
+Flask routing
+"""
 
-app = Flask(__name__)
+from flask import Flask, request, session, send_from_directory
+
+app = Flask(__name__, static_path="/")
 
 import api
 import json
 
+from os.path import join
 from api.common import WebSuccess, WebError
 from api.annotations import api_wrapper, require_login, require_teacher, require_admin, check_csrf
 from api.annotations import block_before_competition, block_after_competition
@@ -16,6 +21,24 @@ session_cookie_path = "/"
 session_cookie_name = "flask"
 
 secret_key = ""
+
+@app.route('/api/autogen/static/serve')
+@require_login
+def serve_autogen_static_hook():
+    pid = request.args.get("pid", None)
+    path = request.args.get("path", None)
+    instance_path = api.autogen.get_static_instance_path(pid)
+    return send_from_directory(instance_path, path)
+
+@app.route('/api/autogen/serve')
+@require_login
+def serve_autogen_hook():
+    pid = request.args.get("pid", None)
+    path = request.args.get("path", None)
+    tid = api.user.get_team()["tid"]
+    instance_number = api.autogen.get_instance_number(pid, tid)
+    instance_path = api.autogen.get_instance_path(pid, instance_number)
+    return send_from_directory(instance_path, path)
 
 def config_app(*args, **kwargs):
     """
@@ -31,9 +54,6 @@ def config_app(*args, **kwargs):
 
 @app.after_request
 def after_request(response):
-    #if request.headers.get('Origin', '') in api.config.competition_urls:
-    #    response.headers.add('Access-Control-Allow-Origin',
-    #                         request.headers['Origin'])
     response.headers.add('Access-Control-Allow-Methods', 'GET, POST')
     response.headers.add('Access-Control-Allow-Credentials', 'true')
     response.headers.add('Access-Control-Allow-Headers', 'Content-Type, *')
@@ -49,20 +69,6 @@ def after_request(response):
 
     response.mimetype = 'application/json'
     return response
-
-@app.route("/api/sitemap", methods=["GET"])
-@api_wrapper
-@require_admin
-def site_map_hook():
-    links = []
-    for rule in app.url_map._rules:
-        if "GET" in rule.methods or "POST" in rule.methods:
-            try:
-                url = url_for(rule.endpoint)
-                links.append(url)
-            except Exception:
-                pass
-    return WebSuccess("This is a message.", links)
 
 @app.route('/api/user/shell', methods=['GET'])
 @api_wrapper
@@ -101,13 +107,6 @@ def confirm_password_reset_hook():
 
     api.utilities.reset_password(token, password, confirm)
     return WebSuccess("Your password has been reset")
-
-@app.route('/api/team/get_ssh_account', methods=['GET'])
-@api_wrapper
-@require_login
-def get_ssh_account_hook():
-    data = api.team.get_ssh_account(api.user.get_team()['tid'])
-    return WebSuccess(data=data)
 
 @app.route('/api/user/login', methods=['POST'])
 @api_wrapper
