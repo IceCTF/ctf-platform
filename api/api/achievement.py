@@ -170,6 +170,22 @@ def set_earned_achievements_seen(tid=None, uid=None):
 
     db.earned_achievements.update(match, {"$set": {"seen": True}}, multi=True)
 
+def get_earned_achievements_display(tid=None, uid=None):
+    """
+    Gets the achievement display for a given user/team.
+
+    Args:
+        tid: The team id
+        tid: The user id
+    Returns:
+        A list of enabled achievements the team has earned.
+    """
+
+    #TODO: info leak
+    achievements = [get_achievement(aid=achievement["aid"]) for achievement in get_earned_achievement_entries(tid=tid, uid=uid)]
+
+    return achievements
+
 def get_earned_achievements(tid=None, uid=None):
     """
     Gets the solved achievements for a given team or user.
@@ -181,12 +197,13 @@ def get_earned_achievements(tid=None, uid=None):
         List of solved achievement dictionaries
     """
 
-    achievements = [get_achievement(aid=achievement["aid"]) for achievement in get_earned_achievement_entries(tid=tid, uid=uid)]
+    #TODO: Evaluate which fields are sensitive.
+
+    achievements = get_earned_achievement_entries(tid=tid, uid=uid)
     set_earned_achievements_seen(tid=tid, uid=uid)
 
     for achievement in achievements:
-        if achievement["hidden"]:
-            achievement["description"] = ""
+        achievement.update(get_achievement(aid=achievement["aid"]))
         achievement.pop("data")
 
     return achievements
