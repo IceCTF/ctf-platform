@@ -205,7 +205,7 @@ def reevaluate_earned_achievements(aid):
 
     keys = []
     for earned_achievement in get_earned_achievements():
-        if not process_achievement(aid, uid=earned_achievement["uid"]):
+        if not process_achievement(aid, data=earned_achievement["data"]):
             keys.append({"aid": aid, "tid":earned_achievement["tid"]})
 
     db.earned_achievements.remove({"$or": keys})
@@ -278,7 +278,7 @@ def insert_earned_achievement(aid, data):
 
     db = api.common.get_conn()
 
-    tid, uid = data.pop("tid"), data.pop("uid")
+    tid, uid = data.get("tid"), data.get("uid")
 
     db.earned_achievements.insert({
         "aid": aid,
