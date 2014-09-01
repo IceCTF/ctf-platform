@@ -7,71 +7,61 @@ from api.common import check, validate, safe_fail, WebException, InternalExcepti
 
 register_group_schema = Schema({
     Required("group-name"): check(
-        ("Group name must be between 3 and 50 characters.", [str, Length(min=3, max=100)]),
-        ("A group with that name already exists!", [
-            lambda name: safe_fail(get_group, name=name) is None])
+        ("Group name must be between 3 and 50 characters.", [str, Length(min=3, max=100)])
     )
 }, extra=True)
 
 join_group_schema = Schema({
     Required("group-name"): check(
         ("Group name must be between 3 and 50 characters.", [str, Length(min=3, max=100)]),
-        ("No group exists with that name!", [
-            lambda name: safe_fail(get_group, name=name) is not None]),
     )
 }, extra=True)
 
 leave_group_schema = Schema({
     Required("group-name"): check(
         ("Group name must be between 3 and 50 characters.", [str, Length(min=3, max=100)]),
-        ("No group exists with that name!", [
-            lambda name: safe_fail(get_group, name=name) is not None ]),
     )
 }, extra=True)
 
 delete_group_schema = Schema({
     Required("group-name"): check(
         ("Group name must be between 3 and 50 characters.", [str, Length(min=3, max=100)]),
-        ("No group exists with that name!", [
-            lambda name: safe_fail(get_group, name=name) is not None]),
     )
 }, extra=True)
 
-def is_owner_of_group(gid=None, name=None, tid=None):
+def is_owner_of_group(gid):
     """
-    Determine whether or not a user is an owner of the group. gid or name must be specified.
+    Determine whether or not the current user is an owner of the group. gid must be specified.
 
     Args:
         gid: the group id
-        name: the group name
-        tid: the tid id
     Returns:
-        Wehther or not the user is a member of the group
+        Whether or not the user is a member of the group
     """
 
-    group = get_group(gid=gid, name=name)
+    group = get_group(gid=gid)
 
-    if tid is None:
-        if api.auth.is_logged_in():
-            tid = api.user.get_team()["tid"]
-        else:
-            raise InternalException("can not automatically retrieve tid if you aren't logged in.")
+    if api.auth.is_logged_in():
+        uid = api.user.get_user()["uid"]
+    else:
+        raise InternalException("cannot automatically retrieve tid if you aren't logged in.")
 
-    return tid in group["owners"]
+    return uid == group["owner"]
 
-def is_member_of_group(gid=None, name=None, tid=None):
+def is_member_of_group(gid=None, name=None, owner_uid=None, tid=None):
     """
     Determine whether or not a user is a member of the group. gid or name must be specified.
 
     Args:
         gid: the group id
         name: the group name
+        owner_uid: uid of the group owner
         tid: the team id
     Returns:
-        Wehther or not the user is a member of the group
+        Whether or not the user is a member of the group
     """
 
-    group = get_group(gid=gid, name=name)
+    group = get_group(gid=gid, name=name, owner_uid=owner_uid)
 
     if tid is None:
         if api.auth.is_logged_in():
@@ -79,15 +69,16 @@ def is_member_of_group(gid=None, name=None, tid=None):
         else:
             raise InternalException("can not automatically retrieve tid if you aren't logged in.")
 
-    return tid in group["members"] or is_owner_of_group(group["gid"], tid)
+    return tid in group["members"]
 
-def get_group(gid=None, name=None):
+def get_group(gid=None, name=None, owner_uid=None):
     """
     Retrieve a group based on its name or gid.
 
     Args:
         name: the name of the group
         gid: the gid of the group
+        owner_uid: the uid of the group owner
     Returns:
         The group object.
     """
@@ -95,16 +86,17 @@ def get_group(gid=None, name=None):
     db = api.common.get_conn()
 
     match = {}
-    if name is not None:
+    if name is not None and owner_uid is not None:
         match.update({"name": name})
+        match.update({"owner": owner_uid})
     elif gid is not None:
         match.update({"gid": gid})
     else:
-        raise InternalException("Group name or gid must be specified to look it up.")
+        raise InternalException("Group name and owner or gid must be specified to look it up.")
 
     group = db.groups.find_one(match, {"_id": 0})
     if group is None:
-        raise InternalException("Could not find group! You gave: " + str(match))
+        raise InternalException("Could not find group!")
 
     return group
 
@@ -125,7 +117,7 @@ def get_member_information(gid):
     return member_information
 
 
-def create_group(tid, group_name):
+def create_group(uid, group_name):
     """
     Inserts group into the db. Assumes everything is validated.
 
@@ -142,14 +134,14 @@ def create_group(tid, group_name):
 
     db.groups.insert({
         "name": group_name,
-        "owners": [tid],
+        "owner": uid,
         "members": [],
         "gid": gid
     })
 
     return gid
 
-def create_group_request(params, tid=None):
+def create_group_request(params, uid=None):
     """
     Creates a new group. Validates forms.
     All required arguments are assumed to be keys in params.
@@ -158,18 +150,21 @@ def create_group_request(params, tid=None):
         group-name: The name of the group
 
         Optional:
-            tid: The team id creating the group. If ommitted,
-            the tid will be grabbed from the logged in user.
+            uid: The uid of the user creating the group. If omitted,
+            the uid will be grabbed from the logged in user.
     Returns:
         The new gid
     """
 
+    if uid is None:
+        uid = api.user.get_user()["uid"]
+
     validate(register_group_schema, params)
 
-    if tid is None:
-        tid = api.user.get_team()["tid"]
+    if safe_fail(get_group, name=params["group-name"], owner_uid=uid) is not None:
+        raise WebException("A group with that name already exists!")
 
-    return create_group(tid, params["group-name"])
+    return create_group(uid, params["group-name"])
 
 def join_group(tid, gid):
     """
@@ -191,14 +186,18 @@ def join_group_request(params, tid=None):
 
     Args:
         group-name: The name of the group to join.
-
+        group-owner: The name of the owner of the group
         Optional:
             tid: If omitted,the tid will be grabbed from the logged in user.
     """
 
-    validate(join_group_schema, params)
+    owner_uid = api.user.get_user(name=params["group-owner"])["uid"]
 
-    group = get_group(name=params["group-name"])
+    validate(join_group_schema, params)
+    if safe_fail(get_group, name=params["group-name"], owner_uid=owner_uid) is None:
+        raise WebException("No group exists with that name!")
+
+    group = get_group(name=params["group-name"], owner_uid=owner_uid)
 
     if tid is None:
         tid = api.user.get_team()["tid"]
@@ -215,12 +214,10 @@ def leave_group(tid, gid):
     Args:
         tid: the team id
         gid: the group id to leave
-        name: the group name to leave
     """
 
     db = api.common.get_conn()
 
-    db.groups.update({'gid': gid}, {'$pull': {'owners': tid}})
     db.groups.update({'gid': gid}, {'$pull': {'members': tid}})
 
 def leave_group_request(params, tid=None):
@@ -229,15 +226,15 @@ def leave_group_request(params, tid=None):
     All required arguments are assumed to be keys in params.
 
     Args:
-        group-name: The name of the group to join.
-
+        group-name: The name of the group to leave.
+        group-owner: The owner of the group to leave.
         Optional:
             tid: If omitted,the tid will be grabbed from the logged in user.
     """
 
     validate(leave_group_schema, params)
-
-    group = get_group(name=params["group-name"])
+    owner_uid = api.user.get_user(name=params["group-owner"])["uid"]
+    group = get_group(name=params["group-name"], owner_uid=owner_uid)
 
     if tid is None:
         tid = api.user.get_team()["tid"]
@@ -259,26 +256,28 @@ def delete_group(gid):
 
     db.groups.remove({'gid': gid})
 
-def delete_group_request(params, tid=None):
+def delete_group_request(params, uid=None):
     """
     Tries to delete a group. Validates forms.
     All required arguments are assumed to be keys in params.
 
     Args:
         group-name: The name of the group to join.
-
         Optional:
-            tid: If omitted,the tid will be grabbed from the logged in user.
+            uid: If omitted, the uid will be grabbed from the logged in user.
     """
 
     validate(delete_group_schema, params)
 
-    group = get_group(name=params["group-name"])
+    if uid is None:
+        uid = api.user.get_user()['uid']
 
-    if tid is None:
-        tid = api.user.get_team()["tid"]
+    if safe_fail(get_group, name=params['group-name'], owner_uid=uid) is None:
+        raise WebException("No group exists with that name!")
 
-    if tid not in group['owners']:
-        raise WebException("Your team is not an owner of that group!")
+    if uid is None:
+        uid = api.user.get_user()["uid"]
+
+    group = get_group(name=params["group-name"], owner_uid=uid)
 
     delete_group(group['gid'])

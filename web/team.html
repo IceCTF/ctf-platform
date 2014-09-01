@@ -47,7 +47,7 @@ startup_functions:
 <script type="text/template" id="group-info-template">
   <div class="panel panel-default">
     <div class="panel-heading">
-      <h3 class="panel-title">Group Management</h3>
+      <h3 class="panel-title">Class Management</h3>
     </div>
 
     <% if(data.length > 0) { %>
@@ -55,17 +55,17 @@ startup_functions:
         <thead>
           <tr>
             <th></th>
-            <th>Group Name</th>
+            <th>Class Name</th>
           </tr>
         </thead>
         <tbody>
           <% _.each(data, function(group) { %>
             <tr>
               <td>
-                <span data-group-name="<%- group.name %>" class="glyphicon glyphicon-remove leave-group-span"></span>
+                <span data-group-name="<%- group.name %>" data-group-owner="<%- group.owner %>" class="glyphicon glyphicon-remove leave-group-span"></span>
               </td>
               <td>
-                <p><%- group.name %> (<%- group.owners.join() %>)</p>
+                <p><%- group.name %> (<%- group.owner %>)</p>
               </td>
             </tr>
           <% }); %>
@@ -74,15 +74,16 @@ startup_functions:
     <% } %>
 
     <div class="panel-body">
-      <form class="form form-inline" id="group-request-form" type="submit">
+      <form role="form" class="form-inline" id="group-request-form" type="submit">
         <div class="form-group">
-          <div class="input-group">
-            <span class="input-group-btn">
-              <button class="btn btn-danger" id="join-group">Join</button>
-            </span>
-            <input type="text" class="form-control" id="group-name-input">
-          </div>
-        </div>
+            <label class="sr-only" for="group-name-input">Class Name</label>
+            <input type="text" class="form-control" id="group-name-input" placeholder="Class Name">
+        </div>                  
+        <div class="form-group">
+            <label class="sr-only" for="group-owner-input">Teacher</label>        
+            <input type="text" class="form-control" id="group-owner-input" placeholder="Teacher Username">
+        </div>                  
+        <button class="btn btn-danger" id="join-group">Join</button>        
       </div>
     </form>
   </div>
@@ -94,7 +95,7 @@ startup_functions:
       <h3 class="panel-title">Team: <strong><%- data.team_name %> <div class="pull-right"><%- data.competition_active ? data.score : '' %></strong></h3>
     </div>
     <div class="panel-body">
-      <p>Members</p>
+      <p>Members:</p>
       <ul>
         <% _.each(data.members, function(username) { %>
           <li><%- username %></li>
