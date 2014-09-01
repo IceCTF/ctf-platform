@@ -1,2 +1,2 @@
-def process(api, tid, uid):
-    return api.stats.get_score(tid=tid) > 100
+def process(api, data):
+    return api.stats.get_score(tid=data["tid"]) > 100

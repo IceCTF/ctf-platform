@@ -263,8 +263,8 @@ def get_instance_path(pid, n=""):
     Gets the path to a particular instance of a problem.
 
     Args:
+        pid: the problem id
         n: the instance number, defaults to base of instances
-        verify: Verify the path exists
     Returns:
         The path to the particular instance.
     """

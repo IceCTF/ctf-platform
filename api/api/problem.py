@@ -297,7 +297,6 @@ def grade_problem(pid, key, tid=None):
         "message": message
     }
 
-@api.achievement.process_achievements("submit", condition=lambda result: result["correct"])
 def submit_key(tid, pid, key, uid=None, ip=None):
     """
     User problem submission. Problem submission is inserted into the database.
@@ -326,6 +325,7 @@ def submit_key(tid, pid, key, uid=None, ip=None):
     user = api.user.get_user(uid=uid)
     if user is None:
         raise InternalException("User submitting flag does not exist.")
+
     uid = user["uid"]
 
     result = grade_problem(pid, key, tid)
@@ -354,6 +354,8 @@ def submit_key(tid, pid, key, uid=None, ip=None):
         api.cache.invalidate_memoization(get_solved_pids, {"kwargs.tid":tid} , {"kwargs.uid":uid})
 
         api.cache.invalidate_memoization(api.stats.get_score_progression, {"kwargs.tid":tid}, {"kwargs.uid":uid})
+
+        api.achievement.process_achievements("submit", {"uid": uid, "tid": tid, "pid": pid})
 
     return result
 

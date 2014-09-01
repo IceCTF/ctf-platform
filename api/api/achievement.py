@@ -170,6 +170,22 @@ def set_earned_achievements_seen(tid=None, uid=None):
 
     db.earned_achievements.update(match, {"$set": {"seen": True}}, multi=True)
 
+def get_earned_achievements_display(tid=None, uid=None):
+    """
+    Gets the achievement display for a given user/team.
+
+    Args:
+        tid: The team id
+        tid: The user id
+    Returns:
+        A list of enabled achievements the team has earned.
+    """
+
+    #TODO: info leak
+    achievements = [get_achievement(aid=achievement["aid"]) for achievement in get_earned_achievement_entries(tid=tid, uid=uid)]
+
+    return achievements
+
 def get_earned_achievements(tid=None, uid=None):
     """
     Gets the solved achievements for a given team or user.
@@ -181,12 +197,14 @@ def get_earned_achievements(tid=None, uid=None):
         List of solved achievement dictionaries
     """
 
-    achievements = [get_achievement(aid=achievement["aid"]) for achievement in get_earned_achievement_entries(tid=tid, uid=uid)]
+    #TODO: Evaluate which fields are sensitive.
+
+    achievements = get_earned_achievement_entries(tid=tid, uid=uid)
     set_earned_achievements_seen(tid=tid, uid=uid)
 
     for achievement in achievements:
-        if achievement["hidden"]:
-            achievement["description"] = ""
+        achievement.update(get_achievement(aid=achievement["aid"]))
+        achievement.pop("data")
 
     return achievements
 
@@ -204,7 +222,7 @@ def reevaluate_earned_achievements(aid):
 
     keys = []
     for earned_achievement in get_earned_achievements():
-        if not process_achievement(aid, uid=earned_achievement["uid"]):
+        if not process_achievement(aid, data=earned_achievement["data"]):
             keys.append({"aid": aid, "tid":earned_achievement["tid"]})
 
     db.earned_achievements.remove({"$or": keys})
@@ -245,78 +263,73 @@ def get_processor(aid):
     except FileNotFoundError:
         raise InternalException("Achievement processor is offline.")
 
-def process_achievement(aid, uid=None):
+def process_achievement(aid, data):
     """
     Determines whether or not an achievement has been earned.
 
     Args:
         aid: the achievement id
-        uid: the user id
+        data: additional data dictionary
     """
 
-    if uid is None:
-        uid = api.user.get_user()["uid"]
+    if data.get("uid", None) is None:
+        data["uid"] = api.user.get_user()["uid"]
 
-    tid = api.user.get_user(uid=uid)["tid"]
+    if data.get("tid", None) is None:
+        data["tid"] = api.user.get_user(uid=data["uid"])["tid"]
 
     get_achievement(aid=aid, show_disabled=True)
     processor = get_processor(aid)
 
-    return processor.process(api, tid, uid)
+    return processor.process(api, data)
 
-def insert_earned_achievement(aid, tid, uid):
+def insert_earned_achievement(aid, data):
     """
     Store earned achievement for a user/team.
 
     Args:
         aid: the achievement id
-        tid: the team id
-        uid: the user id
+        data: the data necessary to assess the achievement
+              must include tid, uid
     """
 
     db = api.common.get_conn()
+
+    tid, uid = data.get("tid"), data.get("uid")
 
     db.earned_achievements.insert({
         "aid": aid,
         "tid": tid,
         "uid": uid,
+        "data": data,
         "timestamp": datetime.utcnow(),
         "seen": False
     })
 
-def process_achievements(*events, condition=None):
+def process_achievements(event, data):
     """
-    Annotations for processing achievements of a given event type.
+    Process achievements of a type with data.
+
+    Args:
+        event: event type, e.g., submit
+        data: dictionary with additional information necessary for assesment
     """
 
-    def clear(f):
+    if data.get("uid", None) is None:
+        data["uid"] = api.user.get_user()["uid"]
 
-        @wraps(f)
-        def wrapper(*args, **kwargs):
-            result = f(*args, **kwargs)
+    if data.get("tid", None) is None:
+        data["tid"] = api.user.get_user(uid=data["uid"])["tid"]
 
-            if condition is None or condition(result):
-                user = api.user.get_user()
-                tid = user["tid"]
-                uid = user["uid"]
+    eligible_achievements = [
+        achievement for achievement in get_all_achievements(event=event) \
+            if achievement not in get_earned_achievements(tid=data["tid"])]
 
-                for event in events:
+    for achievement in eligible_achievements:
+        aid = achievement["aid"]
 
-                    eligible_achievements = [
-                        achievement for achievement in get_all_achievements(event=event) \
-                            if achievement not in get_earned_achievements(tid=tid)]
-
-                    for achievement in eligible_achievements:
-                        aid = achievement["aid"]
-
-                        if process_achievement(aid, uid=uid):
-                            insert_earned_achievement(aid, tid, uid)
-
-            return result
-
-        return wrapper
-
-    return clear
+        if process_achievement(aid, data):
+            insert_earned_achievement(aid, data)
 
 def insert_achievement(achievement):
     """
@@ -367,7 +380,7 @@ def update_achievement(aid, updated_achievement):
     achievement.update(updated_achievement)
 
     # pass validation by removing/readding aid
-    achievement.pop("aid", None)
+    achievement.pop("aid")
     validate(achievement_schema, achievement)
     achievement["aid"] = aid
 
