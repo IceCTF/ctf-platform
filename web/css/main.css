@@ -48,6 +48,18 @@ img.logo {
     cursor: pointer;
 }
 
+.deleter-column {
+    width: 30px;
+}
+
+#footer {
+    margin-top: 40px;   
+}
+
+.footer-widget {
+    text-align: left; 
+}
+
 /* Buttons */
 
 .btn {

@@ -12,16 +12,17 @@ startup_functions:
   <div class="row">
     <div class="col-md-6">
       <div id="team-info"></div>
+      <div class="panel panel-default" id="team-progression-graph-container" >
+          <div class="panel-heading">
+             <h3 class="panel-title">Team Score Progression</h3>             
+          </div>
+          <div class="panel-body team-panel-body">
+             <div id="team-progression-graph"></div>
+          </div>
+      </div>
     </div>
     <div class="col-md-6">
       <div id="group-info"></div>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-md-6">
-        <div class="well" id="team-progression-graph-container" >
-            <div id="team-progression-graph"></div>
-        </div>
     </div>
   </div>
 </div>
@@ -54,7 +55,7 @@ startup_functions:
       <table class="table">
         <thead>
           <tr>
-            <th></th>
+            <th class="deleter-column"></th>
             <th>Class Name</th>
           </tr>
         </thead>
@@ -73,7 +74,7 @@ startup_functions:
       </table>
     <% } %>
 
-    <div class="panel-body">
+    <div class="panel-body team-panel-body">
       <form role="form" class="form-inline" id="group-request-form" type="submit">
         <div class="form-group">
             <label class="sr-only" for="group-name-input">Class Name</label>

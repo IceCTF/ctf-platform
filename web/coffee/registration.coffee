@@ -13,12 +13,22 @@ submitRegistration = (e) ->
   creatingTeacherAccount = $("#registration-adviser-page").is(":visible")
   registrationData["create-new-team"] = creatingNewTeam
   registrationData["create-new-teacher"] = creatingTeacherAccount
-
+    
+  if creatingNewTeam
+    registrationData["ctf-emails"] = $("#checkbox-emails-create").is(':checked')
+    submitButton = "#register-button-create"
+  else if creatingTeacherAccount
+    registrationData["ctf-emails"] = $("#checkbox-emails-teacher").is(':checked')
+    submitButton = "#register-button-teacher"
+  else
+    registrationData["ctf-emails"] = $("#checkbox-emails-existing").is(':checked')
+    submitButton = "#register-button-existing"
+    
   apiCall "POST", "/api/user/create", registrationData
   .done (data) ->
     switch data['status']
       when 0
-        $("#register-button").apiNotify(data, {position: "right"})
+        $(submitButton).apiNotify(data, {position: "right"})
         reloadCaptcha()
       when 1        
         if creatingTeacherAccount
@@ -35,18 +45,6 @@ $ ->
   $("#registration-new-team-page").hide()
   $("#registration-join-team-page").hide()
   $("#registration-adviser-page").hide()
-
-  $("#checkbox-adviser").change () ->
-    if $(this).is(":checked")
-      $("#button-adviser").show()
-    else
-      $("#button-adviser").hide()
-
-  $("#occupation-select").change () ->
-    if this.value == "student"
-      $("#school-level-select-container").show()
-    else
-      $("#school-level-select-container").hide()
 
   pageTransitionSpeed = 200
 
