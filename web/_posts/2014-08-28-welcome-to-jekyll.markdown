@@ -1,5 +1,4 @@
 ---
-layout: post
 title:  "Welcome to picoCTF!"
 date:   2014-08-28 17:29:23
 categories: jekyll update
