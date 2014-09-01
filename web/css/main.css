@@ -36,6 +36,10 @@ img.logo {
 	border-bottom: none;
 }
 
+.team-visualization-enabler {
+    cursor: pointer;
+}
+
 /* Buttons */
 
 .btn {
