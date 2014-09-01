@@ -40,6 +40,14 @@ img.logo {
     cursor: pointer;
 }
 
+.delete-group-span {
+    cursor: pointer;
+}
+
+.leave-group-span {
+    cursor: pointer;
+}
+
 /* Buttons */
 
 .btn {
