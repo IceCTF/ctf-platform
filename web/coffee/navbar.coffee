@@ -82,6 +82,8 @@ loadNavbar = (renderNavbarLinks, renderNestedNavbarLinks) ->
     navbarLayout.links = userNotLoggedIn
 
     if data["status"] == 1
+      if not data.data["logged_in"] 
+        $(".show-when-logged-out").css("display", "inline-block")
       if data.data["teacher"]
         if data.data["competition_active"]
            navbarLayout.links = teacherLoggedIn

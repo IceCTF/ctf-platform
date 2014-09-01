@@ -60,6 +60,10 @@ img.logo {
     text-align: left; 
 }
 
+.show-when-logged-out {
+    display: none;   
+}
+
 /* Buttons */
 
 .btn {
