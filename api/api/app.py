@@ -78,7 +78,8 @@ def get_shell_account_hook():
 @app.route('/api/user/create', methods=['POST'])
 @api_wrapper
 def create_user_hook():
-    api.user.create_user_request(api.common.flat_multi(request.form))
+    new_uid = api.user.create_user_request(api.common.flat_multi(request.form))
+    session['uid'] = new_uid
     return WebSuccess("User '{}' registered successfully!".format(request.form["username"]))
 
 @app.route('/api/user/update_password', methods=['POST'])

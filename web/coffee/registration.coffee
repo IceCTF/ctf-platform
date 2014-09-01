@@ -9,8 +9,10 @@ submitRegistration = (e) ->
   e.preventDefault()
 
   registrationData = $("#user-registration-form").serializeObject()
-  registrationData["create-new-team"] = $("#registration-new-team-page").is(":visible")
-  registrationData["create-new-teacher"] = $("#registration-adviser-page").is(":visible")
+  creatingNewTeam = $("#registration-new-team-page").is(":visible")    
+  creatingTeacherAccount = $("#registration-adviser-page").is(":visible")
+  registrationData["create-new-team"] = creatingNewTeam
+  registrationData["create-new-teacher"] = creatingTeacherAccount
 
   apiCall "POST", "/api/user/create", registrationData
   .done (data) ->
@@ -18,8 +20,11 @@ submitRegistration = (e) ->
       when 0
         $("#register-button").apiNotify(data, {position: "right"})
         reloadCaptcha()
-      when 1
-        document.location.href = "/login"
+      when 1        
+        if creatingTeacherAccount
+            document.location.href = "/classroom"
+        else
+            document.location.href = "/team"
 
 $ ->
   # possibly disable this
@@ -62,6 +67,7 @@ $ ->
 
   $("#country-select").html('
         <option value="">Country...</option>
+        <option value="US">United States of America</option>
         <option value="AF">Afghanistan</option>
         <option value="AL">Albania</option>
         <option value="DZ">Algeria</option>
@@ -293,8 +299,7 @@ $ ->
         <option value="UG">Uganda</option>
         <option value="UA">Ukraine</option>
         <option value="AE">United Arab Emirates</option>
-        <option value="GB">United Kingdom</option>
-        <option value="US">United States of America</option>
+        <option value="GB">United Kingdom</option>    
         <option value="UY">Uruguay</option>
         <option value="UZ">Uzbekistan</option>
         <option value="VU">Vanuatu</option>
