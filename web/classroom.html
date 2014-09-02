@@ -10,10 +10,15 @@ startup_functions:
 
 <div class="container">
     <div class="row">
+        <div class="col-md-12" style="margin-bottom: 10px">
+            {% include classroom.html %}
+        </div>
+    </div>
+    <div class="row">
         <div class="col-md-12">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                  <h3 class="panel-title">Group Management</h3>
+                  <h3 class="panel-title">Class Management</h3>
                 </div>
                 <div class="panel-body">
                     <div id="group-management"></div>
@@ -41,7 +46,7 @@ startup_functions:
       <% if(groups.length > 0) { %>
         <form class="form-horizontal" role="form">
             <div class="form-group">
-                <label for="group-selector" class="col-sm-2 control-label">Select a group</label>
+                <label for="group-selector" class="col-sm-2 control-label">Select a class</label>
                 <div class="col-sm-5">            
                     <select id="group-selector" class="form-control">
                         <option value="none-selected">None</option>
@@ -105,7 +110,9 @@ startup_functions:
         <thead>
           <tr>
             <th class="deleter-column"></th>
-            <th>Group Name</th>
+            <th>
+                Your Classes:
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -121,9 +128,8 @@ startup_functions:
           <% }); %>
         </tbody>
       </table>
-    <% } %>
-    
-      <form class="form form-inline" id="group-request-form" type="submit">
+    <% } %>  
+    <form class="form form-inline" id="group-request-form" type="submit">
         <div class="form-group">
           <div class="input-group">
             <span class="input-group-btn">

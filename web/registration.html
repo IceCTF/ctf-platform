@@ -10,7 +10,7 @@ startup_functions:
 <div class="container-narrow">
     <div class="contentbox">
         <div class="row">
-            {% include registration.html %}
+            {% include registration.html %}            
         </div>
         <div class="row">
             <div class="container">
@@ -57,10 +57,16 @@ startup_functions:
                         </div>
                         <div class="form-group">
                             <center>
-                                <div class="btn-group">
-                                    <button type="button" class="btn btn-primary" id="button-new-team">Create a New Team</button>
-                                    <button type="button" class="btn btn-primary" id="button-join-team">Join an Existing Team</button>
-                                    <button type="button" class="btn btn-primary" id="button-adviser">Create an Adviser Account</button>
+                                <div class="btn-group" data-toggle="buttons">
+                                     <label class="btn btn-primary" id="button-new-team">
+                                        <input type="radio">Create a New Team
+                                     </label>
+                                     <label class="btn btn-primary" id="button-join-team">
+                                        <input type="radio">Join an Existing Team
+                                     </label>
+                                     <label class="btn btn-primary" id="button-adviser">
+                                        <input type="radio">Create a Teacher Account
+                                     </label>
                                 </div>
                             </center>
                         </div>
@@ -160,6 +166,9 @@ startup_functions:
                                     <input type="checkbox" id="checkbox-emails-teacher"> I would like to receive emails about other CTFs for high school students
                                 </label>
                             </div>
+                        </div>
+                        <div>
+                            <p>Note that while Teacher Accounts can solve challenges during the competition, they do not appear on the public scoreboard.</p>
                         </div>
                         <div class="form-group">
                             <div class="controls registration-controls">

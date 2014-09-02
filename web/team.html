@@ -6,9 +6,14 @@ post_scripts:
  - js/team.js
 startup_functions:
  - redirectIfNotLoggedIn()
+ - redirectIfTeacher()
 ---
-
 <div class="container">
+  <div class="row">
+     <div class="col-md-12" style="margin-bottom: 10px">
+        {% include team.html %}
+     </div>
+  </div>
   <div class="row">
     <div class="col-md-6">
       <div id="team-info"></div>
@@ -48,9 +53,11 @@ startup_functions:
 <script type="text/template" id="group-info-template">
   <div class="panel panel-default">
     <div class="panel-heading">
-      <h3 class="panel-title">Class Management</h3>
+      <h3 class="panel-title">Class Membership</h3>
+    </div>        
+    <div class="col-md-12" style="margin-top: 10px">
+        {% include class_membership.html %}    
     </div>
-
     <% if(data.length > 0) { %>
       <table class="table">
         <thead>

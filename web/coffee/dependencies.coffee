@@ -22,6 +22,14 @@
       when 1
         if data.data["logged_in"]
           window.location.href = "/"
+            
+@redirectIfTeacher = ->
+  apiCall "GET", "/api/user/status", {}
+  .done (data) ->
+    switch data["status"]
+      when 1
+        if data.data["teacher"]
+          window.location.href = "/classroom"
 
 getStyle = (data) ->
   style = "info"
