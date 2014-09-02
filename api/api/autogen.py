@@ -243,10 +243,10 @@ def get_number_of_instances(pid):
     # this is more reliable than before, but it may be a little slow
     try:
         return [dirname.isdigit() for dirname in os.listdir(get_instance_path(pid))].count(True)
-    except FileNotFoundError as error:
+    except FileNotFoundError:
         raise InternalException("Could not find problem instances.")
 
-def get_static_instance_path(pid):
+def get_static_instance_path(pid, public=True):
     """
     Gets the path to the static resources of a problem.
 
@@ -256,9 +256,9 @@ def get_static_instance_path(pid):
         The path to the static resources of an autogen problem.
     """
 
-    return path.abspath(path.join(get_instance_path(pid), "static"))
+    return path.abspath(path.join(get_instance_path(pid, public=public), "static"))
 
-def get_instance_path(pid, n=""):
+def get_instance_path(pid, n="", public=True):
     """
     Gets the path to a particular instance of a problem.
 
@@ -273,6 +273,9 @@ def get_instance_path(pid, n=""):
     name = api.problem.get_problem(pid)["name"]
 
     instance_path = path.join(path.dirname(generator_path), "instances", name, str(n))
+
+    if public:
+        instance_path = path.join(instance_path, "public")
 
     return path.abspath(instance_path)
 
