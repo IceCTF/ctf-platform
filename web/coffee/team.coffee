@@ -22,17 +22,17 @@ load_group_info = ->
         $("#join-group").on "click", group_request
         $("#group-request-form").on "submit", join_group_request
         $(".leave-group-span").on "click", (e) ->
-          leave_group $(e.target).data("group-name")
+          leave_group $(e.target).data("group-name"), $(e.target).data("group-owner")
 
-join_group = (group_name) ->
-  apiCall "POST", "/api/group/join", {"group-name": group_name}
+join_group = (group_name, group_owner) ->
+  apiCall "POST", "/api/group/join", {"group-name": group_name, "group-owner": group_owner}
   .done (data) ->
     apiNotify(data)
     if data["status"] is 1
       load_group_info()
 
-leave_group = (group_name) ->
-  apiCall "POST", "/api/group/leave", {"group-name": group_name}
+leave_group = (group_name, group_owner) ->
+  apiCall "POST", "/api/group/leave", {"group-name": group_name, "group-owner": group_owner}
   .done (data) ->
     apiNotify(data)
     if data["status"] is 1
@@ -47,12 +47,12 @@ group_request = (e) ->
     return
   return
 
-
 join_group_request = (e) ->
   e.preventDefault()
 
   group_name = $("#group-name-input").val()
-  join_group group_name
+  group_owner = $("#group-owner-input").val()
+  join_group group_name, group_owner
 
 $ ->
   load_team_info()

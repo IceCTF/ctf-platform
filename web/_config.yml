@@ -1,5 +1,5 @@
 # Site settings
-title: picoCTF
+title: picoCTF 2014
 
 destination: /srv/http/ctf
 exclude: ['coffee', 'node_modules']

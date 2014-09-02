@@ -78,7 +78,8 @@ def get_shell_account_hook():
 @app.route('/api/user/create', methods=['POST'])
 @api_wrapper
 def create_user_hook():
-    api.user.create_user_request(api.common.flat_multi(request.form))
+    new_uid = api.user.create_user_request(api.common.flat_multi(request.form))
+    session['uid'] = new_uid
     return WebSuccess("User '{}' registered successfully!".format(request.form["username"]))
 
 @app.route('/api/user/update_password', methods=['POST'])
@@ -324,15 +325,17 @@ def get_group_list_hook():
 @require_login
 def get_group_hook():
     name = request.form.get("group-name")
-    if not api.group.is_member_of_group(name=name):
+    owner = request.form.get("group-owner")
+    owner_uid = api.user.get_user(name=owner)["uid"]
+    if not api.group.is_member_of_group(name=name, owner_uid=owner_uid):
         return WebError("You are not a member of this group.")
-    return WebSuccess(data=api.group.get_group(name=request.form.get("group-name")))
+    return WebSuccess(data=api.group.get_group(name=request.form.get("group-name"), owner_uid=owner_uid))
 
 @app.route('/api/group/member_information', methods=['GET'])
 @api_wrapper
 def get_memeber_information_hook(gid=None):
     gid = request.args.get("gid")
-    if not api.group.is_owner_of_group(gid=gid):
+    if not api.group.is_owner_of_group(gid):
         return WebError("You do not own that group!")
 
     return WebSuccess(data=api.group.get_member_information(gid=gid))
@@ -340,7 +343,7 @@ def get_memeber_information_hook(gid=None):
 @app.route('/api/group/score', methods=['GET'])
 @api_wrapper
 @require_teacher
-def get_group_score_hook():
+def get_group_score_hook():  #JB: Fix this
     name = request.args.get("group-name")
     if not api.group.is_owner_of_group(gid=name):
         return WebError("You do not own that group!")

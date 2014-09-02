@@ -10,10 +10,10 @@ startup_functions:
 <div class="container-narrow">
     <div class="contentbox">
         <div class="row">
-            {% include registration.html %}
+            {% include registration.html %}            
         </div>
         <div class="row">
-            <div class="col-md-4 col-md-offset-4">
+            <div class="container">
                 <form class="form-horizontal" id="user-registration-form">
                     <div id="registration-user-page">
                         <div class="form-group">
@@ -35,42 +35,43 @@ startup_functions:
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label" for="occupation-select">Background</label>
-                            <select class="form-control" id="occupation-select">
-                                <option value="student">Student</option>
+                            <label class="control-label" for="background-select">Background</label>
+                            <select class="form-control" id="background-select" name="background-select">
+                                <option value="student_el">Elementary School Student</option>
+                                <option value="student_ms">Middle School Student</option>                                
+                                <option value="student_hs" selected="selected">High School Student</option>
+                                <option value="student_undergrad">Undergraduate</option>
+                                <option value="student_grad">Graduate Student</option>
+                                <option value="student_home">Homeschooled Student</option>
                                 <option value="teacher">Teacher</option>
                                 <option value="secprof">Security Professional</option>
-                                <option value="hobbyist">CTF Hobbyist</option>
+                                <option value="hobbyist">CTF Hobbyist (non-Student)</option>
                                 <option value="other">Other</option>
-                            </select>
-                        </div>
-                        <div class="form-group" id="school-level-select-container">
-                            <label class="control-label" for="school-level-select">What type of student are you?</label>
-                            <select class="form-control" id="school-level-select">
-                                <option>Elementary School</option>
-                                <option>Middle School</option>
-                                <option>High School</option>
-                                <option>Undergraduate</option>
-                                <option>Graduate</option>
-                                <option>Other</option>
                             </select>
                         </div>
                         <div class="form-group">
                             <label class="control-label" for="country-select">Where are you from?</label>
-                            <select class="form-control" id="country-select">
+                            <select class="form-control" id="country-select" name="country-select">
                                 <!-- Countries get added here -->
                             </select>
                         </div>
                         <div class="form-group">
                             <center>
-                                <div class="btn-group">
-                                    <button type="button" class="btn btn-primary" id="button-new-team">Create a New Team</button>
-                                    <button type="button" class="btn btn-primary" id="button-join-team">Join an Existing Team</button>
-                                    <button type="button" class="btn btn-primary" id="button-adviser">Create an Adviser Account</button>
+                                <div class="btn-group" data-toggle="buttons">
+                                     <label class="btn btn-primary" id="button-new-team">
+                                        <input type="radio">Create a New Team
+                                     </label>
+                                     <label class="btn btn-primary" id="button-join-team">
+                                        <input type="radio">Join an Existing Team
+                                     </label>
+                                     <label class="btn btn-primary" id="button-adviser">
+                                        <input type="radio">Create a Teacher Account
+                                     </label>
                                 </div>
                             </center>
                         </div>
                     </div>
+                    <div id="stretch-box">
                     <div id="registration-new-team-page" class="hidden-page">
                         <div id="new-team" class="tab-pane fade in active">
                             <div id="new-team-registration" class="team-registration-form">
@@ -109,13 +110,13 @@ startup_functions:
                         <div class="form-group">
                             <div class="checkbox">
                                 <label>
-                                    <input type="checkbox"> Feel free to send me emails about other CTFs
+                                    <input type="checkbox" id="checkbox-emails-create"> I would like to receive emails about other CTFs for high school students
                                 </label>
                             </div>
                         </div>
                         <div class="form-group">
                             <div class="controls registration-controls">
-                                <button id="register-button" type="submit" class="btn btn-primary">
+                                <button id="register-button-create" type="submit" class="btn btn-primary">
                                     Register
                                 </button>
                             </div>
@@ -139,13 +140,13 @@ startup_functions:
                         <div class="form-group">
                             <div class="checkbox">
                                 <label>
-                                    <input type="checkbox"> Feel free to send me emails about other CTFs
+                                    <input type="checkbox" id="checkbox-emails-existing"> I would like to receive emails about other CTFs for high school students
                                 </label>
                             </div>
                         </div>
                         <div class="form-group">
                             <div class="controls registration-controls">
-                                <button id="register-button" type="submit" class="btn btn-primary">
+                                <button id="register-button-existing" type="submit" class="btn btn-primary">
                                     Register
                                 </button>
                             </div>
@@ -163,13 +164,16 @@ startup_functions:
                         <div class="form-group">
                             <div class="checkbox">
                                 <label>
-                                    <input type="checkbox"> Feel free to send me emails about other CTFs
+                                    <input type="checkbox" id="checkbox-emails-teacher"> I would like to receive emails about other CTFs for high school students
                                 </label>
                             </div>
                         </div>
+                        <div>
+                            <p>Note that while Teacher Accounts can solve challenges during the competition, they do not appear on the public scoreboard.</p>
+                        </div>
                         <div class="form-group">
                             <div class="controls registration-controls">
-                                <button id="register-button" type="submit" class="btn btn-primary">
+                                <button id="register-button-teacher" type="submit" class="btn btn-primary">
                                     Register
                                 </button>
                             </div>
@@ -177,6 +181,7 @@ startup_functions:
                     </div>
                 </form>
             </div>
+        </div>
         </div>
     </div>
 </div>

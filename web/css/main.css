@@ -1,12 +1,125 @@
-body {
-  padding-top: 50px;
-}
-
 .faded-chart {
     opacity: 0.25; 
     filter: alpha(opacity=25);
 }
 
+.button-column {
+    padding-left: 0px;
+    padding-right: 0px;
+}   
+
+.login-changer {
+    text-align: right;
+}
+
 .hidden-page {
     display: none;   
+}
+
+img.logo {
+	background-color: white;
+	display: block;
+	vertical-align: middle;
+	border-radius: 15px;
+	border-style: solid;
+	border-width: 5px;
+	border-color: white;
+	margin: auto;
+}
+
+.home-section {
+	margin-bottom: 0px;
+}
+
+.wrap-pattern {
+	background-color: #161415;
+	border-bottom: none;
+}
+
+.team-visualization-enabler {
+    cursor: pointer;
+}
+
+.delete-group-span {
+    cursor: pointer;
+}
+
+.leave-group-span {
+    cursor: pointer;
+}
+
+.deleter-column {
+    width: 30px;
+}
+
+#footer {
+    margin-top: 40px;   
+}
+
+.footer-widget {
+    text-align: left; 
+}
+
+.show-when-logged-out {
+    display: none;   
+}
+
+/* Buttons */
+
+.btn {
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+}
+
+.btn-primary {
+    background: #00a1cb;
+    background-color: #00a1cb;
+    border-color: #007998;
+    color: white;
+    text-shadow: 0 -1px 1px rgba(0, 40, 50, 0.35);
+}
+
+.btn-primary:hover {
+    background-color: #008db2;
+    background: #008db2;
+}
+
+.btn-success {
+    background: #7db500;
+    background-color: #7db500;
+    border-color: #5a8200;
+    color: white;
+    text-shadow: 0 -1px 1px rgba(19, 28, 0, 0.35);
+}
+
+.btn-success:hover {
+    background-color: #6b9c00;
+    background: #6b9c00;
+}
+
+.btn-danger {
+    background: #e54028;
+    background-color: #e54028;
+    border-color: #c22d18;
+    color: white;
+    text-shadow: 0 -1px 1px rgba(103, 24, 13, 0.35);
+}
+
+.btn-danger:hover {
+    background-color: #d9331a;
+    background: #d9331a;
+}
+
+
+.btn-success:active {    
+    color: white;
+}
+
+.btn-primary:active {    
+    color: white;
+}
+
+.btn-danger:active {    
+    color: white;
 }

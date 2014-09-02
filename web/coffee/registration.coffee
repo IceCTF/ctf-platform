@@ -9,17 +9,32 @@ submitRegistration = (e) ->
   e.preventDefault()
 
   registrationData = $("#user-registration-form").serializeObject()
-  registrationData["create-new-team"] = $("#registration-new-team-page").is(":visible")
-  registrationData["create-new-teacher"] = $("#registration-adviser-page").is(":visible")
-
+  creatingNewTeam = $("#registration-new-team-page").is(":visible")    
+  creatingTeacherAccount = $("#registration-adviser-page").is(":visible")
+  registrationData["create-new-team"] = creatingNewTeam
+  registrationData["create-new-teacher"] = creatingTeacherAccount
+    
+  if creatingNewTeam
+    registrationData["ctf-emails"] = $("#checkbox-emails-create").is(':checked')
+    submitButton = "#register-button-create"
+  else if creatingTeacherAccount
+    registrationData["ctf-emails"] = $("#checkbox-emails-teacher").is(':checked')
+    submitButton = "#register-button-teacher"
+  else
+    registrationData["ctf-emails"] = $("#checkbox-emails-existing").is(':checked')
+    submitButton = "#register-button-existing"
+    
   apiCall "POST", "/api/user/create", registrationData
   .done (data) ->
     switch data['status']
       when 0
-        $("#register-button").apiNotify(data, {position: "right"})
+        $(submitButton).apiNotify(data, {position: "right"})
         reloadCaptcha()
-      when 1
-        document.location.href = "/login"
+      when 1        
+        if creatingTeacherAccount
+            document.location.href = "/classroom"
+        else
+            document.location.href = "/team"
 
 $ ->
   # possibly disable this
@@ -31,37 +46,36 @@ $ ->
   $("#registration-join-team-page").hide()
   $("#registration-adviser-page").hide()
 
-  $("#checkbox-adviser").change () ->
-    if $(this).is(":checked")
-      $("#button-adviser").show()
-    else
-      $("#button-adviser").hide()
-
-  $("#occupation-select").change () ->
-    if this.value == "student"
-      $("#school-level-select-container").show()
-    else
-      $("#school-level-select-container").hide()
-
   pageTransitionSpeed = 200
 
-  $("#button-new-team").click () ->
+  # Note that this height/auto sillyness is specific to the known height relationship
+  # between these pages. If one gets longer or shorter, we need to tweek it
+    
+  offset = 15 # Not sure why this value is necessary. Check later
+  $("#button-new-team").click () ->        
+    $("#stretch-box").css("min-height", $("#stretch-box").height()+offset)
     $("#registration-join-team-page").hide "slide", { direction: "up" }, pageTransitionSpeed, () ->
         $("#registration-adviser-page").hide "slide", { direction: "up" }, pageTransitionSpeed, () ->
-            $("#registration-new-team-page").show "slide", { direction: "up" }, pageTransitionSpeed
-
-  $("#button-join-team").click () ->
+            $("#registration-new-team-page").show "slide", { direction: "up" }, pageTransitionSpeed, () ->
+                $("#stretch-box").css("min-height", "inherit")
+    
+  $("#button-join-team").click () ->    
+    $("#stretch-box").css("min-height", $("#stretch-box").height()+offset)
     $("#registration-new-team-page").hide "slide", { direction: "up" }, pageTransitionSpeed, () ->
         $("#registration-adviser-page").hide "slide", { direction: "up" }, pageTransitionSpeed, () ->
-            $("#registration-join-team-page").show "slide", { direction: "up" }, pageTransitionSpeed
+            $("#registration-join-team-page").show "slide", { direction: "up" }, pageTransitionSpeed, () ->
+                $("#stretch-box").css("min-height", "inherit")
   
-  $("#button-adviser").click () ->
+  $("#button-adviser").click () -> 
+    $("#stretch-box").css("min-height", $("#stretch-box").height()+offset)
     $("#registration-new-team-page").hide "slide", { direction: "up" }, pageTransitionSpeed, () ->
         $("#registration-join-team-page").hide "slide", { direction: "up" }, pageTransitionSpeed, () ->
-            $("#registration-adviser-page").show "slide", { direction: "up" }, pageTransitionSpeed
+            $("#registration-adviser-page").show "slide", { direction: "up" }, pageTransitionSpeed, () ->
+                $("#stretch-box").css("min-height", "inherit")
 
   $("#country-select").html('
         <option value="">Country...</option>
+        <option value="US">United States of America</option>
         <option value="AF">Afghanistan</option>
         <option value="AL">Albania</option>
         <option value="DZ">Algeria</option>
@@ -293,8 +307,7 @@ $ ->
         <option value="UG">Uganda</option>
         <option value="UA">Ukraine</option>
         <option value="AE">United Arab Emirates</option>
-        <option value="GB">United Kingdom</option>
-        <option value="US">United States of America</option>
+        <option value="GB">United Kingdom</option>    
         <option value="UY">Uruguay</option>
         <option value="UZ">Uzbekistan</option>
         <option value="VU">Vanuatu</option>

@@ -1,8 +1,10 @@
 
 apiOffline =
+  2013: "https://2013.picoctf.com"
   News: "/news"
 
 teacherLoggedIn =
+  2013: "https://2013.picoctf.com"
   Game: "/game/"
   Problems: "/problems"
   Shell: "/shell"
@@ -12,20 +14,24 @@ teacherLoggedIn =
     FAQ: "/faq"
     Sponsors: "/sponsors"
     News: "/news"
+    Teachers: "/teachers"
   Account:
     Manage: "/account"
     Logout: "/logout"
 
 teacherLoggedInNoCompetition =  
+  2013: "https://2013.picoctf.com"
   Classroom: "/classroom"  
   FAQ: "/faq"    
   News: "/news"
   Contact: "/contact"
+  Teachers: "/teachers"
   Account:
     Manage: "/account"
     Logout: "/logout"
 
 userLoggedIn =
+  2013: "https://2013.picoctf.com"
   Game: "/game/"
   Problems: "/problems"
   Shell: "/shell"
@@ -40,16 +46,18 @@ userLoggedIn =
     Logout: "/logout"
 
 userLoggedInNoCompetition =       
+  2013: "https://2013.picoctf.com"
   Team: "/team"  
   FAQ: "/faq"    
   News: "/news"
-  Contact: "/contact"
+  Contact: "/contact"  
   Account:
     Manage: "/account"
     Logout: "/logout"
 
 
 userNotLoggedIn =
+  2013: "https://2013.picoctf.com"
   Registration: "/registration"
   # Scoreboard: "/scoreboard"  
   # About:
@@ -59,6 +67,7 @@ userNotLoggedIn =
   FAQ: "/faq"
   News: "/news"
   Contact: "/contact"
+  Teachers: "/teachers"
   Login: "/login"
 
 loadNavbar = (renderNavbarLinks, renderNestedNavbarLinks) ->
@@ -73,6 +82,8 @@ loadNavbar = (renderNavbarLinks, renderNestedNavbarLinks) ->
     navbarLayout.links = userNotLoggedIn
 
     if data["status"] == 1
+      if not data.data["logged_in"] 
+        $(".show-when-logged-out").css("display", "inline-block")
       if data.data["teacher"]
         if data.data["competition_active"]
            navbarLayout.links = teacherLoggedIn

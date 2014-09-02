@@ -1,27 +1,33 @@
 ---
 layout: default
-title: Problems
+title: Team
 post_scripts:
  - js/progression_graphs.js
  - js/team.js
 startup_functions:
  - redirectIfNotLoggedIn()
+ - redirectIfTeacher()
 ---
-
 <div class="container">
   <div class="row">
-    <div class="col-md-6">
-      <div id="team-info"></div>
-    </div>
-    <div class="col-md-6">
-      <div id="group-info"></div>
-    </div>
+     <div class="col-md-12" style="margin-bottom: 10px">
+        {% include team.html %}
+     </div>
   </div>
   <div class="row">
     <div class="col-md-6">
-        <div class="well" id="team-progression-graph-container" >
-            <div id="team-progression-graph"></div>
-        </div>
+      <div id="team-info"></div>
+      <div class="panel panel-default" id="team-progression-graph-container" >
+          <div class="panel-heading">
+             <h3 class="panel-title">Team Score Progression</h3>             
+          </div>
+          <div class="panel-body team-panel-body">
+             <div id="team-progression-graph"></div>
+          </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div id="group-info"></div>
     </div>
   </div>
 </div>
@@ -47,25 +53,27 @@ startup_functions:
 <script type="text/template" id="group-info-template">
   <div class="panel panel-default">
     <div class="panel-heading">
-      <h3 class="panel-title">Group Management</h3>
+      <h3 class="panel-title">Class Membership</h3>
+    </div>        
+    <div class="col-md-12" style="margin-top: 10px">
+        {% include class_membership.html %}    
     </div>
-
     <% if(data.length > 0) { %>
       <table class="table">
         <thead>
           <tr>
-            <th></th>
-            <th>Group Name</th>
+            <th class="deleter-column"></th>
+            <th>Class Name</th>
           </tr>
         </thead>
         <tbody>
           <% _.each(data, function(group) { %>
             <tr>
               <td>
-                <span data-group-name="<%- group.name %>" class="glyphicon glyphicon-remove leave-group-span"></span>
+                <span data-group-name="<%- group.name %>" data-group-owner="<%- group.owner %>" class="glyphicon glyphicon-remove leave-group-span"></span>
               </td>
               <td>
-                <p><%- group.name %> (<%- group.owners.join() %>)</p>
+                <p><%- group.name %> (<%- group.owner %>)</p>
               </td>
             </tr>
           <% }); %>
@@ -73,16 +81,17 @@ startup_functions:
       </table>
     <% } %>
 
-    <div class="panel-body">
-      <form class="form form-inline" id="group-request-form" type="submit">
+    <div class="panel-body team-panel-body">
+      <form role="form" class="form-inline" id="group-request-form" type="submit">
         <div class="form-group">
-          <div class="input-group">
-            <span class="input-group-btn">
-              <button class="btn btn-danger" id="join-group">Join</button>
-            </span>
-            <input type="text" class="form-control" id="group-name-input">
-          </div>
-        </div>
+            <label class="sr-only" for="group-name-input">Class Name</label>
+            <input type="text" class="form-control" id="group-name-input" placeholder="Class Name">
+        </div>                  
+        <div class="form-group">
+            <label class="sr-only" for="group-owner-input">Teacher</label>        
+            <input type="text" class="form-control" id="group-owner-input" placeholder="Teacher Username">
+        </div>                  
+        <button class="btn btn-danger" id="join-group">Join</button>        
       </div>
     </form>
   </div>
@@ -94,13 +103,14 @@ startup_functions:
       <h3 class="panel-title">Team: <strong><%- data.team_name %> <div class="pull-right"><%- data.competition_active ? data.score : '' %></strong></h3>
     </div>
     <div class="panel-body">
-      <p>Members</p>
+      <p>Members:</p>
       <ul>
         <% _.each(data.members, function(username) { %>
           <li><%- username %></li>
         <% }); %>
       </ul>
         <p>You may have up to <%- data.max_team_size - _.size(data.members) %> more member<%- (data.max_team_size - _.size(data.members)) == 1 ? "" : "s" %> on your team</p>
+        <p>New team members can join at any time, even once the competition has started.</p>
     </div>
   </div>
 </script>

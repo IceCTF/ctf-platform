@@ -4,29 +4,37 @@
   {% include head.html %}
 
 <body>
+    <div class="boxed">
+        {% include header.html %}
 
-  {% include header.html %}
+		{% if page.title_label != "hide" %}
+		<header class="page-title">
+			<div class="container">
+				<h1>{{ page.title }}</h1>	
+				<!--  <ol class="breadcrumb">
+				<li><a href="#">Home</a></li>
+				<li><a href="#">Pages</a></li>
+				<li class="active">About us</li>
+				</ol> -->	
+			</div> <!-- container -->
+		</header>
+		{% endif %}
+		
+        {{ content }}
 
-    <div clas="container">
-      <div class="page-content">
-          <div class="wrap">
-              {{ content }}
-          </div>
-      </div>
-    </div>
+        {% include footer.html %}
 
-    {% include footer.html %}
-
-    {% for js_file in page.post_scripts %}
+        {% for js_file in page.post_scripts %}
         <script src="{{ js_file }}"></script>
-    {% endfor %}
-
-    <script>
-    $(function () {
-        {% for func in page.startup_functions %}
-            {{ func }};
         {% endfor %}
-    })
-    </script>
+
+        <script>
+            $(function () {
+                {% for func in page.startup_functions %}
+                {{ func }};
+                {% endfor %}
+            })
+        </script>
+     </div>  
 </body>
 </html>

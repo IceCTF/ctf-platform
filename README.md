@@ -10,11 +10,19 @@ any "standard" Linux distribution. It would probably even work on
 Windows. MongoDB must be installed; all default configurations should 
 work.
 
-Conventions
+Setting Up
 ------------
-
-Jonathan should fill these in.
-
+1. Clone CTF-Dev from GitHub
+2. In that directory, "git submodule init"
+3. In that directory, "git submodule update"
+4. Download VirtualBox (easiest, though others can work)
+5. Download Vagrant (vagrantup.com)
+6. "vagrant up" in CTF-Dev
+7. Wait 20 minutes
+8. "vagrant ssh" to connect to the VM
+9. Run "devploy" to deploy the development version of the site
+10. Go to port 8080 on the Host Machine
+11. Remember to always use 127.0.0.1:8080 not localhost:8080
 
 Contact
 ------------

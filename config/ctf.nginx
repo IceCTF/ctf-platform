@@ -9,7 +9,7 @@ server {
         }
 
         location ~ 
-^/(problems|login|logout|compete|registration|team|scoreboard|classroom|account|reset|shell|faq|news|contact)$
+^/(problems|login|logout|compete|registration|team|scoreboard|classroom|account|reset|shell|faq|news|contact|teachers)$
         {
             default_type text/html;
             alias /srv/http/ctf/$1.html;

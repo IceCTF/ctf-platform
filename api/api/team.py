@@ -38,35 +38,38 @@ def get_team(tid=None, name=None):
 
     return team
 
-def get_groups(tid=None):
+def get_groups(tid=None, uid=None):
     """
     Get the group membership for a team.
 
     Args:
         tid: The team id
+        uid: The user id
     Returns:
         List of group objects the team is a member of.
     """
 
     tid = get_team(tid=tid)["tid"]
+    if uid is None:
+        uid = api.user.get_user()["uid"]
 
     db = api.common.get_conn()
 
     groups = []
 
-    for group in list(db.groups.find({'owners': tid}, {'name': 1, 'gid': 1, 'owners': 1, 'members': 1})):
-        owners = [u['username'] for u in db.users.find({'uid': {'$in': group['owners']}}, {'username': 1})]
+    for group in list(db.groups.find({'owner': uid}, {'name': 1, 'gid': 1, 'owner': 1, 'members': 1})):
+        owner = api.user.get_user(uid=group['owner'])['username']
         groups.append({'name': group['name'],
                        'gid': group['gid'],
                        'members': group['members'],
-                       'owners': owners,
+                       'owner': owner,
                        'score': api.stats.get_group_average_score(gid=group['gid'])})
 
-    for group in list(db.groups.find({'members': tid}, {'name': 1, 'gid': 1, 'owners': 1})):
-        owners = [u['username'] for u in db.users.find({'tid': {'$in': group['owners']}}, {'username': 1})]
+    for group in list(db.groups.find({'members': tid}, {'name': 1, 'gid': 1, 'owner': 1})):
+        owner = api.user.get_user(uid=group['owner'])['username']
         groups.append({'name': group['name'],
                        'gid': group['gid'],
-                       'owners': owners,
+                       'owner': owner,
                        'score': api.stats.get_group_average_score(gid=group['gid'])})
     return groups
 
