@@ -63,6 +63,7 @@ startup_functions:
   </div>
 </script>
 
+
 <script type="text/template" id="team-selection-template">
   <% if(teams.length > 0 ) { %>
     <% _.each(teams, function(team) { %>
@@ -109,21 +110,21 @@ startup_functions:
       <table class="table">
         <thead>
           <tr>
-            <th class="deleter-column"></th>
             <th>
                 Your Classes:
             </th>
+            <th class="deleter-column"></th>
           </tr>
         </thead>
         <tbody>
           <% _.each(data, function(group) { %>
             <tr>
               <td>
-                <span data-group-name="<%- group.name %>" class="glyphicon glyphicon-remove delete-group-span"></span>
+                <p><%- group.name %></p>                    
               </td>
               <td>
-                <p><%- group.name %></p>
-              </td>
+                <span data-group-name="<%- group.name %>" class="glyphicon glyphicon-remove delete-group-span"></span>
+              </td>            
             </tr>
           <% }); %>
         </tbody>

@@ -5,6 +5,9 @@ web/js/*.js
 web/node_modules/
 web/_site/
 web/_includes/registration.html
+web/_includes/team.html
+web/_includes/classroom.html
+web/_includes/class_membership.html
 web/index.html
 web/faq.html
 web/contact.html
