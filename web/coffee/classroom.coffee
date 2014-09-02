@@ -1,27 +1,10 @@
 renderGroupInformation = _.template($("#group-info-template").remove().text())
-renderGroupSelection = _.template($("#group-selection-template").remove().text())
 
 renderTeamSelection = _.template($("#team-selection-template").remove().text())
 
 google.load 'visualization', '1.0', {'packages':['corechart']}
 
 @groupListCache = []
-
-loadGroupSelection = (groups) ->
-  $("#group-selection").html renderGroupSelection({groups: groups})
-
-  $("#group-selector").on "change", (e) ->
-    selectedGroupName = $("#group-selector").val()
-
-    #Clears the pane on none selected.
-    if selectedGroupName == "none-selected"
-      $("#team-selection").html ""
-
-    _.each groups, (group) ->
-      if group.name == selectedGroupName
-        loadTeamSelection group.gid
-
-    return
 
 teamSelectionHandler = (e) ->
   tid = $(e.target).data("tid")
@@ -31,6 +14,7 @@ teamSelectionHandler = (e) ->
       drawTeamSolvedVisualization data.data, tid
     else
       elementString = "##{tid}>.panel-body>div>.team-visualizer"
+      console.log(elementString)
       $(elementString).empty()
       $(elementString).append("<img class='faded-chart' src='img/classroom_graph.png'>")
 
@@ -79,19 +63,46 @@ drawTeamSolvedVisualization = (teamData, tid) ->
 
   options.series[members.length] = {color: "black", visibleInLegend: false}
 
-  console.log options
-
   visualElementString = "##{tid}>.panel-body>div>.team-visualizer"
   chart = new google.visualization.ColumnChart _.first($(visualElementString))
   chart.draw packagedData, options
 
-loadGroupManagement = (groups) ->
+createGroupSetup = () ->
+    formDialogContents = _.template($("#new-group-template").html())({})
+    formDialog formDialogContents, "Create a New Class", "OK", "new-group-name", () ->
+        createGroup($('#new-group-name').val())
+
+loadGroupManagement = (groups, showFirstTab, callback) ->
   $("#group-management").html renderGroupInformation({data: groups})
+    
+  $("#new-class-tab").on "click", (e) -> 
+    createGroupSetup()
+
+  $("#new-class-button").on "click", (e) -> 
+    createGroupSetup()
+  
+  $("#class-tabs").on 'shown.bs.tab', 'a[data-toggle="tab"]', (e) ->
+    tabBody = $(this).attr("href")
+    groupName = $(this).data("group-name")
+    apiCall "GET", "/api/group/member_information", {gid: $(this).data("gid")}
+    .done (teamData) ->
+        apiCall "GET", "/api/user/status", {}
+        .done (userData) ->
+            $(tabBody).html renderTeamSelection({teams: teamData.data, groupName: groupName, userStatus: userData.data})
+            $(".team-visualization-enabler").on "click", (e) ->
+                teamSelectionHandler e  
+            
+  if showFirstTab
+    $('#class-tabs a:first').tab('show')
+
   $("#group-request-form").on "submit", groupRequest
   $(".delete-group-span").on "click", (e) ->
     deleteGroup $(e.target).data("group-name")
+    
+  if callback
+    callback()
 
-loadGroupInfo = ->
+loadGroupInfo = (showFirstTab, callback) ->
   apiCall "GET", "/api/group/list", {}
   .done (data) ->
     switch data["status"]
@@ -99,16 +110,19 @@ loadGroupInfo = ->
         apiNotify(data)
       when 1
         window.groupListCache = data.data
-        loadGroupManagement data.data
-        loadGroupSelection data.data
+        loadGroupManagement data.data, showFirstTab, callback   
 
 createGroup = (groupName) ->
   apiCall "POST",  "/api/group/create", {"group-name": groupName}
-  .done (data) ->
-    apiNotify(data)
+  .done (data) ->            
     if data['status'] is 1
-      loadGroupInfo()
-
+      closeDialog()
+      apiNotify(data)    
+      loadGroupInfo(false, () -> 
+                     $('#class-tabs li:eq(-2) a').tab('show'))
+    else
+      apiNotifyElement($("#new-group-name"), data)
+        
 deleteGroup = (groupName) ->
   confirmDialog("You are about to permanently delete this class. This will automatically remove your students from this class. Are you sure you want to delete this class?", 
                 "Class Confirmation", "Delete Class", "Cancel", 
@@ -117,15 +131,14 @@ deleteGroup = (groupName) ->
                   .done (data) ->
                     apiNotify(data)
                     if data['status'] is 1
-                      loadGroupInfo())
+                      loadGroupInfo(true))
 
 #Could be simplified without this function
 groupRequest = (e) ->
   e.preventDefault()
-
   groupName = $("#group-name-input").val()
   createGroup groupName
 
 $ ->
-  loadGroupInfo()
+  loadGroupInfo(true)
   return
