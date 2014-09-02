@@ -1,0 +1,20 @@
+<script type="text/template" id="modal-template">
+    <div class="modal fade" id="confirm-modal" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title"><%- title %></h4>
+          </div>
+          <div class="modal-body">
+              <%- message %>
+          </div>
+          <div class="modal-footer">
+            <button type="button" data-dismiss="modal" class="btn btn-primary" id="yes-button"><%- yesButton %></button>
+            <button type="button" data-dismiss="modal" class="btn"><%- noButton %></button>
+          </div>
+        </div>
+      </div>
+    </div>
+</script>
+<div id="modal-holder"></div>

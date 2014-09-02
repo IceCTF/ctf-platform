@@ -32,24 +32,6 @@ startup_functions:
   </div>
 </div>
 
-<div class="modal fade" id="confirm-group-join" tabindex="-1" role="dialog" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h4 class="modal-title">Group Confirmation</h4>
-      </div>
-      <div class="modal-body">
-        By joining a group you are allowing the owner to see individual statistics concerning your team's performance. Are you sure you want to join this group?
-      </div>
-      <div class="modal-footer">
-        <button type="button" data-dismiss="modal" class="btn btn-primary" id="join-group">Join</button>
-        <button type="button" data-dismiss="modal" class="btn">Cancel</button>
-      </div>
-    </div>
-  </div>
-</div>
-
 <script type="text/template" id="group-info-template">
   <div class="panel panel-default">
     <div class="panel-heading">
@@ -103,13 +85,14 @@ startup_functions:
       <h3 class="panel-title">Team: <strong><%- data.team_name %> <div class="pull-right"><%- data.competition_active ? data.score : '' %></strong></h3>
     </div>
     <div class="panel-body">
+      <p>Your Team Passphrase is <strong><%- data.password %></strong>.</p>
       <p>Members:</p>
       <ul>
         <% _.each(data.members, function(username) { %>
           <li><%- username %></li>
         <% }); %>
       </ul>
-        <p>You may have up to <%- data.max_team_size - _.size(data.members) %> more member<%- (data.max_team_size - _.size(data.members)) == 1 ? "" : "s" %> on your team</p>
+        <p>You may have up to <%- data.max_team_size - _.size(data.members) %> more member<%- (data.max_team_size - _.size(data.members)) == 1 ? "" : "s" %> on your team.</p>
         <p>New team members can join at any time, even once the competition has started.</p>
     </div>
   </div>

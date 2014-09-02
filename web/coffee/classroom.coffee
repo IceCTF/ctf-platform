@@ -110,11 +110,14 @@ createGroup = (groupName) ->
       loadGroupInfo()
 
 deleteGroup = (groupName) ->
-  apiCall "POST", "/api/group/delete", {"group-name": groupName}
-  .done (data) ->
-    apiNotify(data)
-    if data['status'] is 1
-      loadGroupInfo()
+  confirmDialog("You are about to permanently delete this class. This will automatically remove your students from this class. Are you sure you want to delete this class?", 
+                "Class Confirmation", "Delete Class", "Cancel", 
+                () ->
+                  apiCall "POST", "/api/group/delete", {"group-name": groupName}
+                  .done (data) ->
+                    apiNotify(data)
+                    if data['status'] is 1
+                      loadGroupInfo())
 
 #Could be simplified without this function
 groupRequest = (e) ->
