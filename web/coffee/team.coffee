@@ -41,11 +41,10 @@ leave_group = (group_name, group_owner) ->
 group_request = (e) ->
   e.preventDefault()
   form = $(this).closest "form"
-  $("#confirm-group-join").modal {backdrop: "static", keyboard: false}
-  .one "click", "#join-group", (e) ->
-    form.trigger "submit"
-    return
-  return
+  confirmDialog("By joining a class you are allowing the instructor to see individual statistics concerning your team's performance. Are you sure you want to join this class?", 
+                "Class Confirmation", "Join", "Cancel", 
+        (e) ->
+            form.trigger "submit")
 
 join_group_request = (e) ->
   e.preventDefault()

@@ -1,5 +1,4 @@
 @apiCall = (type, url, data) ->
-
   if type == "POST"
     data.token = $.cookie("token")
 
@@ -52,6 +51,13 @@ getStyle = (data) ->
 @numericalSort = (data) ->
   data.sort (a, b) ->
     return (b - a)
+
+@confirmDialog = (message, title, yesButton, noButton, yesEvent) ->    
+    renderDialogModal = _.template($("#modal-template").html())
+    dialog_content = renderDialogModal({message: message, title: title, yesButton: yesButton, noButton: noButton})
+    $("#modal-holder").html dialog_content
+    $("#confirm-modal").modal {backdrop: "static", keyboard: false} 
+    .one "click", "#yes-button", yesEvent
 
 $.fn.apiNotify = (data, configuration) ->
   configuration["className"] = getStyle data
