@@ -302,7 +302,7 @@ def insert_earned_achievement(aid, data):
         "tid": tid,
         "uid": uid,
         "data": data,
-        "timestamp": datetime.utcnow(),
+        "timestamp": datetime.utcnow().timestamp(),
         "seen": False
     })
 
