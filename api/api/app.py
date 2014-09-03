@@ -9,7 +9,6 @@ app = Flask(__name__, static_path="/")
 import api
 import json
 
-from os.path import join
 from api.common import WebSuccess, WebError
 from api.annotations import api_wrapper, require_login, require_teacher, require_admin, check_csrf
 from api.annotations import block_before_competition, block_after_competition
@@ -27,7 +26,7 @@ secret_key = ""
 def serve_autogen_static_hook():
     pid = request.args.get("pid", None)
     path = request.args.get("path", None)
-    instance_path = api.autogen.get_static_instance_path(pid)
+    instance_path = api.autogen.get_static_instance_path(pid, public=True)
     return send_from_directory(instance_path, path)
 
 @app.route('/api/autogen/serve')
@@ -37,7 +36,7 @@ def serve_autogen_hook():
     path = request.args.get("path", None)
     tid = api.user.get_team()["tid"]
     instance_number = api.autogen.get_instance_number(pid, tid)
-    instance_path = api.autogen.get_instance_path(pid, instance_number)
+    instance_path = api.autogen.get_instance_path(pid, instance_number, public=True)
     return send_from_directory(instance_path, path)
 
 def config_app(*args, **kwargs):
