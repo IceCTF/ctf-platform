@@ -15,10 +15,10 @@ submitProblem = (e) ->
   .done (data) ->
     if data['status'] is 1
       loadProblems()
-      apiNotify(data)
       setTimeout( ->
         $("div[data-target='#" + input.data("pid") + "']").click()
       , 100)
+    apiNotify data
 
 addProblemReview = (e) ->
   e.preventDefault()

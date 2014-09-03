@@ -11,7 +11,7 @@ import os
 from os import path
 from functools import partial
 from bson import json_util
-from api.common import InternalException
+from api.common import InternalException, SevereInternalException
 
 log = api.logger.use(__name__)
 
@@ -41,7 +41,7 @@ def get_metadata_path(pid, n):
         The metadata file path.
     """
 
-    return path.join(get_instance_path(pid, n=n), "metadata.json")
+    return path.join(get_instance_path(pid, n=n, public=False), "metadata.json")
 
 def write_metadata(pid, n, data):
     """
@@ -108,13 +108,21 @@ def build_problem_instances(pid, instances):
 
         autogen_instance_path = get_instance_path(pid, n=n)
 
-        if not path.isdir(autogen_instance_path):
-            os.makedirs(autogen_instance_path)
-
         file_type_paths = {
-            "resource_files": autogen_instance_path,
-            "static_files": static_instance_path
+            "resource_files": {
+                "public": get_instance_path(pid, n=n, public=True),
+                "private": get_instance_path(pid, n=n, public=False)
+            },
+            "static_files": {
+                "public": get_static_instance_path(pid, public=True),
+                "private": get_static_instance_path(pid, public=False)
+            }
         }
+
+        for _, file_types in file_type_paths.items():
+            for _, autogen_path in file_types.items():
+                if not path.isdir(autogen_path):
+                    os.makedirs(autogen_path)
 
         problem_updates = build.get("problem_updates", None)
 
@@ -123,17 +131,22 @@ def build_problem_instances(pid, instances):
 
         write_metadata(pid, n, problem_updates)
 
-        for file_type, files in build.items():
-            destination = file_type_paths.get(file_type, None)
+        for file_type, listings in build.items():
+            destination_type = file_type_paths.get(file_type, None)
 
-            if destination is not None:
+            if destination_type is not None:
 
-                for f, name in files:
-                    if path.isfile(f):
-                        shutil.copyfile(f, path.join(destination, name))
+                for listing in listings:
+                    destination = destination_type.get(listing, None)
 
-                    elif path.isdir(f):
-                        shutil.copytree(f, autogen_instance_path)
+                    if destination is not None:
+                        files = listings[listing]
+                        for f, name in files:
+                            if path.isfile(f):
+                                shutil.copyfile(f, path.join(destination, name))
+
+                            elif path.isdir(f):
+                                shutil.copytree(f, autogen_instance_path)
 
         log.debug("done!")
 
@@ -242,11 +255,11 @@ def get_number_of_instances(pid):
 
     # this is more reliable than before, but it may be a little slow
     try:
-        return [dirname.isdigit() for dirname in os.listdir(get_instance_path(pid))].count(True)
-    except FileNotFoundError as error:
+        return [dirname.isdigit() for dirname in os.listdir(get_instance_path(pid, public=False))].count(True)
+    except FileNotFoundError:
         raise InternalException("Could not find problem instances.")
 
-def get_static_instance_path(pid):
+def get_static_instance_path(pid, public=True):
     """
     Gets the path to the static resources of a problem.
 
@@ -256,9 +269,9 @@ def get_static_instance_path(pid):
         The path to the static resources of an autogen problem.
     """
 
-    return path.abspath(path.join(get_instance_path(pid), "static"))
+    return path.abspath(path.join(get_instance_path(pid, public=public), "static"))
 
-def get_instance_path(pid, n=""):
+def get_instance_path(pid, n="", public=True):
     """
     Gets the path to a particular instance of a problem.
 
@@ -273,6 +286,9 @@ def get_instance_path(pid, n=""):
     name = api.problem.get_problem(pid)["name"]
 
     instance_path = path.join(path.dirname(generator_path), "instances", name, str(n))
+
+    if public:
+        instance_path = path.join(instance_path, "public")
 
     return path.abspath(instance_path)
 
@@ -293,7 +309,7 @@ def get_problem_instance(pid, tid):
     n = get_instance_number(pid, tid)
 
     metadata = read_metadata(pid, n)
-    
+
     if not set(metadata).issubset(modifiable_problem_fields):
         invalid_keys = set(metadata).difference(modifiable_problem_fields)
         raise InternalException("{}'s instance attempted to modify these fields: {}".format(pid, invalid_keys))
@@ -327,7 +343,11 @@ def grade_problem_instance(pid, tid, key):
     grader_problem_instance = GraderProblemInstance(pid, tid, n)
 
     grader = api.problem.get_grader(pid)
-    correct, message = grader.grade(grader_problem_instance, key)
+
+    try:
+        correct, message = grader.grade(grader_problem_instance, key)
+    except Exception as e:
+        raise SevereInternalException("Grader for {} is throwing exceptions.\n{}".format(pid, str(e)))
 
     return {
         "correct": correct,
