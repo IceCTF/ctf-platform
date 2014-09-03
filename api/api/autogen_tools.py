@@ -20,6 +20,8 @@ def generate_build_directory(base=os.getcwd()):
     Generates a random writable directory for generators to build instances with.
     All directories generated will be removed in the call to clear_build_directories()
 
+    Args:
+        base: base path to create the directory. defaults to the current working directory.
     Returns:
         The path to the directory
     """
@@ -34,6 +36,26 @@ def generate_build_directory(base=os.getcwd()):
     _build_directories.append(build_path)
 
     return build_path
+
+def clear_build_directories():
+    """
+    Removes everything in the generated build directories.
+    """
+
+    problems = []
+
+    for directory in _build_directories:
+        if path.isdir(directory):
+            try:
+                shutil.rmtree(directory)
+            except Exception:
+                problems.append(directory)
+
+    problem_string = ", ".join(problems)
+
+    if len(problems) > 0:
+        raise InternalException("Unable to delete these directories: "+problem_string)
+            
 
 def replace_source_tokens(file_path, lookup, out_path):
     """
