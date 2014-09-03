@@ -11,7 +11,7 @@ import os
 from os import path
 from functools import partial
 from bson import json_util
-from api.common import InternalException
+from api.common import InternalException, SevereInternalException
 
 log = api.logger.use(__name__)
 
@@ -41,7 +41,7 @@ def get_metadata_path(pid, n):
         The metadata file path.
     """
 
-    return path.join(get_instance_path(pid, n=n), "metadata.json")
+    return path.join(get_instance_path(pid, n=n, public=False), "metadata.json")
 
 def write_metadata(pid, n, data):
     """
@@ -309,7 +309,7 @@ def get_problem_instance(pid, tid):
     n = get_instance_number(pid, tid)
 
     metadata = read_metadata(pid, n)
-    
+
     if not set(metadata).issubset(modifiable_problem_fields):
         invalid_keys = set(metadata).difference(modifiable_problem_fields)
         raise InternalException("{}'s instance attempted to modify these fields: {}".format(pid, invalid_keys))
@@ -343,7 +343,11 @@ def grade_problem_instance(pid, tid, key):
     grader_problem_instance = GraderProblemInstance(pid, tid, n)
 
     grader = api.problem.get_grader(pid)
-    correct, message = grader.grade(grader_problem_instance, key)
+
+    try:
+        correct, message = grader.grade(grader_problem_instance, key)
+    except Exception as e:
+        raise SevereInternalException("Grader for {} is throwing exceptions.\n{}".format(pid, str(e)))
 
     return {
         "correct": correct,
