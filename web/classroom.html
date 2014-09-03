@@ -15,130 +15,93 @@ startup_functions:
         </div>
     </div>
     <div class="row">
-        <div class="col-md-12">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                  <h3 class="panel-title">Class Management</h3>
-                </div>
-                <div class="panel-body">
-                    <div id="group-management"></div>
-                </div>
-            </div>
+        <div id="group-management">
+            
         </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                  <h3 class="panel-title">Team Management</h3>
-                </div>
-                <div class="panel-body">
-                    <div id="group-selection"></div>
-                    <div id="team-selection"></div>
-                </div>
-            </div>
-        </div>        
     </div>
 </div>
 
-<script type="text/template" id="group-selection-template">
-  <div>
-      <% if(groups.length > 0) { %>
-        <form class="form-horizontal" role="form">
-            <div class="form-group">
-                <label for="group-selector" class="col-sm-2 control-label">Select a class</label>
-                <div class="col-sm-5">            
-                    <select id="group-selector" class="form-control">
-                        <option value="none-selected">None</option>
-                        <% _.each(groups, function(group) { %>
-                          <option value="<%- group.name %>"><a href="#"><%- group.name %></a></option>
-                        <% }); %>
-                    </select>            
-                </div>
-            </div>
-        </form>
-      <% } else { %>
-        <pre>You do not own any groups yet!</pre>
-      <% } %>
-  </div>
-</script>
-
-
 <script type="text/template" id="team-selection-template">
-  <% if(teams.length > 0 ) { %>
-    <% _.each(teams, function(team) { %>
-      <div class="row">
+      <div class="row" style="margin-top: 10px">
         <div class="col-md-12">
-            <div class="problem panel panel-primary">
-              <div class="panel-heading team-visualization-enabler" data-tid="<%= team.tid %>" data-toggle="collapse" data-target="#<%= team.tid %>">
-                  <%- team.team_name %> <div class="pull-right"><%- team.competition_active ? team.score : '' %></div>
-              </div>
-              <div class="panel-collapse collapse" id="<%= team.tid %>">
-                <div class="panel-body">
-                  <div class="col-md-8">
-                    <div class="team-visualizer">
-                      Loading...
-                    </div>
-                  </div>
-                  <div class="col-md-4">
-                    <div class="team-information">
-                        <span class="team-members">Members:</span>
-                        <ul>
-                            <% _.each(team.members, function(member) { %>
-                            <li><%- member %></li>
-                            <% }) %>
-                        </ul>
-                    </div>
-                  </div>
+          <% if(teams.length > 0 ) { %>
+            <% _.each(teams, function(team) { %>
+              <div class="row">
+                <div class="col-md-12">
+                    <div class="problem panel panel-primary">
+                      <div class="panel-heading team-visualization-enabler" data-tid="<%= team.tid %>" data-toggle="collapse" data-target="#<%= team.tid %>">
+                          <%- team.team_name %> <div class="pull-right"><%- team.competition_active ? team.score : '' %></div>
+                      </div>
+                      <div class="panel-collapse collapse" id="<%= team.tid %>">
+                        <div class="panel-body">
+                          <div class="col-md-8">
+                            <div class="team-visualizer">
+                              Loading...
+                            </div>
+                          </div>
+                          <div class="col-md-4">
+                            <div class="team-information">
+                                <span class="team-members">Members:</span>
+                                <ul>
+                                    <% _.each(team.members, function(member) { %>
+                                    <li><%- member %></li>
+                                    <% }) %>
+                                </ul>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                   </div>
                 </div>
               </div>
-           </div>
+            <% }) %>
+          <% } else { %>
+            <div style="margin-left: 5px">
+                <p>This class currently has no teams. Students can join this class by visiting the "Team" page, and entering the following under "Class Membership":</p>
+                <div><p><strong>Class Name</strong>: <%- groupName %><br/>
+                     <strong>Teacher Username</strong>: <%- userStatus.username %></p></div>            
+                <p>Followed by pressing the "Join" button. Only one student from each team needs to join for a team to be added to a class.</p>
+            </div>
+          <% } %>
         </div>
       </div>
-    <% }) %>
-  <% } else { %>
-    <pre>
-      This group has no members!
-    </pre>
-  <% } %>
-
 </script>
 
 <script type="text/template" id="group-info-template">
-  <div>
-    <% if(data.length > 0) { %>
-      <table class="table">
-        <thead>
-          <tr>
-            <th>
-                Your Classes:
-            </th>
-            <th class="deleter-column"></th>
-          </tr>
-        </thead>
-        <tbody>
-          <% _.each(data, function(group) { %>
-            <tr>
-              <td>
-                <p><%- group.name %></p>                    
-              </td>
-              <td>
-                <span data-group-name="<%- group.name %>" class="glyphicon glyphicon-remove delete-group-span"></span>
-              </td>            
-            </tr>
+    <% if (data.length > 0 ) { %>
+        <ul class="nav nav-tabs" role="tablist" id="class-tabs">
+          <% _.each(data, function(group, index) { %>            
+            <li><a href="#group-tab-<%- group.gid %>" 
+                   class="group-tab" 
+                   data-gid="<%- group.gid %>" 
+                   data-group-name="<%- group.name %>" 
+                   role="tab" data-toggle="tab">
+                        <%- group.name %>
+                        <span data-group-name="<%- group.name %>" class="glyphicon glyphicon-remove delete-group-span"></span>
+                </a>                
+            </li>
           <% }); %>
-        </tbody>
-      </table>
-    <% } %>  
-    <form class="form form-inline" id="group-request-form" type="submit">
-        <div class="form-group">
-          <div class="input-group">
-            <span class="input-group-btn">
-              <button class="btn btn-primary" type="submit">Create</button>
-            </span>
-            <input type="text" class="form-control" id="group-name-input">
-          </div>
-        </div>      
-    </form>
-  </div>
+          <li><a href="#" id="new-class-tab">New Class</a></li>
+        </ul>
+        <div class="tab-content">
+          <% _.each(data, function(group, index) { %>                                
+            <div class="tab-pane" id="group-tab-<%- group.gid %>"></div>        
+          <% }); %>      
+        </div>    
+    <% } else { %>
+     <div class="col-md-12">
+        <span class="input-group-btn">
+            <button class="btn btn-primary" type="submit" id="new-class-button">Create a New Class</button>
+        </span>
+     </div>
+    <% } %>
+</script>
+
+<script type="text/template" id="new-group-template">
+<p>What do you want your class to be called?</p>
+<form role="form" onsubmit="$('#modal-submit-button').click(); return false">
+    <div class="form-group">
+        <input type="text" class="form-control" id="new-group-name" placeholder="Class Name">
+    </div>
+</form>
 </script>

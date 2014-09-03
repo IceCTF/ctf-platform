@@ -136,7 +136,8 @@ def status_hook():
         "enable_feedback": api.config.enable_feedback,
         "shell": api.config.enable_shell,
         "enable_captcha": api.config.enable_captcha,
-        "competition_active": api.utilities.check_competition_active()
+        "competition_active": api.utilities.check_competition_active(),
+        "username": api.user.get_user()['username']
     }
 
     return WebSuccess(data=status)

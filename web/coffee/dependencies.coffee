@@ -48,17 +48,43 @@ getStyle = (data) ->
         window.location = redirect
       ), 1000
 
+@apiNotifyElement = (elt, data, redirect) ->
+  style = getStyle data
+  elt.notify data.message, style
+  if redirect and data.status is 1
+    setTimeout (->
+        window.location = redirect
+      ), 1000
+    
 @numericalSort = (data) ->
   data.sort (a, b) ->
     return (b - a)
 
 @confirmDialog = (message, title, yesButton, noButton, yesEvent) ->    
     renderDialogModal = _.template($("#modal-template").html())
-    dialog_content = renderDialogModal({message: message, title: title, yesButton: yesButton, noButton: noButton})
+    dialog_content = renderDialogModal({message: message, title: title, yesButton: yesButton, noButton: noButton, submitButton: ""})
+    $("#modal-holder").html dialog_content    
+    $("#confirm-modal").modal {backdrop: "static", keyboard: false} 
+    .one "click", "#modal-yes-button", yesEvent
+
+@messageDialog = (message, title, button, event) ->    
+    renderDialogModal = _.template($("#modal-template").html())
+    dialog_content = renderDialogModal({message: message, title: title, yesButton: button, noButton: "", submitButton: ""})
     $("#modal-holder").html dialog_content
     $("#confirm-modal").modal {backdrop: "static", keyboard: false} 
-    .one "click", "#yes-button", yesEvent
+    .one "click", "#modal-yes-button", event
+    
+@formDialog = (message, title, button, defaultFocus, event) ->    
+    renderDialogModal = _.template($("#modal-template").html())
+    dialog_content = renderDialogModal({message: message, title: title, yesButton: "", noButton: "", submitButton: button})
+    $("#modal-holder").html dialog_content    
+    $("#confirm-modal").modal {backdrop: "static", keyboard: false} 
+    .on 'shown.bs.modal', () -> $("#" + defaultFocus).focus()
+    .on "click", "#modal-submit-button", event
 
+@closeDialog = () ->
+    $('#confirm-modal').modal('hide')
+    
 $.fn.apiNotify = (data, configuration) ->
   configuration["className"] = getStyle data
   return $(this).notify(data.message, configuration)

@@ -7,11 +7,18 @@
             <h4 class="modal-title"><%- title %></h4>
           </div>
           <div class="modal-body">
-              <%- message %>
+              <%= message %>
           </div>
           <div class="modal-footer">
-            <button type="button" data-dismiss="modal" class="btn btn-primary" id="yes-button"><%- yesButton %></button>
-            <button type="button" data-dismiss="modal" class="btn"><%- noButton %></button>
+            <% if (submitButton != "") { %>
+                <button type="button" class="btn btn-primary" id="modal-submit-button"><%- submitButton %></button>
+            <% } %>
+            <% if (yesButton != "") { %>
+                <button type="button" data-dismiss="modal" class="btn btn-primary" id="modal-yes-button"><%- yesButton %></button>
+            <% } %>
+            <% if (noButton != "") { %>
+                <button type="button" data-dismiss="modal" class="btn" id="modal-no-button"><%- noButton %></button>
+            <% } %>
           </div>
         </div>
       </div>
