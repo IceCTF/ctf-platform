@@ -16,8 +16,14 @@ def generate(random):
     f.close()
 
     return {
-        "resource_files": [("/tmp/key", "key")],
-        "static_files": [("/tmp/key", "backdoor")],
+        "resource_files": {
+            "public": [("/tmp/key", "key")],
+            "private": [("/tmp/key", "private_key")]
+        },
+        "static_files": {
+            "public": [("/tmp/key", "public_static")],
+            "private": [("/tmp/key", "private_static")]
+        },
         "problem_updates": {
             "description": "The answer is not "+k+". ;)"
         }
