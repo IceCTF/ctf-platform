@@ -108,13 +108,21 @@ def build_problem_instances(pid, instances):
 
         autogen_instance_path = get_instance_path(pid, n=n)
 
-        if not path.isdir(autogen_instance_path):
-            os.makedirs(autogen_instance_path)
-
         file_type_paths = {
-            "resource_files": autogen_instance_path,
-            "static_files": static_instance_path
+            "resource_files": {
+                "public": get_instance_path(pid, n=n, public=True),
+                "private": get_instance_path(pid, n=n, public=False)
+            },
+            "static_files": {
+                "public": get_static_instance_path(pid, public=True),
+                "private": get_static_instance_path(pid, public=False)
+            }
         }
+
+        for _, file_types in file_type_paths.items():
+            for _, autogen_path in file_types.items():
+                if not path.isdir(autogen_path):
+                    os.makedirs(autogen_path)
 
         problem_updates = build.get("problem_updates", None)
 
@@ -123,17 +131,22 @@ def build_problem_instances(pid, instances):
 
         write_metadata(pid, n, problem_updates)
 
-        for file_type, files in build.items():
-            destination = file_type_paths.get(file_type, None)
+        for file_type, listings in build.items():
+            destination_type = file_type_paths.get(file_type, None)
 
-            if destination is not None:
+            if destination_type is not None:
 
-                for f, name in files:
-                    if path.isfile(f):
-                        shutil.copyfile(f, path.join(destination, name))
+                for listing in listings:
+                    destination = destination_type.get(listing, None)
 
-                    elif path.isdir(f):
-                        shutil.copytree(f, autogen_instance_path)
+                    if destination is not None:
+                        files = listings[listing]
+                        for f, name in files:
+                            if path.isfile(f):
+                                shutil.copyfile(f, path.join(destination, name))
+
+                            elif path.isdir(f):
+                                shutil.copytree(f, autogen_instance_path)
 
         log.debug("done!")
 
