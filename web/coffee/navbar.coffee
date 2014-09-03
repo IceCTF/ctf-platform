@@ -1,7 +1,7 @@
 
 apiOffline =
   2013: "https://2013.picoctf.com"
-  News: "/news"
+  #News: "/news"
 
 teacherLoggedIn =
   2013: "https://2013.picoctf.com"
@@ -12,8 +12,8 @@ teacherLoggedIn =
   Classroom: "/classroom"
   About:
     FAQ: "/faq"
-    Sponsors: "/sponsors"
-    News: "/news"
+    #Sponsors: "/sponsors"
+    #News: "/news"
     Teachers: "/teachers"
   Account:
     Manage: "/account"
@@ -23,7 +23,7 @@ teacherLoggedInNoCompetition =
   2013: "https://2013.picoctf.com"
   Classroom: "/classroom"  
   FAQ: "/faq"    
-  News: "/news"
+  #News: "/news"
   Contact: "/contact"
   Teachers: "/teachers"
   Account:
@@ -39,8 +39,8 @@ userLoggedIn =
   Scoreboard: "/scoreboard"
   About:
     FAQ: "/faq"
-    Sponsors: "/sponsors"
-    News: "/news"
+    #Sponsors: "/sponsors"
+    #News: "/news"
   Account:
     Manage: "/account"
     Logout: "/logout"
@@ -49,7 +49,7 @@ userLoggedInNoCompetition =
   2013: "https://2013.picoctf.com"
   Team: "/team"  
   FAQ: "/faq"    
-  News: "/news"
+  # News: "/news"
   Contact: "/contact"  
   Account:
     Manage: "/account"
@@ -65,7 +65,7 @@ userNotLoggedIn =
   #  Sponsors: "/sponsors"
   #  News: "/news"
   FAQ: "/faq"
-  News: "/news"
+  # News: "/news"
   Contact: "/contact"
   Teachers: "/teachers"
   Login: "/login"
