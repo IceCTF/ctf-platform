@@ -69,7 +69,7 @@ startup_functions:
 
 <script type="text/template" id="group-info-template">
     <% if (data.length > 0 ) { %>
-        <ul class="nav nav-tabs" role="tablist" id="class-tabs">
+        <ul class="nav nav-tabs nav-tabs-outline" role="tablist" id="class-tabs">
           <% _.each(data, function(group, index) { %>            
             <li><a href="#group-tab-<%- group.gid %>" 
                    class="group-tab" 
@@ -85,7 +85,7 @@ startup_functions:
         </ul>
         <div class="tab-content">
           <% _.each(data, function(group, index) { %>                                
-            <div class="tab-pane" id="group-tab-<%- group.gid %>"></div>        
+            <div class="tab-pane tab-pane-outline" id="group-tab-<%- group.gid %>"></div>        
           <% }); %>      
         </div>    
     <% } else { %>

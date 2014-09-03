@@ -16,8 +16,11 @@ teamSelectionHandler = (e) ->
       elementString = "##{tid}>.panel-body>div>.team-visualizer"
       console.log(elementString)
       $(elementString).empty()
-      $(elementString).append("<img class='faded-chart' src='img/classroom_graph.png'>")
-
+      $(elementString).append("<img id='graph-placeholder-#{tid}' class='faded-chart' src='img/classroom_graph.png'>")
+      gridLabel = $("<div>").text("Once the competition starts, you'll be able to check out the progress of the team here").css("position", "absolute").css("top", "10px").css("left","10px").width($("#graph-placeholder-#{tid}'").width())
+      console.log(gridLabel)
+      $(elementString).append(gridLabel)    
+        
 loadTeamSelection = (gid) ->
   apiCall "GET", "/api/group/member_information", {gid: gid}
   .done (data) ->
