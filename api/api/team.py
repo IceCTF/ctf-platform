@@ -147,7 +147,7 @@ def get_team_information(tid=None):
     team_info = get_team(tid=tid)
 
     if tid is None:
-       tid = team_info["tid"] 
+        tid = team_info["tid"]
 
     team_info["score"] = api.stats.get_score(tid=tid)
     team_info["members"] = [member["username"] for member in get_team_members(tid=tid)]
