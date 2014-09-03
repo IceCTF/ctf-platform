@@ -109,10 +109,20 @@ img.logo {
 
 /* Buttons */
 
+
+/* line 43, ../scss/partials/_buttons.scss */
+
 .btn {
     -webkit-box-shadow: none;
     -moz-box-shadow: none;
     box-shadow: none;
+    background-color: #eeeeee;
+    background: #eeeeee;
+}
+
+.btn:hover {
+    background-color: #dcdcdc;
+    background: #dcdcdc;
 }
 
 .btn-primary {
