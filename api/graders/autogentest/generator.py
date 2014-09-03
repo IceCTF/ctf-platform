@@ -17,7 +17,7 @@ def generate(random):
 
     return {
         "resource_files": {
-            "public": [("/tmp/key", "key")],
+            "public": [("/tmp/key", "public_key")],
             "private": [("/tmp/key", "private_key")]
         },
         "static_files": {
