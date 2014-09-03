@@ -255,7 +255,7 @@ def get_number_of_instances(pid):
 
     # this is more reliable than before, but it may be a little slow
     try:
-        return [dirname.isdigit() for dirname in os.listdir(get_instance_path(pid))].count(True)
+        return [dirname.isdigit() for dirname in os.listdir(get_instance_path(pid, public=False))].count(True)
     except FileNotFoundError:
         raise InternalException("Could not find problem instances.")
 
