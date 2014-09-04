@@ -55,7 +55,8 @@ def clear_build_directories():
 
     if len(problems) > 0:
         raise InternalException("Unable to delete these directories: "+problem_string)
-            
+    else:
+        _build_directories.clear()
 
 def replace_source_tokens(file_path, lookup, out_path):
     """
