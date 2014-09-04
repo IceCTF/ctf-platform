@@ -6,14 +6,48 @@ import api
 
 import shutil
 import os
+import spur
+
 from os import path
 from string import Template
-
 from api.common import InternalException
 
 log = api.logger.use(__name__)
 
 _build_directories = []
+
+def run_makefile(make_directory):
+    """
+    Runs a makefile in a given directory.
+
+    Args:
+        make_directory: directory where the Makefile is located.
+    """
+
+    make_path = path.join(make_directory, "Makefile")
+
+    if not path.isfile(make_path):
+        raise InternalException(make_path + " does not exist.")
+
+    shell = spur.LocalShell()
+
+    try:
+        shell.run(["make", "-C", make_directory])
+    except Exception as e:
+        raise InternalException(str(e))
+
+def get_directory(resource_path):
+    """
+    Returns the directory in which something exists. You can supply __file__ from
+    a module/generator to get its directory.
+
+    Args:
+        resource_path: path to a resource
+    Returns:
+        The resource's directory of residence.
+    """
+
+    return path.dirname(path.abspath(resource_path))
 
 def generate_resource_link(pid, resource_path, static=False, title=None):
     """
