@@ -107,6 +107,15 @@ img.logo {
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d1d1d1', endColorstr='#ffffff', GradientType=0 );   
 }
 
+.faq-search-box {
+    float: right;
+    width: 20em;
+}
+
+.faq-no-results {
+    display: none;
+}
+
 /* Buttons */
 
 

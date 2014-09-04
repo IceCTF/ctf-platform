@@ -137,7 +137,7 @@ def status_hook():
         "shell": api.config.enable_shell,
         "enable_captcha": api.config.enable_captcha,
         "competition_active": api.utilities.check_competition_active(),
-        "username": api.user.get_user()['username']
+        "username": api.user.get_user()['username'] if api.auth.is_logged_in() else ""
     }
 
     return WebSuccess(data=status)
