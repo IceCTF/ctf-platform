@@ -32,7 +32,12 @@ def guess_mimetype(resource_path):
         The mimetype string.
     """
 
-    return mimetypes.guess_type(resource_path)[0]
+    mime = mimetypes.guess_type(resource_path)[0]
+
+    if mime is None:
+        return "application/octet-stream"
+
+    return mime
 
 @app.route('/api/autogen/serve')
 @require_login
