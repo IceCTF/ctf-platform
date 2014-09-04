@@ -66,13 +66,14 @@ maxValuesFromBucketsExtended = (buckets, sampleKey) ->
 
   return maxValues
 
-progressionDataToPoints = (data, dataPoints) ->
+progressionDataToPoints = (data, dataPoints, currentDate = 0) ->
 
   sortedData = _.sortBy _.flatten(data), (submission) ->
     return submission.time
 
-  min = _.first(sortedData).time
-  max = _.last(sortedData).time
+  min = _.first(sortedData).time - 60*5
+  lastTime = _.last(sortedData).time
+  max = if currentDate is 0 then lastTime else Math.min(lastTime + 3600*24, currentDate)
   bucketWindow = Math.max(Math.floor((max - min) / dataPoints), 1)
 
   dataSets = []
@@ -93,45 +94,50 @@ progressionDataToPoints = (data, dataPoints) ->
   div = divFromSelector selector
   apiCall "GET", "/api/stats/top_teams/score_progression", {}
   .done (data) ->
-    if data.data.length >= 2
-      scoreData = (team.score_progression for team in data.data)
+    apiCall "GET", "/api/time", {}
+    .done (timedata) ->
+      if data.data.length >= 2
+        scoreData = (team.score_progression for team in data.data)
 
-      #Ensure there are submissions to work with
-      if _.max(_.map(scoreData, (submissions) -> submissions.length)) > 0
+        #Ensure there are submissions to work with
+        if _.max(_.map(scoreData, (submissions) -> submissions.length)) > 0
 
-        dataPoints = _.zip.apply _, progressionDataToPoints scoreData, 720
+          dataPoints = _.zip.apply _, progressionDataToPoints scoreData, 720, timedata.data
 
-        teamNameData = (team.name for team in data.data)
+          teamNameData = (team.name for team in data.data)
 
-        graphData = [["Score"].concat(teamNameData)]
+          graphData = [["Score"].concat(teamNameData)]
 
-        _.each dataPoints, (dataPoint) ->
-          graphData.push [""].concat(dataPoint)
+          _.each dataPoints, (dataPoint) ->
+            graphData.push [""].concat(dataPoint)
 
-        packagedData = google.visualization.arrayToDataTable graphData
+          packagedData = google.visualization.arrayToDataTable graphData
 
-        chart = new google.visualization.SteppedAreaChart(div)
-        chart.draw(packagedData, topTeamsGraphOptions)
+          chart = new google.visualization.SteppedAreaChart(div)
+          chart.draw(packagedData, topTeamsGraphOptions)
 
 @drawTeamProgressionGraph = (selector, container_selector) ->
   div = divFromSelector selector
   apiCall "GET", "/api/stats/team/score_progression", {}
   .done (data) ->
-    if data.status == 1 
-        if data.data.length > 0
+    apiCall "GET", "/api/time", {}
+    .done (timedata) ->
 
-          graphData = [
-            ["Time", "Score", {role: "tooltip"}]
-          ]
+      if data.status == 1
+          if data.data.length > 0
 
-          steps = progressionDataToPoints data.data, 720
-          (graphData.push(["", score, score]) for score in steps)
+            graphData = [
+              ["Time", "Score", {role: "tooltip"}]
+            ]
 
-          packagedData = google.visualization.arrayToDataTable graphData
+            steps = progressionDataToPoints data.data, 720, timedata.data
+            (graphData.push(["", score, score]) for score in steps)
 
-          chart = new google.visualization.SteppedAreaChart(div)
-          chart.draw(packagedData, teamGraphOptions)          
+            packagedData = google.visualization.arrayToDataTable graphData
+
+            chart = new google.visualization.SteppedAreaChart(div)
+            chart.draw(packagedData, teamGraphOptions)
+          else
+            $(container_selector).hide()
         else
           $(container_selector).hide()
-    else
-        $(container_selector).hide()

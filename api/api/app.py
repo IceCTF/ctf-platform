@@ -10,6 +10,7 @@ import api
 import json
 import mimetypes
 
+from datetime import datetime
 from api.common import WebSuccess, WebError
 from api.annotations import api_wrapper, require_login, require_teacher, require_admin, check_csrf
 from api.annotations import block_before_competition, block_after_competition
@@ -442,3 +443,8 @@ def get_scoreboard_hook():
 @api_wrapper
 def get_top_teams_score_progressions_hook():
     return WebSuccess(data=api.stats.get_top_teams_score_progressions())
+
+@app.route('/api/time', methods=['GET'])
+@api_wrapper
+def get_time():
+    return WebSuccess(data=int(datetime.utcnow().timestamp()))
