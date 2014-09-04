@@ -34,24 +34,24 @@ def guess_mimetype(resource_path):
 
     return mimetypes.guess_type(resource_path)[0]
 
-
-@app.route('/api/autogen/static/serve')
-@require_login
-def serve_autogen_static_hook():
-    pid = request.args.get("pid", None)
-    path = request.args.get("path", None)
-    instance_path = api.autogen.get_static_instance_path(pid, public=True)
-
-    return send_from_directory(instance_path, path, mimetype=guess_mimetype(path))
-
 @app.route('/api/autogen/serve')
 @require_login
 def serve_autogen_hook():
     pid = request.args.get("pid", None)
     path = request.args.get("path", None)
+    static = request.args.get("static", "false") == "true"
+
     tid = api.user.get_team()["tid"]
+
+    if pid not in api.problem.get_unlocked_pids(tid):
+        return WebError("You have not unlocked this problem!")
+
     instance_number = api.autogen.get_instance_number(pid, tid)
-    instance_path = api.autogen.get_instance_path(pid, instance_number, public=True)
+
+    if static:
+        instance_path = api.autogen.get_static_instance_path(pid, public=True)
+    else:
+        instance_path = api.autogen.get_instance_path(pid, instance_number, public=True)
 
     return send_from_directory(instance_path, path, mimetype=guess_mimetype(path))
 
