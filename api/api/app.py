@@ -8,6 +8,7 @@ app = Flask(__name__, static_path="/")
 
 import api
 import json
+import mimetypes
 
 from api.common import WebSuccess, WebError
 from api.annotations import api_wrapper, require_login, require_teacher, require_admin, check_csrf
@@ -21,13 +22,27 @@ session_cookie_name = "flask"
 
 secret_key = ""
 
+def guess_mimetype(resource_path):
+    """
+    Guesses the mimetype of a given resource.
+
+    Args:
+        resource_path: the path to a given resource.
+    Returns:
+        The mimetype string.
+    """
+
+    return mimetypes.guess_type(resource_path)[0]
+
+
 @app.route('/api/autogen/static/serve')
 @require_login
 def serve_autogen_static_hook():
     pid = request.args.get("pid", None)
     path = request.args.get("path", None)
     instance_path = api.autogen.get_static_instance_path(pid, public=True)
-    return send_from_directory(instance_path, path)
+
+    return send_from_directory(instance_path, path, mimetype=guess_mimetype(path))
 
 @app.route('/api/autogen/serve')
 @require_login
@@ -37,7 +52,8 @@ def serve_autogen_hook():
     tid = api.user.get_team()["tid"]
     instance_number = api.autogen.get_instance_number(pid, tid)
     instance_path = api.autogen.get_instance_path(pid, instance_number, public=True)
-    return send_from_directory(instance_path, path)
+
+    return send_from_directory(instance_path, path, mimetype=guess_mimetype(path))
 
 def config_app(*args, **kwargs):
     """
