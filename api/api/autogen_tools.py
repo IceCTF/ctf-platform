@@ -62,7 +62,7 @@ def generate_resource_link(pid, resource_path, static=False, title=None):
         The html link to the resource.
     """
 
-    return '<a src="/api/autogen{}/serve?pid={}&path={}">{}</a>'.format(
+    return '<a href="/api/autogen{}/serve?pid={}&path={}">{}</a>'.format(
         "/static" if static else "",
         pid,
         resource_path,
