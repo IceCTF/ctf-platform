@@ -148,6 +148,7 @@ def build_problem_instances(pid, instances):
                             elif path.isdir(f):
                                 shutil.copytree(f, autogen_instance_path)
 
+        api.autogen_tools.clear_build_directories()
         log.debug("done!")
 
     random.setstate(previous_state)
