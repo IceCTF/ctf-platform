@@ -1,9 +1,11 @@
 recaptchaPublicKey = ""
 
 reloadCaptcha = ->
-  # possibly disable this
-  if true
-    Recaptcha.reload()
+  apiCall "GET", "/api/user/status", {}
+  .done (data) ->
+    console.log(data.data.enable_captcha)
+    if data.data.enable_captcha
+        Recaptcha.reload()
 
 submitRegistration = (e) ->
   e.preventDefault()
@@ -13,7 +15,7 @@ submitRegistration = (e) ->
   creatingTeacherAccount = $("#registration-adviser-page").is(":visible")
   registrationData["create-new-team"] = creatingNewTeam
   registrationData["create-new-teacher"] = creatingTeacherAccount
-    
+
   if creatingNewTeam
     registrationData["ctf-emails"] = $("#checkbox-emails-create").is(':checked')
     submitButton = "#register-button-create"
@@ -23,23 +25,25 @@ submitRegistration = (e) ->
   else
     registrationData["ctf-emails"] = $("#checkbox-emails-existing").is(':checked')
     submitButton = "#register-button-existing"
-    
+
   apiCall "POST", "/api/user/create", registrationData
   .done (data) ->
     switch data['status']
       when 0
         $(submitButton).apiNotify(data, {position: "right"})
         reloadCaptcha()
-      when 1        
+      when 1
         if creatingTeacherAccount
             document.location.href = "/classroom"
         else
             document.location.href = "/team"
 
 $ ->
-  # possibly disable this
-  if true
-    Recaptcha.create(recaptchaPublicKey, "captcha", { theme: "red" })
+  apiCall "GET", "/api/user/status", {}
+  .done (data) ->
+    if data.data.enable_captcha
+        Recaptcha.create(recaptchaPublicKey, "captcha", { theme: "red" })
+
   $("#user-registration-form").on "submit", submitRegistration
 
   $("#registration-new-team-page").hide()
@@ -50,20 +54,20 @@ $ ->
 
   # Note that this height/auto sillyness is specific to the known height relationship
   # between these pages. If one gets longer or shorter, we need to tweek it
-    
+
   offset = 0 # Not sure why this value is necessary. Check later
   $("#button-new-team").click () ->        
     $("#stretch-box").css("min-height", $("#stretch-box").height()+offset)
     $("#registration-join-team-page").hide "slide", { direction: "up" }, pageTransitionSpeed, () ->
         $("#registration-adviser-page").hide "slide", { direction: "up" }, pageTransitionSpeed, () ->
             $("#registration-new-team-page").show "slide", { direction: "up" }, pageTransitionSpeed
-    
+
   $("#button-join-team").click () ->    
     $("#stretch-box").css("min-height", $("#stretch-box").height()+offset)
     $("#registration-new-team-page").hide "slide", { direction: "up" }, pageTransitionSpeed, () ->
         $("#registration-adviser-page").hide "slide", { direction: "up" }, pageTransitionSpeed, () ->
             $("#registration-join-team-page").show "slide", { direction: "up" }, pageTransitionSpeed
-  
+
   $("#button-adviser").click () -> 
     $("#stretch-box").css("min-height", $("#stretch-box").height()+offset)
     $("#registration-new-team-page").hide "slide", { direction: "up" }, pageTransitionSpeed, () ->
