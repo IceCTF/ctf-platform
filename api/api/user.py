@@ -24,7 +24,11 @@ user_schema = Schema({
             lambda name: safe_fail(get_user, name=name) is None])
     ),
     Required('password'):
-        check(("Passwords must be between 3 and 20 characters.", [str, Length(min=3, max=20)]))
+        check(("Passwords must be between 3 and 20 characters.", [str, Length(min=3, max=20)])
+    ),
+    Required('background'):
+        check(("You must provide your background!", [str, Length(min=3, max=20)])
+    )
 }, extra=True)
 
 new_team_schema = Schema({
