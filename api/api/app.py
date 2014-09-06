@@ -8,7 +8,9 @@ app = Flask(__name__, static_path="/")
 
 import api
 import json
+import mimetypes
 
+from datetime import datetime
 from api.common import WebSuccess, WebError
 from api.annotations import api_wrapper, require_login, require_teacher, require_admin, check_csrf
 from api.annotations import block_before_competition, block_after_competition
@@ -21,23 +23,43 @@ session_cookie_name = "flask"
 
 secret_key = ""
 
-@app.route('/api/autogen/static/serve')
-@require_login
-def serve_autogen_static_hook():
-    pid = request.args.get("pid", None)
-    path = request.args.get("path", None)
-    instance_path = api.autogen.get_static_instance_path(pid, public=True)
-    return send_from_directory(instance_path, path)
+def guess_mimetype(resource_path):
+    """
+    Guesses the mimetype of a given resource.
+
+    Args:
+        resource_path: the path to a given resource.
+    Returns:
+        The mimetype string.
+    """
+
+    mime = mimetypes.guess_type(resource_path)[0]
+
+    if mime is None:
+        return "application/octet-stream"
+
+    return mime
 
 @app.route('/api/autogen/serve')
 @require_login
 def serve_autogen_hook():
     pid = request.args.get("pid", None)
     path = request.args.get("path", None)
+    static = request.args.get("static", "false") == "true"
+
     tid = api.user.get_team()["tid"]
+
+    if pid not in api.problem.get_unlocked_pids(tid):
+        return WebError("You have not unlocked this problem!")
+
     instance_number = api.autogen.get_instance_number(pid, tid)
-    instance_path = api.autogen.get_instance_path(pid, instance_number, public=True)
-    return send_from_directory(instance_path, path)
+
+    if static:
+        instance_path = api.autogen.get_static_instance_path(pid, public=True)
+    else:
+        instance_path = api.autogen.get_instance_path(pid, instance_number, public=True)
+
+    return send_from_directory(instance_path, path, mimetype=guess_mimetype(path))
 
 def config_app(*args, **kwargs):
     """
@@ -421,3 +443,8 @@ def get_scoreboard_hook():
 @api_wrapper
 def get_top_teams_score_progressions_hook():
     return WebSuccess(data=api.stats.get_top_teams_score_progressions())
+
+@app.route('/api/time', methods=['GET'])
+@api_wrapper
+def get_time():
+    return WebSuccess(data=int(datetime.utcnow().timestamp()))

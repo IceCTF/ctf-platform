@@ -23,6 +23,9 @@ Setting Up
 9. Run "devploy" to deploy the development version of the site
 10. Go to port 8080 on the Host Machine
 11. Remember to always use 127.0.0.1:8080 not localhost:8080
+12. Note: The database will not have any problems in it by default. To add the picoCTF 2013 problems to the database, use "python3 ~/api/api_manager.py ~/api/problems/problems.json"
+
+*Warning*: The CTF-Dev repo uses submodules to load in extra code. Submodules are not particularly intuitive and indeed have some unexpected behavior if you have not seen them before. The safest choice is always to edit the submodule repo outside of CTF-Dev as its own separate repo. If you do want to commit from inside CTF-Dev, however, you will need to do "git checkout master" first. Be careful to check that you have indeed done this before commiting something, or it may be difficult to recover your changes.
 
 Contact
 ------------

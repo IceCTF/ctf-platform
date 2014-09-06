@@ -21,7 +21,7 @@
       when 1
         if data.data["logged_in"]
           window.location.href = "/"
-            
+
 @redirectIfTeacher = ->
   apiCall "GET", "/api/user/status", {}
   .done (data) ->

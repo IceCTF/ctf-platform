@@ -32,7 +32,7 @@ teamSelectionHandler = (e) ->
       $(elementString).empty()
       $(elementString).append("<img id='graph-placeholder-#{tid}' class='faded-chart' src='img/classroom_graph.png'>")
       addHoverLabel $("#graph-placeholder-#{tid}"), $(elementString), "Once the competition starts, you'll be able to check out the progress of the team here."
-        
+
 loadTeamSelection = (gid) ->
   apiCall "GET", "/api/group/member_information", {gid: gid}
   .done (data) ->
