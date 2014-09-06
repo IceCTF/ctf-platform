@@ -2,7 +2,7 @@
 <html lang="en" style="100%">
 
   {% include head.html %}
-
+    
 <body>
     
     {% include modal.html %}    
@@ -14,17 +14,14 @@
 		<header class="page-title">
 			<div class="container">
 				<h1>{{ page.title }}</h1>	
-				<!--  <ol class="breadcrumb">
-				<li><a href="#">Home</a></li>
-				<li><a href="#">Pages</a></li>
-				<li class="active">About us</li>
-				</ol> -->	
-			</div> <!-- container -->
+			</div>
 		</header>
 		{% endif %}
 		
+        <div id="main-content">
         {{ content }}
-
+        </div>
+        
         {% include footer.html %}
 
         {% for js_file in page.post_scripts %}
@@ -37,7 +34,7 @@
                 {{ func }};
                 {% endfor %}
             })
-        </script>
-     </div>  
+        </script>     
+    </div>
 </body>
 </html>

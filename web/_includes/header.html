@@ -8,7 +8,21 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand navbar-brand-lime" href="/"><span>{{ site.title }}</span></a>
+            <div>
+                <a class="navbar-brand navbar-brand-lime dropdown-toggle" href="/">
+                    <img src="/img/2014_logo_blue2.svg" class="header-logo" alt="{{ site.title }}" id="current-logo">
+                </a>            
+                <ul class="nav navbar-nav">
+                    <li class="dropdown">
+                    <a class="dropdown-toggle" id="dropdown-pico-selector" data-toggle="dropdown" href="#" style="color: #24acb4">
+                      <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu" role="menu" id="pico-selector-menu">
+                        <li class="old-pico-link"><a role="menuitem" tabindex="-1" href="http://2013.picoctf.com/" class="old-pico-link"><img src="/img/2013_logo.svg" style="width: 260px;"></a></li>  
+                    </ul>
+                  </li>  
+                </ul>
+            </div>            
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
@@ -33,6 +47,7 @@
     <li><a href="<%= link %>"><%- name %></a></li>
     <% }; %>
     <% }); %>
+    <li id="mobile-old-pico-link"><a href="https://2013.picoctf.com">2013</a></li> <!-- JB: pico-specific. Remove this before we push as open source -->
 </script>
 
 <script type="text/template" id="navbar-links-dropdown-template">

@@ -1,10 +1,9 @@
-
-apiOffline =
-  2013: "https://2013.picoctf.com"
-  #News: "/news"
+apiOffline =  
+  Contact: "/contact"
+  FAQ: "/faq"
+  Teachers: "/teachers"
 
 teacherLoggedIn =
-  2013: "https://2013.picoctf.com"
   Game: "/game/"
   Problems: "/problems"
   Shell: "/shell"
@@ -20,7 +19,6 @@ teacherLoggedIn =
     Logout: "/logout"
 
 teacherLoggedInNoCompetition =  
-  2013: "https://2013.picoctf.com"
   Classroom: "/classroom"  
   FAQ: "/faq"    
   #News: "/news"
@@ -31,7 +29,6 @@ teacherLoggedInNoCompetition =
     Logout: "/logout"
 
 userLoggedIn =
-  2013: "https://2013.picoctf.com"
   Game: "/game/"
   Problems: "/problems"
   Shell: "/shell"
@@ -46,7 +43,6 @@ userLoggedIn =
     Logout: "/logout"
 
 userLoggedInNoCompetition =       
-  2013: "https://2013.picoctf.com"
   Team: "/team"  
   FAQ: "/faq"    
   # News: "/news"
@@ -57,7 +53,6 @@ userLoggedInNoCompetition =
 
 
 userNotLoggedIn =
-  2013: "https://2013.picoctf.com"
   Registration: "/registration"
   # Scoreboard: "/scoreboard"  
   # About:

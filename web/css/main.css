@@ -1,3 +1,19 @@
+body {
+    background-color: #303030;
+}
+
+#main-content {
+    min-height: 35vh;
+}
+
+a.old-pico-link:hover {
+    background-color: #1e2936 !important;
+}
+
+.header-logo {
+    height: 100%;   
+}
+
 .faded-chart {
     opacity: 0.25; 
     filter: alpha(opacity=25);
@@ -14,6 +30,24 @@
 
 .hidden-page {
     display: none;   
+}
+
+img {
+    max-width: 100%;
+}
+
+#main-content h1, 
+#main-content h2, 
+#main-content h3, 
+#main-content h4, 
+#main-content h5, #main-content h6 {
+    color: #1B7B81;
+    font-weight: 500;
+}
+
+.lead {
+   color: #1B7B81;
+   font-weight: 500;
 }
 
 img.logo {
@@ -53,7 +87,7 @@ img.logo {
 }
 
 #footer {
-    margin-top: 40px;   
+    margin-top: 60px;   
 }
 
 .footer-widget {
@@ -116,6 +150,42 @@ img.logo {
     display: none;
 }
 
+#pico-selector-menu {
+    left:auto; 
+    right:0; 
+    width: 280px; 
+    background-color: #1e2936; 
+    border: solid 3px #303030;
+}
+
+#dropdown-pico-selector {
+    padding-left: 0px;
+    padding-right: 0px;
+    min-width: 0px;
+}
+
+@media (max-width: 768px) {
+    #dropdown-pico-selector {
+        display: none;   
+    }
+    #pico-selector-menu {
+        display: none;   
+    }
+    #mobile-old-pico-link {
+        display: block;   
+    }
+}
+
+@media (min-width: 768px) {
+    #dropdown-pico-selector {
+        display: block;   
+    }
+    #mobile-old-pico-link {
+        display: none;   
+    }
+}
+
+
 /* Buttons */
 
 
@@ -136,7 +206,7 @@ img.logo {
 
 .btn-primary {
     background: #00a1cb;
-    background-color: #00a1cb;
+    background-color:  #00a1cb;
     border-color: #007998;
     color: white;
     text-shadow: 0 -1px 1px rgba(0, 40, 50, 0.35);
