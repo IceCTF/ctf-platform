@@ -14,4 +14,5 @@ web/contact.html
 web/game.html
 web/teachers.html
 web/game-preview.html
+web/sponsors.html
 api/graders/autogentest/instances/*

@@ -38,7 +38,7 @@ new_team_schema = Schema({
             lambda name: safe_fail(api.team.get_team, name=name) is None])
     ),
     Required('team-password-new'):
-        check(("Team passwords must be between 3 and 20 characters.", [str, Length(min=3, max=20)])),
+        check(("Team passphrase must be between 3 and 20 characters.", [str, Length(min=3, max=20)])),
     Required('team-adv-name-new'):
         check(("Adviser names should be between 3 and 50 characters.", [str, Length(min=3, max=50)])),
     Required('team-adv-email-new'): check(
