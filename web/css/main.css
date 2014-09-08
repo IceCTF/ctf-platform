@@ -6,17 +6,14 @@ body {
     min-height: 35vh;
 }
 
-a.old-pico-link:hover {
-    background-color: #1e2936 !important;
+@media (min-width: 1200px) {
+    .container {
+        width: 970px;
+    }
 }
 
 .header-logo {
     height: 100%;   
-}
-
-.faded-chart {
-    opacity: 0.25; 
-    filter: alpha(opacity=25);
 }
 
 .button-column {
@@ -48,6 +45,15 @@ img {
 .lead {
    color: #1B7B81;
    font-weight: 500;
+}
+
+.diagram {
+    background-color:#25acb4; 
+    margin-top: 10px;
+    margin-bottom: 20px;
+    padding-top: 20px; 
+    padding-bottom: 20px;
+    border-radius: 10px;
 }
 
 img.logo {
@@ -110,6 +116,13 @@ img.logo {
     margin-bottom: 0;
 }
 
+/* Style for charts that are disabled before the competition */
+
+.faded-chart {
+    opacity: 0.25; 
+    filter: alpha(opacity=25);
+}
+
 .hover-label {
     position: absolute;
     background-color: white;
@@ -141,6 +154,8 @@ img.logo {
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d1d1d1', endColorstr='#ffffff', GradientType=0 );   
 }
 
+/* FAQ styles */
+
 .faq-search-box {
     float: right;
     width: 20em;
@@ -148,6 +163,22 @@ img.logo {
 
 .faq-no-results {
     display: none;
+}
+
+/* Team page forms */
+
+.form-inline .class-class-name {
+    width: 160px;
+}
+
+.form-inline .class-teacher-username { 
+    width: 160px;
+}
+
+/* Style trickery for the pico dropdown selector */
+
+a.old-pico-link:hover {
+    background-color: #1e2936 !important;
 }
 
 #pico-selector-menu {
@@ -186,6 +217,24 @@ img.logo {
 }
 
 
+/* Panels */
+
+.panel-primary {
+    border-color: #1B7B81;   
+}
+
+.panel-primary > .panel-heading {
+    background-color: #1B7B81;
+    background: #1B7B81;
+    border-color: #1B7B81;
+}
+
+.panel-primary > .panel-heading+.panel-collapse > .panel-body {
+   border-color: #1B7B81;    
+}
+
+
+
 /* Buttons */
 
 
@@ -205,16 +254,24 @@ img.logo {
 }
 
 .btn-primary {
-    background: #00a1cb;
-    background-color:  #00a1cb;
+    /* background: #00a1cb;
+    background-color:  #00a1cb; */
+    background: #25acb4;
+    background-color: #25acb4;
     border-color: #007998;
     color: white;
     text-shadow: 0 -1px 1px rgba(0, 40, 50, 0.35);
 }
 
 .btn-primary:hover {
-    background-color: #008db2;
-    background: #008db2;
+    /* background-color: #008db2;
+    background: #008db2; */
+    background: #1f9299;
+    background-color: #1f9299;
+}
+
+.btn-primary.active {
+    background: #1B7B81;
 }
 
 .btn-success {

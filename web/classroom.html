@@ -30,7 +30,7 @@ startup_functions:
                 <div class="col-md-12">
                     <div class="problem panel panel-primary">
                       <div class="panel-heading team-visualization-enabler" data-tid="<%= team.tid %>" data-toggle="collapse" data-target="#<%= team.tid %>">
-                          <%- team.team_name %> <div class="pull-right"><%- team.competition_active ? team.score : '' %></div>
+                          <%- team.team_name %> (Click to Open)<div class="pull-right"><%- team.competition_active ? team.score : '' %></div>
                       </div>
                       <div class="panel-collapse collapse" id="<%= team.tid %>">
                         <div class="panel-body">
