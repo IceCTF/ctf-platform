@@ -34,18 +34,20 @@
 
 <script type="text/template" id="navbar-links-template">
     <% _.each(links, function(link, name) { %>
-    <% if(typeof link == "object") {  %>
-    <%= renderNestedNavbarLinks({
-    menu_name: name,
-    links: link,
-    renderNavbarLinks: renderNavbarLinks,
-    renderNestedNavbarLinks: renderNestedNavbarLinks
-    }) %>
-    <% } else { %>
-    <li><a href="<%= link %>"><%- name %></a></li>
-    <% }; %>
+        <% if(typeof link == "object") {  %>
+            <%= renderNestedNavbarLinks({
+            menu_name: name,
+            links: link,
+            renderNavbarLinks: renderNavbarLinks,
+            renderNestedNavbarLinks: renderNestedNavbarLinks
+            }) %>
+        <% } else { %>
+            <li><a href="<%= link %>"><%- name %></a></li>
+        <% }; %>
     <% }); %>
-    <li id="mobile-old-pico-link"><a href="https://2013.picoctf.com">2013</a></li> <!-- JB: pico-specific. Remove this before we push as open source -->
+    <% if (topLevel) { %>
+        <li id="mobile-old-pico-link"><a href="https://2013.picoctf.com">2013</a></li> <!-- JB: pico-specific. Remove this before we push as open source -->
+    <% } %>    
 </script>
 
 <script type="text/template" id="navbar-links-dropdown-template">
@@ -54,6 +56,7 @@
         <ul class="dropdown-menu">
             <%= renderNavbarLinks({
             links: links,
+            topLevel: false,
             renderNavbarLinks: renderNavbarLinks,
             renderNestedNavbarLinks: renderNestedNavbarLinks
             }) %>

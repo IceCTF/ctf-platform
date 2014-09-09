@@ -85,7 +85,7 @@ loadNavbar = (renderNavbarLinks, renderNestedNavbarLinks) ->
   apiCall "GET", "/api/user/status", {}
   .done (data) ->
     navbarLayout.links = userNotLoggedIn
-
+    navbarLayout.topLevel = true
     if data["status"] == 1
       if not data.data["logged_in"] 
         $(".show-when-logged-out").css("display", "inline-block")
