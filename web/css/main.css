@@ -35,6 +35,57 @@ body {
     }
 }
 
+
+@media (max-width: 1032px) {
+    #date-label { 
+        font-size: 4vw;
+    }
+}
+
+@media (min-width: 1032px) {
+    #date-label { 
+        font-size: 41px;
+    }
+}
+
+
+#date-label {
+    position: absolute; 
+    bottom: 33%; 
+    width: 100%; 
+    color: white !important; 
+    text-align: center;   
+}
+
+#register-button {
+    position: absolute; 
+    bottom: 23%; 
+    width: 100%;
+    text-align: center;
+}
+
+@media (max-width: 768px) {
+    #register-button {
+        display: none;   
+    }
+    #backup-register-button {
+        display: inline-block;   
+    }
+    #date-label {
+        bottom: 28%;    
+    }
+}
+
+@media (min-width: 768px) {
+    #backup-register-button {
+        display: none;   
+    }    
+}
+
+#backup-register-button {
+    text-align: center; margin-top: 20px; width:100%;
+}
+
 a.navbar-brand {
     max-width: 250px;
 }
