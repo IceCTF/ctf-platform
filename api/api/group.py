@@ -7,25 +7,25 @@ from api.common import check, validate, safe_fail, WebException, InternalExcepti
 
 register_group_schema = Schema({
     Required("group-name"): check(
-        ("Group name must be between 3 and 50 characters.", [str, Length(min=3, max=100)])
+        ("Class name must be between 3 and 50 characters.", [str, Length(min=3, max=100)])
     )
 }, extra=True)
 
 join_group_schema = Schema({
     Required("group-name"): check(
-        ("Group name must be between 3 and 50 characters.", [str, Length(min=3, max=100)]),
+        ("Class name must be between 3 and 50 characters.", [str, Length(min=3, max=100)]),
     )
 }, extra=True)
 
 leave_group_schema = Schema({
     Required("group-name"): check(
-        ("Group name must be between 3 and 50 characters.", [str, Length(min=3, max=100)]),
+        ("Class name must be between 3 and 50 characters.", [str, Length(min=3, max=100)]),
     )
 }, extra=True)
 
 delete_group_schema = Schema({
     Required("group-name"): check(
-        ("Group name must be between 3 and 50 characters.", [str, Length(min=3, max=100)]),
+        ("Class name must be between 3 and 50 characters.", [str, Length(min=3, max=100)]),
     )
 }, extra=True)
 
@@ -67,7 +67,7 @@ def is_member_of_group(gid=None, name=None, owner_uid=None, tid=None):
         if api.auth.is_logged_in():
             tid = api.user.get_team()["tid"]
         else:
-            raise InternalException("can not automatically retrieve tid if you aren't logged in.")
+            raise InternalException("cannot automatically retrieve tid if you aren't logged in.")
 
     return tid in group["members"]
 
@@ -92,11 +92,11 @@ def get_group(gid=None, name=None, owner_uid=None):
     elif gid is not None:
         match.update({"gid": gid})
     else:
-        raise InternalException("Group name and owner or gid must be specified to look it up.")
+        raise InternalException("Class name and owner or gid must be specified to look it up.")
 
     group = db.groups.find_one(match, {"_id": 0})
     if group is None:
-        raise InternalException("Could not find group!")
+        raise InternalException("Could not find class!")
 
     return group
 
@@ -162,7 +162,7 @@ def create_group_request(params, uid=None):
     validate(register_group_schema, params)
 
     if safe_fail(get_group, name=params["group-name"], owner_uid=uid) is not None:
-        raise WebException("A group with that name already exists!")
+        raise WebException("A class with that name already exists!")
 
     return create_group(uid, params["group-name"])
 
@@ -195,7 +195,7 @@ def join_group_request(params, tid=None):
 
     validate(join_group_schema, params)
     if safe_fail(get_group, name=params["group-name"], owner_uid=owner_uid) is None:
-        raise WebException("No group exists with that name!")
+        raise WebException("No class exists with that name!")
 
     group = get_group(name=params["group-name"], owner_uid=owner_uid)
 
@@ -203,7 +203,7 @@ def join_group_request(params, tid=None):
         tid = api.user.get_team()["tid"]
 
     if tid in group['members']:
-        raise WebException("Your team is already a member of that group!")
+        raise WebException("Your team is already a member of that class!")
 
     join_group(tid, group["gid"])
 
@@ -240,7 +240,7 @@ def leave_group_request(params, tid=None):
         tid = api.user.get_team()["tid"]
 
     if tid not in group['members']:
-        raise WebException("Your team is not a member of that group!")
+        raise WebException("Your team is not a member of that class!")
 
     leave_group(tid, group["gid"])
 
@@ -273,7 +273,7 @@ def delete_group_request(params, uid=None):
         uid = api.user.get_user()['uid']
 
     if safe_fail(get_group, name=params['group-name'], owner_uid=uid) is None:
-        raise WebException("No group exists with that name!")
+        raise WebException("No class exists with that name!")
 
     if uid is None:
         uid = api.user.get_user()["uid"]
