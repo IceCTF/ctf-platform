@@ -14,7 +14,7 @@ startup_functions:
         </div>
         <div class="row">
             <div class="col-md-12">
-                <form class="form-horizontal" id="user-registration-form">
+                <form class="form-horizontal" id="user-registration-form">                	
                     <div id="registration-user-page">
                         <div class="form-group">
                             <label class="control-label" for="email">Email</label>
@@ -73,6 +73,7 @@ startup_functions:
                     </div>
                     <div id="stretch-box">
                     <div id="registration-new-team-page" class="hidden-page">
+                    	{% include registration-new-team.html %}
                         <div id="new-team" class="tab-pane fade in active">
                             <div id="new-team-registration" class="team-registration-form">
                                 <div class="form-group">
@@ -90,7 +91,7 @@ startup_functions:
                                 <div class="form-group">
                                     <label class="control-label" for="team-school-new">School</label>
                                     <div class="controls registration-controls">
-                                        <input id="team-school-new" name="team-school-new" placeholder="School" type="text" class="form-control">
+                                        <input id="team-school-new" name="team-school-new" placeholder="School or Affiliation" type="text" class="form-control">
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -123,6 +124,7 @@ startup_functions:
                         </div>
                     </div>
                     <div id="registration-join-team-page" class="hidden-page">
+                    	{% include registration-join-team.html %}
                         <div id="existing-team-registration" class="team-registration-form">
                             <div class="form-group">
                                 <label class="control-label" for="team-name-existing">Team Name</label>
@@ -153,6 +155,7 @@ startup_functions:
                         </div>
                     </div>
                     <div id="registration-adviser-page" class="hidden-page">
+                    	{% include registration-adviser.html %}
                         <div id="new-teacher" class="teacher-registration">
                             <div class="form-group">
                                 <label class="control-label" for="teacher-school">School</label>
