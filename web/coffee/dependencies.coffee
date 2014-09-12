@@ -4,6 +4,7 @@
 
   $.ajax {url: url, type: type, data: data, cache: false}
   .fail (jqXHR, text) ->
+    ga('send', 'event', 'Error', 'APIOffline')
     $.notify "API is offline. :(", "error"
 
 @redirectIfNotLoggedIn = ->
@@ -12,6 +13,7 @@
     switch data["status"]
       when 1
         if not data.data["logged_in"]
+          ga('send', 'event', 'Redirect', 'NotLoggedIn')
           window.location.href = "/login"
 
 @redirectIfLoggedIn = ->
@@ -20,6 +22,7 @@
     switch data["status"]
       when 1
         if data.data["logged_in"]
+          ga('send', 'event', 'Redirect', 'LoggedIn')
           window.location.href = "/"
 
 @redirectIfTeacher = ->
@@ -28,6 +31,7 @@
     switch data["status"]
       when 1
         if data.data["teacher"]
+          ga('send', 'event', 'Redirect', 'Teacher')
           window.location.href = "/classroom"
 
 getStyle = (data) ->
@@ -60,12 +64,13 @@ getStyle = (data) ->
   data.sort (a, b) ->
     return (b - a)
 
-@confirmDialog = (message, title, yesButton, noButton, yesEvent) ->    
+@confirmDialog = (message, title, yesButton, noButton, yesEvent, noEvent) ->    
     renderDialogModal = _.template($("#modal-template").html())
     dialog_content = renderDialogModal({message: message, title: title, yesButton: yesButton, noButton: noButton, submitButton: ""})
     $("#modal-holder").html dialog_content    
     $("#confirm-modal").modal {backdrop: "static", keyboard: false} 
     .one "click", "#modal-yes-button", yesEvent
+    .one "click", "#modal-no-button", noEvent
 
 @messageDialog = (message, title, button, event) ->    
     renderDialogModal = _.template($("#modal-template").html())

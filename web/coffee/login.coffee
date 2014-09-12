@@ -5,7 +5,9 @@ login = (e) ->
     switch data['status']
       when 0
         $("#login-button").apiNotify(data, {position: "right"})
+        ga('send', 'event', 'Authentication', 'LogIn', 'Failure::' + data.message)
       when 1
+        ga('send', 'event', 'Authentication', 'LogIn', 'Success')
         document.location.href = "/"
 
 resetPassword = (e) ->
@@ -13,7 +15,12 @@ resetPassword = (e) ->
   apiCall "GET", "/api/user/reset_password", $("#password-reset-form").serializeObject()
   .done (data) ->
     apiNotify(data)
-
+    switch data['status']
+        when 0
+            ga('send', 'event', 'Authentication', 'PasswordReset', 'Failure::' + data.message)
+        when 1
+            ga('send', 'event', 'Authentication', 'PasswordReset', 'Success')
+            
 $ ->
   $("#password-reset-form").toggle()
 

@@ -2,13 +2,15 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <meta name="description" content="picoCTF">
-    <meta name="author" content="Carnegie Mellon Univeristy">
+    <meta name="author" content="Carnegie Mellon University">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>{% if page.title %}{{ site.title }} - {{ page.title }}{% else %}{{ site.title }}{% endif %}</title>
     {% for css_file in page.css_files %}
         <link href="{{ css_file }}" rel="stylesheet" media="screen">
     {% endfor %}
 
+    {% include analytics.html %}
+    
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <script src="//code.jquery.com/ui/1.11.1/jquery-ui.js"></script>  
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>

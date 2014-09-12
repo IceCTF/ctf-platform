@@ -6,6 +6,7 @@ reloadCaptcha = ->
     console.log(data.data.enable_captcha)
     if data.data.enable_captcha
         Recaptcha.reload()
+    ga('send', 'event', 'Registration', 'NewCaptcha')
 
 submitRegistration = (e) ->
   e.preventDefault()
@@ -19,20 +20,25 @@ submitRegistration = (e) ->
   if creatingNewTeam
     registrationData["ctf-emails"] = $("#checkbox-emails-create").is(':checked')
     submitButton = "#register-button-create"
+    logType = "NewTeam"
   else if creatingTeacherAccount
     registrationData["ctf-emails"] = $("#checkbox-emails-teacher").is(':checked')
     submitButton = "#register-button-teacher"
+    logType = "NewTeacher"
   else
     registrationData["ctf-emails"] = $("#checkbox-emails-existing").is(':checked')
     submitButton = "#register-button-existing"
+    logType = "JoinTeam"
 
   apiCall "POST", "/api/user/create", registrationData
   .done (data) ->
     switch data['status']
       when 0
         $(submitButton).apiNotify(data, {position: "right"})
+        ga('send', 'event', 'Registration', 'Failure', logType + "::" + data.message)
         reloadCaptcha()
       when 1
+        ga('send', 'event', 'Registration', 'Success', logType)
         if creatingTeacherAccount
             document.location.href = "/classroom"
         else
@@ -60,19 +66,22 @@ $ ->
     $("#stretch-box").css("min-height", $("#stretch-box").height()+offset)
     $("#registration-join-team-page").hide "slide", { direction: "up" }, pageTransitionSpeed, () ->
         $("#registration-adviser-page").hide "slide", { direction: "up" }, pageTransitionSpeed, () ->
-            $("#registration-new-team-page").show "slide", { direction: "up" }, pageTransitionSpeed
+            $("#registration-new-team-page").show "slide", { direction: "up" }, pageTransitionSpeed, () -> 
+                ga('send', 'event', 'Registration', 'Switch', 'NewTeam')
 
   $("#button-join-team").click () ->    
     $("#stretch-box").css("min-height", $("#stretch-box").height()+offset)
     $("#registration-new-team-page").hide "slide", { direction: "up" }, pageTransitionSpeed, () ->
         $("#registration-adviser-page").hide "slide", { direction: "up" }, pageTransitionSpeed, () ->
-            $("#registration-join-team-page").show "slide", { direction: "up" }, pageTransitionSpeed
+            $("#registration-join-team-page").show "slide", { direction: "up" }, pageTransitionSpeed, () ->
+                ga('send', 'event', 'Registration', 'Switch', 'JoinTeam')
 
   $("#button-adviser").click () -> 
     $("#stretch-box").css("min-height", $("#stretch-box").height()+offset)
     $("#registration-new-team-page").hide "slide", { direction: "up" }, pageTransitionSpeed, () ->
         $("#registration-join-team-page").hide "slide", { direction: "up" }, pageTransitionSpeed, () ->
-            $("#registration-adviser-page").show "slide", { direction: "up" }, pageTransitionSpeed
+            $("#registration-adviser-page").show "slide", { direction: "up" }, pageTransitionSpeed, () ->
+                ga('send', 'event', 'Registration', 'Switch', 'Teacher')
 
   $("#country-select").html('
         <option value="">Country...</option>

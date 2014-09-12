@@ -7,6 +7,7 @@ load_team_info = ->
     switch data["status"]
       when 0
         apiNotify(data)
+        ga('send', 'event', 'Team', 'LoadFailure', data.message)
       when 1
         $("#team-info").html renderTeamInformation({data: data.data})
 
@@ -16,6 +17,7 @@ load_group_info = ->
     switch data["status"]
       when 0
         apiNotify(data)
+        ga('send', 'event', 'Team', 'GroupLoadFailure', data.message)
       when 1
         $("#group-info").html renderGroupInformation({data: data.data})
 
@@ -29,14 +31,20 @@ join_group = (group_name, group_owner) ->
   .done (data) ->
     apiNotify(data)
     if data["status"] is 1
-      load_group_info()
+      ga('send', 'event', 'Team', 'JoinGroup', 'Success')
+      load_group_info()        
+    else
+      ga('send', 'event', 'Team', 'JoinGroup', 'Failure::' + data.message)
 
 leave_group = (group_name, group_owner) ->
   apiCall "POST", "/api/group/leave", {"group-name": group_name, "group-owner": group_owner}
   .done (data) ->
     apiNotify(data)
     if data["status"] is 1
+      ga('send', 'event', 'Team', 'LeaveGroup', 'Success')
       load_group_info()
+    else
+      ga('send', 'event', 'Team', 'LeaveGroup', 'Failure::' + data.message)
 
 group_request = (e) ->
   e.preventDefault()
@@ -44,7 +52,9 @@ group_request = (e) ->
   confirmDialog("By joining a class you are allowing the instructor to see individual statistics concerning your team's performance. Are you sure you want to join this class?", 
                 "Class Confirmation", "Join", "Cancel", 
         (e) ->
-            form.trigger "submit")
+            form.trigger "submit"
+       ,(e) -> 
+            ga('send', 'event', 'Team', 'JoinGroup', 'RejectPrompt'))
 
 join_group_request = (e) ->
   e.preventDefault()

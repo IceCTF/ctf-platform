@@ -33,11 +33,12 @@ teamSelectionHandler = (e) ->
       $(elementString).append("<img id='graph-placeholder-#{tid}' class='faded-chart' src='img/classroom_graph.png'>")
       addHoverLabel $("#graph-placeholder-#{tid}"), $(elementString), "Once the competition starts, you'll be able to check out the progress of the team here."
 
+# JB: I think this function can be removed
 loadTeamSelection = (gid) ->
   apiCall "GET", "/api/group/member_information", {gid: gid}
   .done (data) ->
+    ga('send', 'event', 'Group', 'LoadTeacherGroupInformation', 'Success')
     $("#team-selection").html renderTeamSelection({teams: data.data})
-
     $(".team-visualization-enabler").on "click", (e) ->
       teamSelectionHandler e
 
@@ -100,7 +101,8 @@ loadGroupManagement = (groups, showFirstTab, callback) ->
     tabBody = $(this).attr("href")
     groupName = $(this).data("group-name")
     apiCall "GET", "/api/group/member_information", {gid: $(this).data("gid")}
-    .done (teamData) ->
+    .done (teamData) ->        
+        ga('send', 'event', 'Group', 'LoadTeacherGroupInformation', 'Success')
         apiCall "GET", "/api/user/status", {}
         .done (userData) ->
             $(tabBody).html renderTeamSelection({teams: teamData.data, groupName: groupName, userStatus: userData.data})
@@ -123,6 +125,7 @@ loadGroupInfo = (showFirstTab, callback) ->
     switch data["status"]
       when 0
         apiNotify(data)
+        ga('send', 'event', 'Group', 'GroupListLoadFailure', data.message)
       when 1
         window.groupListCache = data.data
         loadGroupManagement data.data, showFirstTab, callback   
@@ -132,10 +135,12 @@ createGroup = (groupName) ->
   .done (data) ->            
     if data['status'] is 1
       closeDialog()
+      ga('send', 'event', 'Group', 'CreateGroup', 'Success')
       apiNotify(data)    
       loadGroupInfo(false, () -> 
                      $('#class-tabs li:eq(-2) a').tab('show'))
     else
+      ga('send', 'event', 'Group', 'CreateGroup', 'Failure::' + data.message)
       apiNotifyElement($("#new-group-name"), data)
         
 deleteGroup = (groupName) ->
@@ -146,7 +151,12 @@ deleteGroup = (groupName) ->
                   .done (data) ->
                     apiNotify(data)
                     if data['status'] is 1
-                      loadGroupInfo(true))
+                      ga('send', 'event', 'Group', 'DeleteGroup', 'Success')
+                      loadGroupInfo(true)
+                    else
+                      ga('send', 'event', 'Group', 'DeleteGroup', 'Failure::' + data.message)
+               ,() -> 
+                  ga('send', 'event', 'Group', 'DeleteGroup', 'RejectPrompt'))
 
 #Could be simplified without this function
 groupRequest = (e) ->
