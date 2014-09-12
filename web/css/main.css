@@ -295,6 +295,12 @@ img.logo-landscape {
     width: 160px;
 }
 
+/* Registration */
+
+#user-registration-form {
+	padding: 0 5%;
+}
+
 /* Style trickery for the pico dropdown selector */
 
 a.old-pico-link:hover {
