@@ -136,13 +136,14 @@ def login_hook():
     username = request.form.get('username')
     password = request.form.get('password')
     api.auth.login(username, password)
-    return WebSuccess("Successfully logged in as " + username, data={'teacher': api.user.is_teacher()})
-    
+    return WebSuccess(message="Successfully logged in as " + username, data={'teacher': api.user.is_teacher()})
+
 @app.route('/api/user/logout', methods=['GET'])
 @api_wrapper
 def logout_hook():
     if api.auth.is_logged_in():
         api.auth.logout()
+        print(session)
         return WebSuccess("Successfully logged out.")
     else:
         return WebError("You do not appear to be logged in.")
