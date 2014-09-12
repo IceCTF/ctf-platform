@@ -8,7 +8,10 @@ login = (e) ->
         ga('send', 'event', 'Authentication', 'LogIn', 'Failure::' + data.message)
       when 1
         ga('send', 'event', 'Authentication', 'LogIn', 'Success')
-        document.location.href = "/"
+        if (data.data['teacher'])
+                document.location.href = "/classroom"                
+            else
+                document.location.href = "/team"
 
 resetPassword = (e) ->
   e.preventDefault()
