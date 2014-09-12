@@ -35,6 +35,12 @@ body {
     }
 }
 
+@media (max-width: 400px) {
+    #date-label {
+        font-size: 10px;
+        font-size: 4vw;
+    }
+}
 
 @media (max-width: 1032px) {
     #date-label { 
