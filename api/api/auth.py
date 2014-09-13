@@ -55,6 +55,7 @@ def login(username, password):
                 raise WebException("Correct credentials! But the game has not started yet...")
         if user['uid'] is not None:
             session['uid'] = user['uid']
+            session.permanent = True
         else:
             raise WebException("Login Error")
     else:
