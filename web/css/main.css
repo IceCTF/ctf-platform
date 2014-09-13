@@ -224,6 +224,15 @@ img.logo-landscape {
     display: none;   
 }
 
+.alert-success { 
+    background-color: #F5F5F5;    
+}
+
+.alert {
+    padding: 7px;
+    border-radius: 10px;
+}
+
 .tab-pane-outline {
     border-left: 1px solid #ddd;
     border-right: 1px solid #ddd;
