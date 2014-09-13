@@ -89,7 +89,18 @@ getStyle = (data) ->
 
 @closeDialog = () ->
     $('#confirm-modal').modal('hide')
-    
+
+@logout = ->
+  apiCall "GET", "/api/user/logout"
+  .done (data) ->
+    switch data['status'] 
+      when 1
+        ga('send', 'event', 'Authentication', 'LogOut', 'Success')
+        document.location.href = "/"
+      when 0
+        ga('send', 'event', 'Authentication', 'LogOut', 'Failure::'+data.message)
+        document.location.href = "/login"
+
 $.fn.apiNotify = (data, configuration) ->
   configuration["className"] = getStyle data
   return $(this).notify(data.message, configuration)

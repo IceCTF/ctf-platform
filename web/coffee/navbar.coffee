@@ -19,7 +19,7 @@ teacherLoggedIn =
     Contact: "/contact"
   Account:
     Manage: "/account"
-    Logout: "/logout"
+    Logout: "#"
 
 teacherLoggedInNoCompetition =  
   Classroom: "/classroom"  
@@ -31,7 +31,7 @@ teacherLoggedInNoCompetition =
   Contact: "/contact"    
   Account:
     Manage: "/account"
-    Logout: "/logout"
+    Logout: "#"
 
 userLoggedIn =
   Game: "/game/"
@@ -46,7 +46,7 @@ userLoggedIn =
     #News: "/news"
   Account:
     Manage: "/account"
-    Logout: "/logout"
+    Logout: "#"
 
 userLoggedInNoCompetition =       
   Team: "/team"
@@ -57,7 +57,7 @@ userLoggedInNoCompetition =
   Contact: "/contact"  
   Account:
     Manage: "/account"
-    Logout: "/logout"
+    Logout: "#"
 
 
 userNotLoggedIn =
@@ -98,9 +98,9 @@ loadNavbar = (renderNavbarLinks, renderNestedNavbarLinks) ->
          if data.data["competition_active"]
             navbarLayout.links = userLoggedIn
          else
-            navbarLayout.links = userLoggedInNoCompetition
-
+            navbarLayout.links = userLoggedInNoCompetition    
     $("#navbar-links").html renderNavbarLinks(navbarLayout)
+    $("#navbar-item-logout").on("click", logout)
 
   .fail ->
     navbarLayout.links = apiOffline
@@ -111,3 +111,4 @@ $ ->
   renderNestedNavbarLinks = _.template($("#navbar-links-dropdown-template").remove().text())
 
   loadNavbar(renderNavbarLinks, renderNestedNavbarLinks)
+    

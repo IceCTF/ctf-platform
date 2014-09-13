@@ -42,7 +42,7 @@
             renderNestedNavbarLinks: renderNestedNavbarLinks
             }) %>
         <% } else { %>
-            <li><a href="<%= link %>"><%- name %></a></li>
+            <li><a href="<%= link %>" id="navbar-item-<%= name.split(' ').join('_').toLowerCase() %>"><%- name %></a></li>
         <% }; %>
     <% }); %>
     <% if (topLevel) { %>
