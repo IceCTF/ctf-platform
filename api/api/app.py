@@ -143,7 +143,6 @@ def login_hook():
 def logout_hook():
     if api.auth.is_logged_in():
         api.auth.logout()
-        print(session)
         return WebSuccess("Successfully logged out.")
     else:
         return WebError("You do not appear to be logged in.")
