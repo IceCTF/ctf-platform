@@ -40,11 +40,10 @@ def guess_mimetype(resource_path):
 
     return mime
 
-@app.route('/api/autogen/serve')
+@app.route('/api/autogen/serve/<path>')
 @require_login
-def serve_autogen_hook():
+def serve_autogen_hook(path):
     pid = request.args.get("pid", None)
-    path = request.args.get("path", None)
     static = request.args.get("static", "false") == "true"
 
     tid = api.user.get_team()["tid"]
