@@ -16,10 +16,7 @@ echo "Cleaning up old files"
 sudo rm -rf /srv/http/ctf/*
 
 # Copy files to the server
-sudo chmod -R a+w /home/vagrant/web *
-dos2unix /home/vagrant/web/*.html > /dev/null 2>&1
-dos2unix /home/vagrant/webex/web/*.html > /dev/null 2>&1
-dos2unix /home/vagrant/webex/includes/*.html > /dev/null 2>&1
+sudo chmod -R a+w /home/vagrant/web
 echo "Building site with Jekyll"
 cd /home/vagrant/web
 cp /home/vagrant/game/game.html .
@@ -41,6 +38,9 @@ sudo cp -r /home/vagrant/webex/js/* /srv/http/ctf/js
 sudo cp -r /home/vagrant/minigames /srv/http/ctf
 sudo cp -r /home/vagrant/game /srv/http/ctf
 sudo mv /srv/http/ctf/game.html /srv/http/ctf/game/index.html
+
+# Make sure everything is in UNIX format. 
+sudo dos2unix -q /srv/http/ctf/*.html
 
 # Start the server
 echo "Restarting the server"
