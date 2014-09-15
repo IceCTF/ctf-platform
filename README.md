@@ -29,6 +29,8 @@ Setting Up
 
 *Warning*: The web folder and the webex folder combine to build the picoCTF website. In order for this to occur, the files from webex to need to be transferred into web so they can build in the correct Jekyll environment. While they are not removed afterwards, they are set to read only. You *should not* edit these copies, as they will get overwritten from webex. Files that come from webex must be edited in webex, or you might lose your work. Examples: Edit index.html, teachers.html, etc. in webex. Edit team.html, main.css, etc. in web.
 
+*Note*: The competition has two modes: competition active and competition inactive. In inactive mode, there are no problems and only registration is available. To change what mode the competition is in, edit api/api/config.py and change the competition dates such that the current date is either inside or outside the range of the competition dates.
+
 Contact
 ------------
 
