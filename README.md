@@ -27,6 +27,8 @@ Setting Up
 
 *Warning*: The CTF-Dev repo uses submodules to load in extra code. Submodules are not particularly intuitive and indeed have some unexpected behavior if you have not seen them before. The safest choice is always to edit the submodule repo outside of CTF-Dev as its own separate repo. If you do want to commit from inside CTF-Dev, however, you will need to do `git checkout master` first. Be careful to check that you have indeed done this before commiting something, or it may be difficult to recover your changes.
 
+*Warning*: The web folder and the webex folder combine to build the picoCTF website. In order for this to occur, the files from webex to need to be transferred into web so they can build in the correct Jekyll environment. While they are not removed afterwards, they are set to read only. You *should not* edit these copies, as they will get overwritten from webex. Files that come from webex must be edited in webex, or you might lose your work. Examples: Edit index.html, teachers.html, etc. in webex. Edit team.html, main.css, etc. in web.
+
 Contact
 ------------
 
