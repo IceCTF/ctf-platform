@@ -6,6 +6,53 @@ body {
     min-height: 35vh;
 }
 
+.navbar { 
+    background-color: #151314;
+}
+
+.navbar-lime ul.navbar-nav > li > a {
+    border-top: solid 4px #151314;   
+}
+
+.navbar-lime .navbar-nav > li.active > a,
+.navbar-lime .navbar-nav > li.active > a:hover,
+.navbar-lime .navbar-nav > li > a:hover,
+.navbar-lime .navbar-nav > .open > a,
+.navbar-lime .navbar-nav > .open > a:hover,
+.navbar-lime .navbar-nav > .open > a:focus {
+    background-color: #151314;
+}
+
+.btn-group-separate .btn {
+    border-top-right-radius: 4px !important; 
+    border-bottom-right-radius: 4px !important; 
+    border-bottom-left-radius: 4px !important; 
+    border-top-left-radius: 4px !important; 
+    margin-left: 15px;
+    margin-right: 15px;
+}
+
+#pico-selector-menu {
+    left:auto; 
+    right:0; 
+    width: 280px; 
+    background-color: #1e2936; 
+    border: solid 3px #303030;
+}
+
+.caption h3 {
+    text-align: center;   
+}
+
+.thumbnail {
+    border: none;   
+}
+
+.frontpage-thumbnail {
+    height: 96px;
+    width: 96px;
+}
+
 @media (min-width: 992px) {
     nav .container {
         width: auto;   
@@ -314,14 +361,6 @@ img.logo-landscape {
 
 a.old-pico-link:hover {
     background-color: #1e2936 !important;
-}
-
-#pico-selector-menu {
-    left:auto; 
-    right:0; 
-    width: 280px; 
-    background-color: #1e2936; 
-    border: solid 3px #303030;
 }
 
 #dropdown-pico-selector {
