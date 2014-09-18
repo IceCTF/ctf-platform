@@ -1,9 +1,8 @@
 apiOffline =  
-  FAQ: "/faq"
-  Game: "/game-preview"
+  FAQ: "/faq"  
   Teachers: "/teachers"
   Sponsors: "/sponsors"
-  Contact: "/contact"
+  About: "/about"
 
 teacherLoggedIn =
   Game: "/game/"
@@ -16,19 +15,18 @@ teacherLoggedIn =
     Sponsors: "/sponsors"
     #News: "/news"
     Teachers: "/teachers"
-    Contact: "/contact"
+    About: "/about"
   Account:
     Manage: "/account"
     Logout: "#"
 
 teacherLoggedInNoCompetition =  
-  Classroom: "/classroom"  
-  Game: "/game-preview"
+  Classroom: "/classroom"    
   FAQ: "/faq"    
   #News: "/news"  
   Teachers: "/teachers"
   Sponsors: "/sponsors"
-  Contact: "/contact"    
+  About: "/about"    
   Account:
     Manage: "/account"
     Logout: "#"
@@ -41,7 +39,7 @@ userLoggedIn =
   Scoreboard: "/scoreboard"
   About:
     FAQ: "/faq"
-    Contact: "/contact"  
+    About: "/about"  
     Sponsors: "/sponsors"
     #News: "/news"
   Account:
@@ -49,20 +47,18 @@ userLoggedIn =
     Logout: "#"
 
 userLoggedInNoCompetition =       
-  Team: "/team"
-  Game: "/game-preview"
+  Team: "/team"  
   FAQ: "/faq"    
   # News: "/news"
   Sponsors: "/sponsors"
-  Contact: "/contact"  
+  About: "/about"  
   Account:
     Manage: "/account"
     Logout: "#"
 
 
 userNotLoggedIn =
-  Registration: "/registration"
-  Game: "/game-preview"
+  Registration: "/registration"  
   # Scoreboard: "/scoreboard"  
   # About:
   #  FAQ: "/faq"
@@ -72,7 +68,7 @@ userNotLoggedIn =
   # News: "/news"
   Teachers: "/teachers"
   Sponsors: "/sponsors"
-  Contact: "/contact"
+  About: "/about"
   Login: "/login"
 
 loadNavbar = (renderNavbarLinks, renderNestedNavbarLinks) ->

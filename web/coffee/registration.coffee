@@ -8,6 +8,29 @@ reloadCaptcha = ->
         Recaptcha.reload()
     ga('send', 'event', 'Registration', 'NewCaptcha')
 
+    
+checkEligibility = ->
+    is_us = $("#country-select").val() in ["US", ""]
+    is_k12 = $("#background-select").val() in ["student_el", "student_ms", "student_hs", "student_home"]
+    is_student = $("#background-select").val() in ["student_el", "student_ms", "student_hs", "student_home", "student_undergrad", "student_grad"]
+    
+    if not (is_us and is_k12)
+        $("#eligibility-warning").show()
+        $("#adviser-group").hide()
+    else
+        $("#eligibility-warning").hide()
+        $("#adviser-group").show()
+    
+    if is_student
+        $("#school-group").show()
+        $("#button-adviser").hide()
+        if $("#registration-adviser-page").is(":visible")
+            $("#button-new-team").click()
+    else
+        $("#school-group").hide()
+        $("#button-adviser").show()
+    
+
 submitRegistration = (e) ->
   e.preventDefault()
 
@@ -63,26 +86,30 @@ $ ->
 
   offset = 0 # Not sure why this value is necessary. Check later
   $("#button-new-team").click () ->        
-    $("#stretch-box").css("min-height", $("#stretch-box").height()+offset)
+    #$("#stretch-box").css("min-height", $("#stretch-box").height()+offset)
     $("#registration-join-team-page").hide "slide", { direction: "up" }, pageTransitionSpeed, () ->
         $("#registration-adviser-page").hide "slide", { direction: "up" }, pageTransitionSpeed, () ->
             $("#registration-new-team-page").show "slide", { direction: "up" }, pageTransitionSpeed, () -> 
                 ga('send', 'event', 'Registration', 'Switch', 'NewTeam')
 
   $("#button-join-team").click () ->    
-    $("#stretch-box").css("min-height", $("#stretch-box").height()+offset)
+    #$("#stretch-box").css("min-height", $("#stretch-box").height()+offset)
     $("#registration-new-team-page").hide "slide", { direction: "up" }, pageTransitionSpeed, () ->
         $("#registration-adviser-page").hide "slide", { direction: "up" }, pageTransitionSpeed, () ->
             $("#registration-join-team-page").show "slide", { direction: "up" }, pageTransitionSpeed, () ->
                 ga('send', 'event', 'Registration', 'Switch', 'JoinTeam')
 
   $("#button-adviser").click () -> 
-    $("#stretch-box").css("min-height", $("#stretch-box").height()+offset)
+    #$("#stretch-box").css("min-height", $("#stretch-box").height()+offset)
     $("#registration-new-team-page").hide "slide", { direction: "up" }, pageTransitionSpeed, () ->
         $("#registration-join-team-page").hide "slide", { direction: "up" }, pageTransitionSpeed, () ->
             $("#registration-adviser-page").show "slide", { direction: "up" }, pageTransitionSpeed, () ->
                 ga('send', 'event', 'Registration', 'Switch', 'Teacher')
 
+                
+  $("#country-select").on "change", checkEligibility
+  $("#background-select").on "change", checkEligibility
+                
   $("#country-select").html('
         <option value="">Country...</option>
         <option value="US">United States of America</option>

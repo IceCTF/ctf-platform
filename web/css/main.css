@@ -51,6 +51,18 @@ body {
 .frontpage-thumbnail {
     height: 96px;
     width: 96px;
+    position: relative;
+    top: 24px;
+    -webkit-filter: invert(100%);
+}
+
+.circle-img-box {
+    border-radius: 50%;
+    width: 156px;
+    height: 156px;
+    text-align: center;
+    margin: 0 auto;     
+    background-color: #25acb4;
 }
 
 @media (min-width: 992px) {
@@ -161,7 +173,7 @@ a.navbar-brand {
 }
 
 .footer-widget p {
-    line-height: 150%;
+    line-height: 130%;
 }
 
 .footer-widget h3 {
@@ -265,6 +277,7 @@ img.logo-landscape {
 
 .footer-widget {
     text-align: left; 
+    margin-bottom: 0px;
 }
 
 .show-when-logged-out {
