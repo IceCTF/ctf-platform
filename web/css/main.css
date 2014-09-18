@@ -51,9 +51,19 @@ body {
     margin-bottom: 0px;
 }
 
-.front-page-thumbnails .thumbnail .caption {
-    margin-bottom: 0px;   
-    padding-bottom: 0px;
+
+@media (max-width: 442px) {
+    .front-page-thumbnails .col-xs-6 {
+        width: 100%;   
+    }
+}
+
+
+@media (min-width: 992px) {
+    .front-page-thumbnails .thumbnail .caption {
+        margin-bottom: 0px;   
+        padding-bottom: 0px;
+    }
 }
 
 .front-page-thumbnails .frontpage-thumbnail {
