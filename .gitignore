@@ -13,6 +13,7 @@ web/_includes/analytics.html
 web/_includes/registration-*
 web/_includes/twitter-button.html
 web/index.html
+web/about.html
 web/faq.html
 web/contact.html
 web/game.html

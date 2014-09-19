@@ -22,11 +22,11 @@ teacherLoggedIn =
 
 teacherLoggedInNoCompetition =  
   Classroom: "/classroom"    
+  About: "/about"    
   FAQ: "/faq"    
   #News: "/news"  
   Teachers: "/teachers"
-  Sponsors: "/sponsors"
-  About: "/about"    
+  Sponsors: "/sponsors"  
   Account:
     Manage: "/account"
     Logout: "#"
@@ -48,10 +48,10 @@ userLoggedIn =
 
 userLoggedInNoCompetition =       
   Team: "/team"  
+  About: "/about"  
   FAQ: "/faq"    
   # News: "/news"
-  Sponsors: "/sponsors"
-  About: "/about"  
+  Sponsors: "/sponsors"  
   Account:
     Manage: "/account"
     Logout: "#"

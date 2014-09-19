@@ -120,13 +120,13 @@ body {
 }
 
 @media (max-width: 1032px) {
-    #date-label { 
+    #date-label, #hacking-label { 
         font-size: 4vw;
     }
 }
 
 @media (min-width: 1032px) {
-    #date-label { 
+    #date-label, #hacking-label { 
         font-size: 41px;
     }
 }
@@ -135,6 +135,14 @@ body {
 #date-label {
     position: absolute; 
     bottom: 33%; 
+    width: 100%; 
+    color: white !important; 
+    text-align: center;   
+}
+
+#hacking-label {
+    position: absolute; 
+    bottom: 40%; 
     width: 100%; 
     color: white !important; 
     text-align: center;   
