@@ -66,12 +66,23 @@ body {
     }
 }
 
+.front-page-thumbnails #frontpage-thumbnail-lock {
+    top: 26px;   
+}
+
+.front-page-thumbnails #frontpage-thumbnail-trophy {
+    top: 33px;   
+}
+
+.front-page-thumbnails #frontpage-thumbnail-book {
+    top: 33px;   
+}
+
 .front-page-thumbnails .frontpage-thumbnail {
     height: 96px;
     width: 96px;
     position: relative;
     top: 30px;
-    -webkit-filter: invert(100%);
 }
 
 .front-page-thumbnails .circle-img-box {
@@ -83,6 +94,7 @@ body {
     background-color: #25acb4;
 }
 
+/*
 @media (min-width: 992px) {
     nav .container {
         width: auto;   
@@ -95,14 +107,17 @@ body {
         width: 1100px;   
     }
 }
+*/
 
 @media (min-width: 1200px) {
     .container {
         width: 970px;
     }
+/*
     nav .container {
         width: 1100px;   
     }
+*/
 }
 
 
