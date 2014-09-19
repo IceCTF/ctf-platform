@@ -58,17 +58,17 @@ userLoggedInNoCompetition =
 
 
 userNotLoggedIn =
-  Registration: "/registration"  
+  #Registration: "/registration"  
   # Scoreboard: "/scoreboard"  
   # About:
   #  FAQ: "/faq"
   #  Sponsors: "/sponsors"
   #  News: "/news"
+  About: "/about"
   FAQ: "/faq"
   # News: "/news"
   Teachers: "/teachers"
-  Sponsors: "/sponsors"
-  About: "/about"
+  Sponsors: "/sponsors"  
   Login: "/login"
 
 loadNavbar = (renderNavbarLinks, renderNestedNavbarLinks) ->
