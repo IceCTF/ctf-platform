@@ -1,0 +1,224 @@
+<div class="row">
+    {% include registration.html %}
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <form class="form-horizontal" id="user-registration-form">                	
+            <div id="registration-user-page">
+                <div class="row">
+                    <div class="col-md-6 form-group">
+                        <label class="col-sm-4 control-label" for="firstname">First Name</label>
+                        <div class="col-sm-8">
+                            <input class="form-control" type="text" required name="firstname" id="firstname" placeholder="First Name">
+                        </div>
+                    </div>
+                    <div class="col-md-6 form-group">
+                        <label class="col-sm-4 control-label" for="lastname">Last Name</label>
+                        <div class="col-sm-8">
+                            <input class="form-control" type="text" required name="lastname" id="lastname" placeholder="Last Name">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label class="col-sm-4 control-label" for="email">Email</label>
+                        <div class="col-sm-8 controls registration-controls">
+                            <input id="email" name="email" required placeholder="Email" type="email" class="form-control">
+                        </div>
+                    </div>                            
+                </div>
+                <div class="row">
+                    <div class="col-md-6 form-group">
+                        <label class="col-sm-4 control-label" for="username">Username</label>
+                        <div class="col-sm-8">
+                            <input class="form-control" type="text" required name="username" id="username" placeholder="Username">
+                        </div>
+                    </div>
+                    <div class="col-md-6 form-group">
+                        <label class="col-sm-4 control-label" for="password">Password</label>
+                        <div class="col-sm-8">
+                            <input class="form-control" type="password" required name="password" id="password" placeholder="Password">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 form-group">
+                        <label class="col-sm-4 control-label" for="background">Background</label>
+                        <div class="col-sm-8">
+                           <select class="form-control" id="background-select" name="background">
+                                <option value="student_el">Elementary School Student</option>
+                                <option value="student_ms">Middle School Student</option>
+                                <option value="student_hs" selected="selected">High School Student</option>
+                                <option value="student_home">Homeschooled Student</option>
+                                <option value="student_undergrad">Undergraduate</option>
+                                <option value="student_grad">Graduate Student</option>                                
+                                <option value="teacher">Teacher</option>
+                                <option value="secprof">Security Professional</option>
+                                <option value="hobbyist">CTF Hobbyist (non-Student)</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6 form-group">
+                        <label class="col-sm-4 control-label" for="password">Country</label>
+                        <div class="col-sm-8">
+                            <select class="form-control" id="country-select" name="country">
+                                 Countries get added here 
+                            </select>
+                        </div>
+                    </div>
+                </div>                           
+                <div class="alert alert-warning" role="alert" id="eligibility-warning" style="display: none">
+                    <table> 
+                    <tr>
+                        <td style="vertical-align: top; padding-right: 6px"><span class="glyphicon glyphicon glyphicon-exclamation-sign"></span></td>                                                                
+                        <td>Note that only K-12 students from the United States are eligible for prizes. Others are encourage to play picoCTF, but will not appear on the public scoreboard.</td>
+                    </tr>
+                    </table>
+                </div>
+                <div class="form-group" style="margin-top: 15px; margin-bottom: 25px">
+                    <center>
+                        <div class="btn-group btn-group-separate" data-toggle="buttons">
+                             <label class="btn btn-primary" id="button-new-team">
+                                <input type="radio">Create a New Team
+                             </label>
+                             <label class="btn btn-primary" id="button-join-team">
+                                <input type="radio">Join an Existing Team
+                             </label>
+                             <label class="btn btn-primary" id="button-adviser" style="display: none">
+                                <input type="radio">Create a Teacher Account
+                             </label>
+                        </div>
+                    </center>
+                </div>
+            </div>
+            <div id="stretch-box">
+                <div id="registration-new-team-page" class="hidden-page">
+                    {% include registration-new-team.html %}
+                    <div id="new-team" class="tab-pane fade in active">
+                        <div id="new-team-registration" class="team-registration-form">
+                            <div class="row">
+                                <div class="col-md-6 form-group">
+                                    <label class="col-sm-4 control-label" for="team-name-new">Team Name</label>
+                                    <div class="col-sm-8">
+                                        <input id="team-name-new" name="team-name-new" class="form-control" type="text" placeholder="Team Name">
+                                    </div>
+                                </div>
+                                <div class="col-md-6 form-group">
+                                    <label class="col-sm-4 control-label" for="team-password-new">Passphrase*</label>
+                                    <div class="col-sm-8">
+                                        <input id="team-password-new" name="team-password-new" class="form-control" type="text" placeholder="Team Passphrase">
+                                    </div>
+                                </div>
+                            </div>     
+                            <div class="row" id="adviser-group">
+                                <div class="col-md-6 form-group">
+                                    <label class="col-sm-4 control-label" for="team-adv-name-new">Adviser Name</label>
+                                    <div class="col-sm-8">
+                                        <input id="team-adv-name-new" name="team-adv-name-new" class="form-control" type="text" placeholder="Adviser Name">
+                                    </div>
+                                </div>
+                                <div class="col-md-6 form-group">
+                                    <label class="col-sm-4 control-label" for="team-adv-email-new">Adviser Email</label>
+                                    <div class="col-sm-8">
+                                        <input id="team-adv-email-new" name="team-adv-email-new" class="form-control" type="text" placeholder="Adviser Email">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row" id="school-group">
+                                <div class="col-md-6 form-group">                                        
+                                    <label class="col-sm-4 control-label" for="team-school-new">School</label>
+                                    <div class="col-sm-8">
+                                        <input id="team-school-new" name="team-school-new" placeholder="School or Affiliation" type="text" class="form-control">
+                                    </div>
+                                </div>
+                            </div>  
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" id="checkbox-emails-create"> I would like to receive emails about other CTFs for high school students.
+                            </label>
+                        </div>
+                    </div>
+                    <div>
+                        *While your password should be kept a secret and only used by you, your <i>Team Passphrase</i> is shared with the other members of your team. If you forget your Team Passphrase, it will be displayed on the "Team" page after you log in.
+                    </div>
+                    <div class="form-group">
+                        <div class="controls registration-controls">
+                            <button id="register-button-create" type="submit" class="btn btn-primary">
+                                Register
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div id="registration-join-team-page" class="hidden-page">
+                    {% include registration-join-team.html %}
+
+                    <div id="existing-team-registration" class="team-registration-form">
+                        <div class="row">
+                            <div class="col-md-6 form-group">
+                                <label class="col-sm-4 control-label" for="team-name-existing">Team Name</label>
+                                <div class="col-sm-8">
+                                    <input id="team-name-existing" name="team-name-existing" placeholder="Team Name" type="text" class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-md-6 form-group">
+                                <label class="col-sm-4 control-label" for="team-password-existing">Passphrase</label>
+                                <div class="col-sm-8">
+                                    <input id="team-password-existing" name="team-password-existing" placeholder="Team Passphrase"  type="text" class="form-control">
+                                </div>
+                            </div>
+                        </div>                                                    
+                    </div>
+                    <div class="form-group">
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" id="checkbox-emails-existing"> I would like to receive emails about other CTFs for high school students.
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="controls registration-controls">
+                            <button id="register-button-existing" type="submit" class="btn btn-primary">
+                                Register
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div id="registration-adviser-page" class="hidden-page">
+                    {% include registration-adviser.html %}
+                    <div id="new-teacher" class="teacher-registration">
+                        <div class="row">
+                            <div class="col-md-6 form-group">       
+                                <label class="col-sm-4 control-label" for="teacher-school">School</label>
+                                <div class="col-sm-8">
+                                    <input id="teacher-school" name="teacher-school" placeholder="School or Affiliation" type="text" class="form-control">
+                                </div>
+                            </div>
+                        </div>                            
+                    </div>
+                    <div class="form-group">
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" id="checkbox-emails-teacher"> I would like to receive emails about other CTFs for high school students.
+                            </label>
+                        </div>
+                    </div>
+                    <div>
+                        <p>Note that while Teacher Accounts can solve challenges during the competition, they do not appear on the public scoreboard.</p>
+                    </div>
+                    <div class="form-group">
+                        <div class="controls registration-controls">
+                            <button id="register-button-teacher" type="submit" class="btn btn-primary">
+                                Register
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="captcha" class="col-md-4 col-md-offset-4"></div>
+        </form>
+    </div>
+</div>

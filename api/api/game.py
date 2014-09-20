@@ -37,8 +37,8 @@ def get_category_statistics():
 
 
 # The index of the problem corresponds to its etc id
-name_map = [ "Failure to Boot", "Try Them All!", "Read the Manual", "Grep is Your Friend", "Spaceport Map",
-            "Bitwise", "Byte Code", "Pilot Logic", "CFG to C", "XMLOL", "GETKey", "Robomunication", "First Contact",
+name_map = ["Failure to Boot", "Try Them All!", "Read the Manual", "Grep is Your Friend", "Spaceport Map",
+            "Bitwise", "Byte Code", "CFG to C", "GETKey", "Robomunication", "First Contact",
             "Technician Challenge", "Yummy", "In Hex, No One Can Hear You Complain", "Spamcarver", "Core Decryption",
             "Chromatophoria", "Second Contact", "NAVSAT", "Dark Star", "Trivial", "Classic", "Harder Serial",
             "Python Eval 1", "Python Eval 2", "Python Eval 3", "Python Eval 4", "Python Eval 5", "avaJ", "Pretty Hard Programming",
@@ -73,6 +73,7 @@ def get_game_problem(etcid):
         pid = etcid_map[int(etcid)]
     except (IndexError, ValueError):
         raise WebException("Invalid Problem")
+    print(pid)
     p = api.problem.get_problem(pid=pid, tid=useracct['tid'])
     return WebSuccess(data=p)
 

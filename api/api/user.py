@@ -18,6 +18,15 @@ user_schema = Schema({
         ("Email must be between 5 and 50 characters.", [str, Length(min=5, max=50)]),
         ("Your email does not look like an email address.", [_check_email_format])
     ),
+    Required('firstname'): check(
+        ("First Name must be between 1 and 50 characters.", [str, Length(min=1, max=50)])
+    ),
+    Required('lastname'): check(
+        ("Last Name must be between 1 and 50 characters.", [str, Length(min=1, max=50)])
+    ),
+    Required('country'): check(
+        ("Please select a country", [str, Length(min=2, max=2)])
+    ),
     Required('username'): check(
         ("Usernames must be between 3 and 20 characters.", [str, Length(min=3, max=20)]),
         ("This username already exists.", [
@@ -31,7 +40,7 @@ user_schema = Schema({
     )
 }, extra=True)
 
-new_team_schema = Schema({
+new_eligible_team_schema = Schema({
     Required('team-name-new'): check(
         ("The team name must be between 3 and 40 characters.", [str, Length(min=3, max=40)]),
         ("A team with that name already exists.", [
@@ -47,6 +56,17 @@ new_team_schema = Schema({
     ),
     Required('team-school-new'):
         check(("School names must be between 3 and 100 characters.", [str, Length(min=3, max=100)]))
+
+}, extra=True)
+
+new_team_schema = Schema({
+    Required('team-name-new'): check(
+        ("The team name must be between 3 and 40 characters.", [str, Length(min=3, max=40)]),
+        ("A team with that name already exists.", [
+            lambda name: safe_fail(api.team.get_team, name=name) is None])
+    ),
+    Required('team-password-new'):
+        check(("Team passphrase must be between 3 and 20 characters.", [str, Length(min=3, max=20)])),
 
 }, extra=True)
 
@@ -125,13 +145,15 @@ def get_user(name=None, uid=None):
 
     return user
 
-def create_user(username, email, password_hash, tid, teacher=False,
+def create_user(username, firstname, lastname, email, password_hash, tid, teacher=False,
                 background="undefined", country="undefined", receive_ctf_emails=False):
     """
     This inserts a user directly into the database. It assumes all data is valid.
 
     Args:
         username: user's username
+        firstname: user's first name
+        lastname: user's last name
         email: user's email
         password_hash: a hash of the user's password
         tid: the team id to join
@@ -148,6 +170,8 @@ def create_user(username, email, password_hash, tid, teacher=False,
 
     user = {
         'uid': uid,
+        'firstname': firstname,
+        'lastname': lastname,
         'username': username,
         'email': email,
         'password_hash': password_hash,
@@ -214,6 +238,8 @@ def create_user_request(params):
     Args:
         username: user's username
         password: user's password
+        firstname: user's first name
+        lastname: user's first name
         email: user's email
         create-new-teacher:
             boolean "true" indicating whether or not the user is a teacher
@@ -252,6 +278,8 @@ def create_user_request(params):
 
         return create_user(
             params["username"],
+            params["firstname"],
+            params["lastname"],
             params["email"],
             hash_password(params["password"]),
             tid,
@@ -262,7 +290,14 @@ def create_user_request(params):
         )
 
     elif params.get("create-new-team", "false") == "true":
-        validate(new_team_schema, params)
+
+        # JB: Remove this for public release
+        eligible = params['country'] == "US" and params['background'] in ['student_el', 'student_ms', 'student_hs', 'student_home']
+
+        if eligible:
+            validate(new_eligible_team_schema, params)
+        else:
+            validate(new_team_schema, params)
 
         team_params = {
             "team_name": params["team-name-new"],
@@ -270,7 +305,7 @@ def create_user_request(params):
             "adviser_email": params["team-adv-email-new"],
             "school": params["team-school-new"],
             "password": params["team-password-new"],
-            "eligible": True
+            "eligible": eligible
         }
 
         tid = api.team.create_team(team_params)
@@ -289,6 +324,8 @@ def create_user_request(params):
     # Create new user
     uid = create_user(
         params["username"],
+        params["firstname"],
+        params["lastname"],
         params["email"],
         hash_password(params["password"]),
         team["tid"],
@@ -336,7 +373,7 @@ def delete_password_reset_token(uid):
     """
 
     db = api.common.get_conn()
-    db.users.update({'uid': uid}, {'$unset': {'password_reset_token':''}})
+    db.users.update({'uid': uid}, {'$unset': {'password_reset_token': ''}})
 
 def find_user_by_reset_token(token):
     """

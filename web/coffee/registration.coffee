@@ -8,6 +8,36 @@ reloadCaptcha = ->
         Recaptcha.reload()
     ga('send', 'event', 'Registration', 'NewCaptcha')
 
+
+setRequired = ->
+    $('#user-registration-form :input').each () ->        
+        if not $(this).is(':checkbox')
+            $(this).prop('required', $(this).is(":visible"))        
+
+    
+checkEligibility = ->
+    is_us = $("#country-select").val() in ["US", ""]
+    is_k12 = $("#background-select").val() in ["student_el", "student_ms", "student_hs", "student_home"]
+    is_student = $("#background-select").val() in ["student_el", "student_ms", "student_hs", "student_home", "student_undergrad", "student_grad"]
+    
+    if not (is_us and is_k12)
+        $("#eligibility-warning").show()
+        $("#adviser-group").hide()
+    else
+        $("#eligibility-warning").hide()
+        $("#adviser-group").show()
+    
+    if is_student
+        $("#school-group").show()
+        $("#button-adviser").hide()
+        if $("#registration-adviser-page").is(":visible")
+            $("#button-new-team").click()
+    else
+        $("#school-group").hide()
+        $("#button-adviser").show()
+    
+    setRequired()
+
 submitRegistration = (e) ->
   e.preventDefault()
 
@@ -62,27 +92,34 @@ $ ->
   # between these pages. If one gets longer or shorter, we need to tweek it
 
   offset = 0 # Not sure why this value is necessary. Check later
-  $("#button-new-team").click () ->        
-    $("#stretch-box").css("min-height", $("#stretch-box").height()+offset)
+  $("#button-new-team").click () ->     
+    #$("#stretch-box").css("min-height", $("#stretch-box").height()+offset)
     $("#registration-join-team-page").hide "slide", { direction: "up" }, pageTransitionSpeed, () ->
         $("#registration-adviser-page").hide "slide", { direction: "up" }, pageTransitionSpeed, () ->
             $("#registration-new-team-page").show "slide", { direction: "up" }, pageTransitionSpeed, () -> 
                 ga('send', 'event', 'Registration', 'Switch', 'NewTeam')
+                setRequired()
 
   $("#button-join-team").click () ->    
-    $("#stretch-box").css("min-height", $("#stretch-box").height()+offset)
+    #$("#stretch-box").css("min-height", $("#stretch-box").height()+offset)
     $("#registration-new-team-page").hide "slide", { direction: "up" }, pageTransitionSpeed, () ->
         $("#registration-adviser-page").hide "slide", { direction: "up" }, pageTransitionSpeed, () ->
             $("#registration-join-team-page").show "slide", { direction: "up" }, pageTransitionSpeed, () ->
                 ga('send', 'event', 'Registration', 'Switch', 'JoinTeam')
+                setRequired()
 
   $("#button-adviser").click () -> 
-    $("#stretch-box").css("min-height", $("#stretch-box").height()+offset)
+    #$("#stretch-box").css("min-height", $("#stretch-box").height()+offset)
     $("#registration-new-team-page").hide "slide", { direction: "up" }, pageTransitionSpeed, () ->
         $("#registration-join-team-page").hide "slide", { direction: "up" }, pageTransitionSpeed, () ->
             $("#registration-adviser-page").show "slide", { direction: "up" }, pageTransitionSpeed, () ->
                 ga('send', 'event', 'Registration', 'Switch', 'Teacher')
+                setRequired()
 
+                
+  $("#country-select").on "change", checkEligibility
+  $("#background-select").on "change", checkEligibility
+                
   $("#country-select").html('
         <option value="">Country...</option>
         <option value="US">United States of America</option>
