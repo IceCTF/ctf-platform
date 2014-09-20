@@ -12,7 +12,8 @@ reloadCaptcha = ->
 setRequired = ->
     $('#user-registration-form :input').each () ->        
         if not $(this).is(':checkbox')
-            $(this).prop('required', $(this).is(":visible"))        
+            if not $(this).is(':radio')
+                $(this).prop('required', $(this).is(":visible"))        
 
     
 checkEligibility = ->
