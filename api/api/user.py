@@ -299,6 +299,7 @@ def create_user_request(params):
         else:
             validate(new_team_schema, params)
 
+
         team_params = {
             "team_name": params["team-name-new"],
             "adviser_name": params["team-adv-name-new"],
@@ -319,7 +320,7 @@ def create_user_request(params):
         team = api.team.get_team(name=params["team-name-existing"])
 
         if team['password'] != params['team-password-existing']:
-            raise WebException("Your team password is incorrect.")
+            raise WebException("Your team passphrase is incorrect.")
 
     # Create new user
     uid = create_user(
