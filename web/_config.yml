@@ -4,6 +4,8 @@ title: picoCTF 2014
 destination: /srv/http/ctf
 exclude: ['coffee', 'node_modules']
 
+mode: development
+
 # Build settings
 markdown: kramdown
 permalink: none
