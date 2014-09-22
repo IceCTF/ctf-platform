@@ -11,6 +11,8 @@
 
     {% if site.mode == 'production' %}
         {% include analytics.html %}
+    {% else %}
+        <script language="javascript">var ga = function (a,b,c,d) {}</script>
     {% endif %}
     
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
