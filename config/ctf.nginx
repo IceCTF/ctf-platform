@@ -3,6 +3,8 @@ server {
         listen       80;
         root   /srv/http/ctf;
 
+	error_page 404  =  /404.html;
+
         location = / {
                 default_type text/html;
                 index  index.html;
