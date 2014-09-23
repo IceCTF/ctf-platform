@@ -29,6 +29,8 @@ achievement_schema = Schema({
             lambda hidden: type(hidden) == bool])),
     Required("image"): check(
         ("An achievement's image path must be a string.", [str])),
+    Required("smallimage"): check(
+        ("An achievement's smallimage path must be a string.", [str])),
     "disabled": check(
         ("An achievement's disabled state is either True or False.", [
             lambda disabled: type(disabled) == bool])),
@@ -312,7 +314,7 @@ def process_achievements(event, data):
 
     Args:
         event: event type, e.g., submit
-        data: dictionary with additional information necessary for assesment
+        data: dictionary with additional information necessary for assessment
     """
 
     if data.get("uid", None) is None:
@@ -320,6 +322,8 @@ def process_achievements(event, data):
 
     if data.get("tid", None) is None:
         data["tid"] = api.user.get_user(uid=data["uid"])["tid"]
+
+    print(get_all_achievements(event=event))
 
     eligible_achievements = [
         achievement for achievement in get_all_achievements(event=event) \
@@ -350,6 +354,7 @@ def insert_achievement(achievement):
 
     if safe_fail(get_achievement, aid=achievement["aid"]) is not None:
         raise WebException("achievement with identical aid already exists.")
+
 
     if safe_fail(get_achievement, name=achievement["name"]) is not None:
         raise WebException("achievement with identical name already exists.")

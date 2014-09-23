@@ -207,7 +207,7 @@ def get_team_score_progression():
 @require_admin
 def get_all_problems_hook():
     problems = api.problem.get_all_problems()
-    if probs is None:
+    if problems is None:
         return WebError("There was an error querying problems from the database.")
     return WebSuccess(data=problems)
 

@@ -312,6 +312,10 @@ img.logo-landscape {
     width: 30px;
 }
 
+.image-achievement {
+    width: 100px;   
+}
+
 #footer {
     margin-top: 60px;   
 }

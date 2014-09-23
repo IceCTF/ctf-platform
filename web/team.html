@@ -28,6 +28,7 @@ startup_functions:
     </div>
     <div class="col-md-6">
       <div id="group-info"></div>
+      <div id="achievement-info"></div>        
     </div>
   </div>
 </div>
@@ -94,6 +95,28 @@ startup_functions:
       </ul>
         <p>You may have up to <%- data.max_team_size - _.size(data.members) %> more member<%- (data.max_team_size - _.size(data.members)) == 1 ? "" : "s" %> on your team.</p>
         <p>New team members can join at any time, even once the competition has started.</p>
+    </div>
+  </div>
+</script>
+
+<script type="text/template" id="achievement-info-template">
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h3 class="panel-title">Achievements</h3>
+    </div>
+    <div class="panel-body">
+        <div style="height: 300px; overflow: auto;">
+            <table>
+                <% _.each(data, function(achievement) { %>
+                    <tr><td><img class="image-achievement" src='<%- achievement.image %>'/></td>
+                        <td style="padding-left:15px">
+                            <div><h3 style="margin-top:0px;"><%- achievement.name %></h3></div>
+                            <div><%- achievement.description %></div>
+                        </td>
+                    </tr>
+                <% }); %>
+            </table>
+        </div>
     </div>
   </div>
 </script>
