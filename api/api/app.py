@@ -416,7 +416,7 @@ def get_achievements_hook():
     achievements = api.achievement.get_earned_achievements(tid=tid)
 
     for achievement in achievements:
-        achievement["timestamp"] = achievement["timestamp"].timestamp()
+        achievement["timestamp"] = None  # JB : Hack to temporarily fix achievements timestamp problem
 
     return WebSuccess(data=achievements)
 
