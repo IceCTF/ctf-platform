@@ -104,7 +104,7 @@ def build_problem_instances(pid, instances):
     for n in range(instances):
 
         log.debug("generating -> %s -> %s", problem["name"], str(n))
-        build = get_generator(pid).generate(random, pid, api.autogen_tools)
+        build = get_generator(pid).generate(random, pid, api.autogen_tools, n)
 
         autogen_instance_path = get_instance_path(pid, n=n)
 
