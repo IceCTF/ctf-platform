@@ -341,9 +341,9 @@ def process_achievements(event, data):
         }
 
         info.update(instance_info)
-
+        data.update(info)
         if acquired:
-            insert_earned_achievement(aid, data.update(info))
+            insert_earned_achievement(aid, data)
 
 def insert_achievement(achievement):
     """
