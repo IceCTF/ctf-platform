@@ -5,7 +5,7 @@ def process(api, data):
     Data Required: tid, pid
     """
 
-    submissions = api.problems.get_problem_submissions(data["pid"], True)
+    submissions = api.problem.get_problem_submissions(data["pid"], True)
     problem = api.problem.get_problem(pid=data["pid"])
     return len(submissions) == 0, {
         "name": "{} Breakthrough!".format(problem["name"]),
