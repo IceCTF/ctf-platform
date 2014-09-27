@@ -33,6 +33,9 @@ achievement_schema = Schema({
     "disabled": check(
         ("An achievement's disabled state is either True or False.", [
             lambda disabled: type(disabled) == bool])),
+    "multiple": check(
+        ("Whether an achievement can be earned multiple times is either True or False.", [
+            lambda disabled: type(disabled) == bool])),
     "aid": check(
         ("You should not specify a aid for an achievement.", [lambda _: False])),
     "_id": check(
@@ -147,7 +150,7 @@ def get_earned_aids(tid=None, uid=None, aid=None):
         List of solved achievement ids
     """
 
-    return [a["aid"] for a in get_earned_achievement_entries(tid=tid, uid=uid, aid=aid)]
+    return set([a["aid"] for a in get_earned_achievement_entries(tid=tid, uid=uid, aid=aid)])
 
 def set_earned_achievements_seen(tid=None, uid=None):
     """
@@ -223,7 +226,8 @@ def reevaluate_earned_achievements(aid):
 
     keys = []
     for earned_achievement in get_earned_achievements():
-        if not process_achievement(aid, data=earned_achievement["data"]):
+        acquired, info = process_achievement(aid, data=earned_achievement["data"])
+        if not acquired:
             keys.append({"aid": aid, "tid":earned_achievement["tid"]})
 
     db.earned_achievements.remove({"$or": keys})
@@ -328,7 +332,8 @@ def process_achievements(event, data):
 
     eligible_achievements = [
         achievement for achievement in get_all_achievements(event=event) \
-            if achievement["aid"] not in get_earned_aids(tid=data["tid"])]
+            if achievement["aid"] not in get_earned_aids(tid=data["tid"]) \
+            or achievement.get("multiple", False)]
 
     for achievement in eligible_achievements:
         aid = achievement["aid"]
