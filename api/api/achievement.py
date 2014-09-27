@@ -5,7 +5,6 @@ import pymongo
 
 import api
 
-from functools import wraps
 from os.path import join
 from datetime import datetime
 from voluptuous import Schema, Required, Range
@@ -268,6 +267,7 @@ def get_processor(aid):
 def process_achievement(aid, data):
     """
     Determines whether or not an achievement has been earned.
+    Should not be called directly.
 
     Args:
         aid: the achievement id
@@ -323,11 +323,9 @@ def process_achievements(event, data):
     if data.get("tid", None) is None:
         data["tid"] = api.user.get_user(uid=data["uid"])["tid"]
 
-    print(get_all_achievements(event=event))
-
     eligible_achievements = [
         achievement for achievement in get_all_achievements(event=event) \
-            if achievement not in get_earned_achievements(tid=data["tid"])]
+            if achievement["aid"] not in get_earned_aids(tid=data["tid"])]
 
     for achievement in eligible_achievements:
         aid = achievement["aid"]
