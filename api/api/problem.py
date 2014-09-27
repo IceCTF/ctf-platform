@@ -625,3 +625,24 @@ def get_unlocked_problems(tid, category=None):
         problem['solved'] = problem in solved
 
     return unlocked
+
+def get_problem_submissions(pid, correct=True, options=None):
+    """
+    Retrieve problem submissions.
+
+    Args:
+        pid: the problem id
+        correct: whether or not only correct submissions should be included
+        options: additional options to pass to the mongo search
+    Returns:
+        A list of the problem submissions satisfying the critera
+    """
+
+    db = api.common.get_conn()
+
+    query = {"pid": pid, "correct": correct}
+
+    if options is not None:
+        query.update(options)
+
+    return list(db.submissions.find(query))
