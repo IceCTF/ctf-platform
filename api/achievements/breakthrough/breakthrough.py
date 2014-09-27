@@ -7,7 +7,7 @@ def process(api, data):
 
     submissions = api.problem.get_problem_submissions(data["pid"], True)
     problem = api.problem.get_problem(pid=data["pid"])
-    return len(submissions) == 0, {
+    return len(submissions) == 1, {
         "name": "{} Breakthrough!".format(problem["name"]),
         "description": "Your team was the first to solve {}. Congratulations!".format(problem["name"])
     }
