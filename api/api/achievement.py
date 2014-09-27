@@ -114,7 +114,7 @@ def get_all_achievements(event=None, show_disabled=False):
 
     return list(db.achievements.find(match, {"_id":0}).sort('score', pymongo.ASCENDING))
 
-def get_earned_achievement_entries(tid=None, uid=None, aid=None):
+def get_earned_achievement_instances(tid=None, uid=None, aid=None):
     """
     Gets the solved achievements for a given team or user.
 
@@ -150,7 +150,7 @@ def get_earned_aids(tid=None, uid=None, aid=None):
         List of solved achievement ids
     """
 
-    return set([a["aid"] for a in get_earned_achievement_entries(tid=tid, uid=uid, aid=aid)])
+    return set([a["aid"] for a in get_earned_achievement_instances(tid=tid, uid=uid, aid=aid)])
 
 def set_earned_achievements_seen(tid=None, uid=None):
     """
@@ -177,6 +177,7 @@ def set_earned_achievements_seen(tid=None, uid=None):
 def get_earned_achievements_display(tid=None, uid=None):
     """
     Gets the achievement display for a given user/team.
+    Includes instance specific information.
 
     Args:
         tid: The team id
@@ -185,10 +186,20 @@ def get_earned_achievements_display(tid=None, uid=None):
         A list of enabled achievements the team has earned.
     """
 
-    #TODO: info leak
-    achievements = [get_achievement(aid=achievement["aid"]) for achievement in get_earned_achievement_entries(tid=tid, uid=uid)]
+    instance_achievements = get_earned_achievement_instances(tid=tid, uid=uid)
+    for instance_achievement in instance_achievements:
+        achievement = get_achievement(aid=instance_achievement["aid"])
 
-    return achievements
+        #Make sure not to override name or description.
+        achievement.pop("name")
+        achievement.pop("description")
+
+        instance_achievement.update(achievement)
+
+        #Make sure to remove sensitive data
+        instance_achievement.pop("data", None)
+
+    return instance_achievements
 
 def get_earned_achievements(tid=None, uid=None):
     """
@@ -203,7 +214,7 @@ def get_earned_achievements(tid=None, uid=None):
 
     #TODO: Evaluate which fields are sensitive.
 
-    achievements = get_earned_achievement_entries(tid=tid, uid=uid)
+    achievements = get_earned_achievement_instances(tid=tid, uid=uid)
     set_earned_achievements_seen(tid=tid, uid=uid)
 
     for achievement in achievements:
@@ -226,7 +237,7 @@ def reevaluate_earned_achievements(aid):
 
     keys = []
     for earned_achievement in get_earned_achievements():
-        acquired, info = process_achievement(aid, data=earned_achievement["data"])
+        acquired, _ = process_achievement(aid, data=earned_achievement["data"])
         if not acquired:
             keys.append({"aid": aid, "tid":earned_achievement["tid"]})
 
