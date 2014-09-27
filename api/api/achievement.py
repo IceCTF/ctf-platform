@@ -297,13 +297,16 @@ def insert_earned_achievement(aid, data):
 
     db = api.common.get_conn()
 
-    tid, uid = data.get("tid"), data.get("uid")
+    tid, uid = data.pop("tid"), data.pop("uid")
+    name, description = data.pop("name"), data.pop("description")
 
     db.earned_achievements.insert({
         "aid": aid,
         "tid": tid,
         "uid": uid,
         "data": data,
+        "name": name,
+        "description": description,
         "timestamp": datetime.utcnow().timestamp(),
         "seen": False
     })
@@ -330,8 +333,17 @@ def process_achievements(event, data):
     for achievement in eligible_achievements:
         aid = achievement["aid"]
 
-        if process_achievement(aid, data):
-            insert_earned_achievement(aid, data)
+        acquired, instance_info = process_achievement(aid, data)
+
+        info = {
+            "name":achievement.get("name"),
+            "description": achievement.get("description")
+        }
+
+        info.update(instance_info)
+
+        if acquired:
+            insert_earned_achievement(aid, data.update(info))
 
 def insert_achievement(achievement):
     """
