@@ -5,7 +5,6 @@ import pymongo
 
 import api
 
-from functools import wraps
 from os.path import join
 from datetime import datetime
 from voluptuous import Schema, Required, Range
@@ -29,8 +28,13 @@ achievement_schema = Schema({
             lambda hidden: type(hidden) == bool])),
     Required("image"): check(
         ("An achievement's image path must be a string.", [str])),
+    Required("smallimage"): check(
+        ("An achievement's smallimage path must be a string.", [str])),
     "disabled": check(
         ("An achievement's disabled state is either True or False.", [
+            lambda disabled: type(disabled) == bool])),
+    "multiple": check(
+        ("Whether an achievement can be earned multiple times is either True or False.", [
             lambda disabled: type(disabled) == bool])),
     "aid": check(
         ("You should not specify a aid for an achievement.", [lambda _: False])),
@@ -110,7 +114,7 @@ def get_all_achievements(event=None, show_disabled=False):
 
     return list(db.achievements.find(match, {"_id":0}).sort('score', pymongo.ASCENDING))
 
-def get_earned_achievement_entries(tid=None, uid=None, aid=None):
+def get_earned_achievement_instances(tid=None, uid=None, aid=None):
     """
     Gets the solved achievements for a given team or user.
 
@@ -146,7 +150,7 @@ def get_earned_aids(tid=None, uid=None, aid=None):
         List of solved achievement ids
     """
 
-    return [a["aid"] for a in get_earned_achievement_entries(tid=tid, uid=uid, aid=aid)]
+    return set([a["aid"] for a in get_earned_achievement_instances(tid=tid, uid=uid, aid=aid)])
 
 def set_earned_achievements_seen(tid=None, uid=None):
     """
@@ -173,6 +177,7 @@ def set_earned_achievements_seen(tid=None, uid=None):
 def get_earned_achievements_display(tid=None, uid=None):
     """
     Gets the achievement display for a given user/team.
+    Includes instance specific information.
 
     Args:
         tid: The team id
@@ -181,10 +186,20 @@ def get_earned_achievements_display(tid=None, uid=None):
         A list of enabled achievements the team has earned.
     """
 
-    #TODO: info leak
-    achievements = [get_achievement(aid=achievement["aid"]) for achievement in get_earned_achievement_entries(tid=tid, uid=uid)]
+    instance_achievements = get_earned_achievement_instances(tid=tid, uid=uid)
+    for instance_achievement in instance_achievements:
+        achievement = get_achievement(aid=instance_achievement["aid"])
 
-    return achievements
+        #Make sure not to override name or description.
+        achievement.pop("name")
+        achievement.pop("description")
+
+        instance_achievement.update(achievement)
+
+        #Make sure to remove sensitive data
+        instance_achievement.pop("data", None)
+
+    return instance_achievements
 
 def get_earned_achievements(tid=None, uid=None):
     """
@@ -199,7 +214,7 @@ def get_earned_achievements(tid=None, uid=None):
 
     #TODO: Evaluate which fields are sensitive.
 
-    achievements = get_earned_achievement_entries(tid=tid, uid=uid)
+    achievements = get_earned_achievement_instances(tid=tid, uid=uid)
     set_earned_achievements_seen(tid=tid, uid=uid)
 
     for achievement in achievements:
@@ -222,7 +237,8 @@ def reevaluate_earned_achievements(aid):
 
     keys = []
     for earned_achievement in get_earned_achievements():
-        if not process_achievement(aid, data=earned_achievement["data"]):
+        acquired, _ = process_achievement(aid, data=earned_achievement["data"])
+        if not acquired:
             keys.append({"aid": aid, "tid":earned_achievement["tid"]})
 
     db.earned_achievements.remove({"$or": keys})
@@ -266,6 +282,7 @@ def get_processor(aid):
 def process_achievement(aid, data):
     """
     Determines whether or not an achievement has been earned.
+    Should not be called directly.
 
     Args:
         aid: the achievement id
@@ -295,13 +312,16 @@ def insert_earned_achievement(aid, data):
 
     db = api.common.get_conn()
 
-    tid, uid = data.get("tid"), data.get("uid")
+    tid, uid = data.pop("tid"), data.pop("uid")
+    name, description = data.pop("name"), data.pop("description")
 
     db.earned_achievements.insert({
         "aid": aid,
         "tid": tid,
         "uid": uid,
         "data": data,
+        "name": name,
+        "description": description,
         "timestamp": datetime.utcnow().timestamp(),
         "seen": False
     })
@@ -312,7 +332,7 @@ def process_achievements(event, data):
 
     Args:
         event: event type, e.g., submit
-        data: dictionary with additional information necessary for assesment
+        data: dictionary with additional information necessary for assessment
     """
 
     if data.get("uid", None) is None:
@@ -323,12 +343,22 @@ def process_achievements(event, data):
 
     eligible_achievements = [
         achievement for achievement in get_all_achievements(event=event) \
-            if achievement not in get_earned_achievements(tid=data["tid"])]
+            if achievement["aid"] not in get_earned_aids(tid=data["tid"]) \
+            or achievement.get("multiple", False)]
 
     for achievement in eligible_achievements:
         aid = achievement["aid"]
 
-        if process_achievement(aid, data):
+        acquired, instance_info = process_achievement(aid, data)
+
+        info = {
+            "name":achievement.get("name"),
+            "description": achievement.get("description")
+        }
+
+        info.update(instance_info)
+        data.update(info)
+        if acquired:
             insert_earned_achievement(aid, data)
 
 def insert_achievement(achievement):
@@ -350,6 +380,7 @@ def insert_achievement(achievement):
 
     if safe_fail(get_achievement, aid=achievement["aid"]) is not None:
         raise WebException("achievement with identical aid already exists.")
+
 
     if safe_fail(get_achievement, name=achievement["name"]) is not None:
         raise WebException("achievement with identical name already exists.")

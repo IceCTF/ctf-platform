@@ -216,7 +216,7 @@ def get_team_score_progression():
 @require_admin
 def get_all_problems_hook():
     problems = api.problem.get_all_problems()
-    if probs is None:
+    if problems is None:
         return WebError("There was an error querying problems from the database.")
     return WebSuccess(data=problems)
 
@@ -422,7 +422,7 @@ def delete_group_hook():
 @api_wrapper
 def get_achievements_hook():
     tid = api.user.get_team()["tid"]
-    achievements = api.achievement.get_earned_achievements(tid=tid)
+    achievements = api.achievement.get_earned_achievements_display(tid=tid)
 
     for achievement in achievements:
         achievement["timestamp"] = None  # JB : Hack to temporarily fix achievements timestamp problem

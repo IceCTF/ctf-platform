@@ -1,1 +1,1 @@
-{"name": "Hacker", "description": "Your team has earned over 100 points.", "event": "submit", "hidden": false, "score": 100, "processor": "100points/100points.py", "image": "100points/badge.png"}
+{"name": "Hacker", "description": "Your team has earned over 100 points.", "event": "submit", "hidden": false, "score": 100, "processor": "100points/100points.py", "image": "/img/achievements/silver.png", "smallimage": "/img/achievements/silver_unlock.png"}
