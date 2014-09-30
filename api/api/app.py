@@ -2,13 +2,14 @@
 Flask routing
 """
 
-from flask import Flask, request, session, send_from_directory
+from flask import Flask, request, session, send_from_directory, render_template
 
 app = Flask(__name__, static_path="/")
 
 import api
 import json
 import mimetypes
+import os.path
 
 from datetime import datetime
 from api.common import WebSuccess, WebError
@@ -32,7 +33,8 @@ def guess_mimetype(resource_path):
     Returns:
         The mimetype string.
     """
-
+    print(resource_path)
+    print(mimetypes.guess_type(resource_path))
     mime = mimetypes.guess_type(resource_path)[0]
 
     if mime is None:
@@ -58,7 +60,12 @@ def serve_autogen_hook(path):
     else:
         instance_path = api.autogen.get_instance_path(pid, instance_number, public=True)
 
-    return send_from_directory(instance_path, path, mimetype=guess_mimetype(path))
+    mime = guess_mimetype(path)
+    if mime == 'text/html':
+        #return render_template(os.path.join(instance_path, path))
+        return send_from_directory(instance_path, path, mimetype=None, as_attachment=False, attachment_filename=None)
+    else:
+        return send_from_directory(instance_path, path, mimetype=mime)
 
 def config_app(*args, **kwargs):
     """
@@ -87,7 +94,9 @@ def after_request(response):
             session['token'] = csrf_token
             response.set_cookie('token', csrf_token)
 
-    response.mimetype = 'application/json'
+    # JB: This is a hack. We need a better solution
+    if request.path[0:19] != "/api/autogen/serve/":
+        response.mimetype = 'appication/json'
     return response
 
 @app.route('/api/user/shell', methods=['GET'])

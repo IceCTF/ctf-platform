@@ -11,6 +11,7 @@ import spur
 from os import path
 from string import Template
 from api.common import InternalException
+from hashlib import sha1
 
 log = api.logger.use(__name__)
 
@@ -48,6 +49,11 @@ def get_directory(resource_path):
     """
 
     return path.dirname(path.abspath(resource_path))
+
+
+def generate_resource_url(pid, resource_path, static=False):
+    return '/api/autogen/serve/{}?static={}&pid={}'.format(resource_path, "true" if static else "false", pid)
+
 
 def generate_resource_link(pid, resource_path, static=False, title=None):
     """
