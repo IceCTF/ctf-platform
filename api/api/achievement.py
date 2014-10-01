@@ -187,6 +187,8 @@ def get_earned_achievements_display(tid=None, uid=None):
     """
 
     instance_achievements = get_earned_achievement_instances(tid=tid, uid=uid)
+    set_earned_achievements_seen(tid=tid, uid=uid)
+
     for instance_achievement in instance_achievements:
         achievement = get_achievement(aid=instance_achievement["aid"])
 

@@ -9,6 +9,6 @@ def process(api, data):
     problem = api.problem.get_problem(pid=data["pid"])
     valid = len(submissions) == 1 and submissions[0]['tid'] == data['tid']
     return valid, {
-        "name": "{} Breakthrough!".format(problem["name"]),
-        "description": "Your team was the first to solve {}. Congratulations!".format(problem["name"])
+        "name": "Breakthrough!".format(problem["name"]),
+        "description": "Your team was the first to solve {}.".format(problem["name"])
     }

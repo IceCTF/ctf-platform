@@ -2,11 +2,22 @@ renderProblemList = _.template($("#problem-list-template").remove().text())
 renderProblem = _.template($("#problem-template").remove().text())
 renderProblemSubmit = _.template($("#problem-submit-template").remove().text())
 renderProblemReview = _.template($("#problem-review-template").remove().text())
+renderAchievementMessage = _.template($("#achievement-message-template").remove().text())
 
 @ratingMetrics = ["Difficulty", "Enjoyment", "Educational Value"]
 
 sanitizeMetricName = (metric) ->
   metric.toLowerCase().replace(" ", "-")
+
+
+constructAchievementCallbackChainHelper = (achievements, index) ->
+  if index >= 0
+    console.log(achievements[index])
+    messageDialog renderAchievementMessage({achievement: achievements[index]}),
+      "Achievement Unlocked!", "OK", () -> constructAchievementCallbackChainHelper achievements, index-1
+
+constructAchievementCallbackChain = (achievements) ->
+  constructAchievementCallbackChainHelper achievements, achievements.length-1
 
 submitProblem = (e) ->
   e.preventDefault()
@@ -19,6 +30,12 @@ submitProblem = (e) ->
         $("div[data-target='#" + input.data("pid") + "']").click()
       , 100)
     apiNotify data
+    apiCall "GET", "/api/achievements"
+    .done (data) ->
+      if data['status'] is 1
+        new_achievements = (x for x in data.data when !x.seen)
+        console.log(new_achievements)
+        constructAchievementCallbackChain new_achievements
 
 addProblemReview = (e) ->
   e.preventDefault()

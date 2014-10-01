@@ -108,6 +108,20 @@ startup_functions:
   </div>
 </script>
 
+<script type="text/template" id="achievement-message-template">
+    <table>
+        <tr>
+            <td>
+                <img src="<%= achievement.image %>"/>
+            </td>
+            <td>
+            <div><b><%= achievement.name %></b></div>
+            <p><%= achievement.description %></p>
+            </td>
+        </tr>
+    </table>
+</script>
+
 <script type="text/template" id="problem-review-template">
   <div class="row">
     <form class="form-horizontal problem-review-form" data-pid="<%= problem.pid %>">
