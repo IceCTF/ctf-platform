@@ -14,6 +14,8 @@ login = (e) ->
                 document.location.href = "/team"
 
 resetPassword = (e) ->
+  $("#reset-password-button").html("Please Wait...")
+  $("#reset-password-button").attr('disabled',true)
   e.preventDefault()
   apiCall "GET", "/api/user/reset_password", $("#password-reset-form").serializeObject()
   .done (data) ->
@@ -23,6 +25,8 @@ resetPassword = (e) ->
             ga('send', 'event', 'Authentication', 'PasswordReset', 'Failure::' + data.message)
         when 1
             ga('send', 'event', 'Authentication', 'PasswordReset', 'Success')
+    $("#reset-password-button").html("Reset Password")
+    $("#reset-password-button").attr('disabled',false)
             
 $ ->
   $("#password-reset-form").toggle()

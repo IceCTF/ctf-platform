@@ -129,7 +129,6 @@ def reset_password_hook():
 
 @app.route('/api/user/confirm_password_reset', methods=['POST'])
 @api_wrapper
-@check_csrf
 def confirm_password_reset_hook():
     password = request.form.get("new-password")
     confirm = request.form.get("new-password-confirmation")
