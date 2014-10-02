@@ -615,13 +615,7 @@ def get_unlocked_problems(tid, category=None):
     solved = get_solved_problems(tid=tid)
     unlocked = [get_problem(pid=pid) for pid in get_unlocked_pids(tid, category=category)]
     for problem in unlocked:
-<<<<<<< HEAD
         if api.autogen.is_autogen_problem(problem["pid"]):
-            problem = api.autogen.get_problem_instance(problem["pid"], tid)
-=======
-        if problem['autogen']:
-            problem = problem #api.autogen.get_problem_instance(problem, tid)
->>>>>>> 36f2db03de9f4c055f09c87e3688fff969d19e98
+            problem.update(api.autogen.get_problem_instance(problem["pid"], tid))
         problem['solved'] = problem in solved
-
     return unlocked
