@@ -8,7 +8,7 @@ from email.utils import formataddr
 
 import api
 
-from api.common import check, validate, safe_fail
+from api.common import check, validate, safe_fail, WebException
 from voluptuous import Required, Length, Schema
 from datetime import datetime
 
