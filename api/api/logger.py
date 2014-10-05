@@ -72,10 +72,8 @@ class StatsHandler(logging.StreamHandler):
                 "pid": pid,
                 "feedback": feedback
             },
-        "api.user.update_password":
-            lambda uid, password, result=None: {},
         "api.user.update_password_request":
-            lambda params, result=None: {},
+            lambda params, uid=None, check_current=False, result=None: {},
         "api.utilities.request_password_reset":
             lambda username, result=None: {},
         "api.team.create_team":
