@@ -61,7 +61,6 @@ def serve_autogen_hook(path):
 
     mime = guess_mimetype(path)
     if mime == 'text/html':
-        #return render_template(os.path.join(instance_path, path))
         return send_from_directory(instance_path, path, mimetype=None, as_attachment=False, attachment_filename=None)
     else:
         return send_from_directory(instance_path, path, mimetype=mime)
