@@ -11,8 +11,8 @@ sanitizeMetricName = (metric) ->
 
 
 constructAchievementCallbackChainHelper = (achievements, index) ->
+  $(".modal-backdrop").remove()
   if index >= 0
-    console.log(achievements[index])
     messageDialog renderAchievementMessage({achievement: achievements[index]}),
       "Achievement Unlocked!", "OK", () -> constructAchievementCallbackChainHelper achievements, index-1
 

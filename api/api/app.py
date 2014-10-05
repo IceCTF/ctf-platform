@@ -67,7 +67,8 @@ def serve_autogen_hook(path):
 
 def config_app(*args, **kwargs):
     """
-    Start the api with configured values.
+    Return the app object configured correctly.
+    This needed to be done for gunicorn.
     """
 
     app.secret_key = secret_key
