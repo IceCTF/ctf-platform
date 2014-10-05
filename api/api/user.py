@@ -401,6 +401,7 @@ def update_password(uid, password):
     db = api.common.get_conn()
     db.users.update({'uid': uid}, {'$set': {'password_hash': hash_password(password)}})
 
+@log_action
 def update_password_request(params, uid=None, check_current=False):
     """
     Update account password.
@@ -414,7 +415,7 @@ def update_password_request(params, uid=None, check_current=False):
             new-password: the new password
             new-password-confirmation: confirmation of password
     """
-
+    
     user = get_user(uid=uid)
 
     if check_current and not api.auth.confirm_password(params["current-password"], user['password_hash']):
