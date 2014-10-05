@@ -66,7 +66,7 @@ def logout():
     """ 
     Clears the session
     """
-
+    
     session.clear()
 
 def is_logged_in():

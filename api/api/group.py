@@ -5,6 +5,8 @@ import api
 from voluptuous import Required, Length, Schema
 from api.common import check, validate, safe_fail, WebException, InternalException, SevereInternalException
 
+from api.annotations import log_action
+
 register_group_schema = Schema({
     Required("group-name"): check(
         ("Class name must be between 3 and 50 characters.", [str, Length(min=3, max=100)])
@@ -116,7 +118,7 @@ def get_member_information(gid):
 
     return member_information
 
-
+@log_action
 def create_group(uid, group_name):
     """
     Inserts group into the db. Assumes everything is validated.
@@ -166,6 +168,7 @@ def create_group_request(params, uid=None):
 
     return create_group(uid, params["group-name"])
 
+@log_action
 def join_group(tid, gid):
     """
     Adds a team to a group. Assumes everything is valid.
@@ -206,7 +209,8 @@ def join_group_request(params, tid=None):
         raise WebException("Your team is already a member of that class!")
 
     join_group(tid, group["gid"])
-
+    
+@log_action
 def leave_group(tid, gid):
     """
     Removes a team from a group
@@ -244,6 +248,7 @@ def leave_group_request(params, tid=None):
 
     leave_group(tid, group["gid"])
 
+@log_action
 def delete_group(gid):
     """
     Deletes a group

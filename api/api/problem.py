@@ -11,6 +11,8 @@ from voluptuous import Schema, Length, Required, Range
 from bson import json_util
 from os.path import join, isfile
 
+from api.annotations import log_action
+
 grader_base_path = "./graders"
 
 submission_schema = Schema({
@@ -297,6 +299,7 @@ def grade_problem(pid, key, tid=None):
         "message": message
     }
 
+@log_action
 def submit_key(tid, pid, key, uid=None, ip=None):
     """
     User problem submission. Problem submission is inserted into the database.

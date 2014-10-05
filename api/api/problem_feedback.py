@@ -8,6 +8,8 @@ from datetime import datetime
 from voluptuous import Schema, Required, Length
 from api.common import validate, check, safe_fail, InternalException, SevereInternalException, WebException
 
+from api.annotations import log_action
+
 feedback_schema = Schema({
     Required("metrics"): check(
         ("metrics must include difficulty, enjoyment, and educational-value", [
@@ -62,6 +64,7 @@ def get_reviewed_pids(uid=None):
 
     return [entry["pid"] for entry in get_problem_feedback(uid=uid)]
 
+@log_action
 def add_problem_feedback(pid, uid, feedback):
     """
     Add user problem feedback to the database.

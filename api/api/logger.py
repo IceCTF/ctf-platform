@@ -40,6 +40,10 @@ class StatsHandler(logging.StreamHandler):
                 "key": key,
                 "correct": result["correct"]
             },
+        "api.game.get_game_problem":
+            lambda etcid, result=None: {
+                "etcid": etcid
+            },
         "api.group.create_group":
             lambda uid, group_name, result=None: {
                 "name": group_name,
@@ -48,8 +52,37 @@ class StatsHandler(logging.StreamHandler):
         "api.group.join_group":
             lambda tid, gid, result=None: {
                 "gid": gid
-            }
-    
+            },
+        "api.group.leave_group":
+            lambda tid, gid, result=None: {
+                "gid": gid
+            },
+        "api.group.delete_group":
+            lambda gid, result=None: {
+                "gid": gid
+            },
+        "api.problem.submit_key":
+            lambda tid, pid, key, uid=None, ip=None, result=None: {
+                "pid": pid,
+                "key": key,
+                "success": result["correct"]
+            },
+        "api.problem_feedback.add_problem_feedback":
+            lambda pid, uid, feedback, result=None: {
+                "pid": pid,
+                "feedback": feedback
+            },
+        "api.user.update_password":
+            lambda uid, password, result=None: {},
+        "api.user.update_password_request":
+            lambda params, result=None: {},
+        "api.utilities.request_password_reset":
+            lambda username, result=None: {},
+        "api.team.create_team":
+            lambda params, result=None: params,
+        "api.team.assign_shell_account":
+            lambda tid, result=None: {}
+        
     }
 
     def __init__(self):
@@ -108,16 +141,13 @@ class ExceptionHandler(logging.StreamHandler):
 
         information = get_request_information()
 
-        result = record.msg
+        information.update({
+            "event": "exception",
+            "time": datetime.now().strftime(self.time_format),
+            "trace": record.msg
+        })
 
-        if type(result) == dict:
-
-            information.update({
-                "event": "exception",
-                "time": datetime.now().strftime(self.time_format)
-            })
-
-            api.common.get_conn().exceptions.insert(information)
+        api.common.get_conn().exceptions.insert(information)
 
 class SevereHandler(logging.handlers.SMTPHandler):
 
@@ -138,6 +168,7 @@ class SevereHandler(logging.handlers.SMTPHandler):
         """
         Don't excessively emit the same message.
         """
+        
         last_time = self.messages.get(record.msg, None)
         if last_time is None or time.time() - last_time > critical_error_timeout:
             super(SevereHandler, self).emit(record)
@@ -212,7 +243,7 @@ def setup_logs(args):
     Args:
         args: dict containing the configuration options.
     """
-
+    
     flask_logging.create_logger = lambda app: use(app.logger_name)
 
     if not args.get("debug", True):
@@ -223,6 +254,7 @@ def setup_logs(args):
 
     internal_error_log = ExceptionHandler()
     internal_error_log.setLevel(logging.ERROR)
+    
     log.root.setLevel(level)
     log.root.addHandler(internal_error_log)
 

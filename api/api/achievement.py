@@ -10,6 +10,8 @@ from datetime import datetime
 from voluptuous import Schema, Required, Range
 from api.common import check, InternalException, SevereInternalException, validate, safe_fail, WebException
 
+from api.annotations import log_action
+
 processor_base_path = "./processors"
 
 achievement_schema = Schema({
@@ -281,6 +283,7 @@ def get_processor(aid):
     except FileNotFoundError:
         raise InternalException("Achievement processor is offline.")
 
+@log_action
 def process_achievement(aid, data):
     """
     Determines whether or not an achievement has been earned.
