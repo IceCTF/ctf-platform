@@ -33,8 +33,7 @@ def guess_mimetype(resource_path):
     Returns:
         The mimetype string.
     """
-    print(resource_path)
-    print(mimetypes.guess_type(resource_path))
+    
     mime = mimetypes.guess_type(resource_path)[0]
 
     if mime is None:
