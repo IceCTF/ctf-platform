@@ -77,6 +77,8 @@ def config_app(*args, **kwargs):
     app.config["SESSION_COOKIE_PATH"] = session_cookie_path
     app.config["SESSION_COOKIE_NAME"] = session_cookie_name
 
+    api.logger.setup_logs({"verbose": 2})
+    
     return app
 
 @app.after_request
