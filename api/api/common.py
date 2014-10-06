@@ -96,8 +96,8 @@ class APIException(Exception):
     """
     Exception thrown by the API.
     """
+    data = {}
 
-    pass
 
 def WebSuccess(message=None, data=None):
     """

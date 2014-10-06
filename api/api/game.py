@@ -73,9 +73,50 @@ def get_game_problem(etcid):
         pid = etcid_map[int(etcid)]
     except (IndexError, ValueError):
         raise WebException("Invalid Problem")
-    print(pid)
+
     p = api.problem.get_problem(pid=pid, tid=useracct['tid'])
     return WebSuccess(data=p)
+
+
+def get_game_problem_status(etcid):
+    if etcid_map is None:
+        gen_maps()
+    useracct = api.user.get_user()
+    try:
+        pid = int(etcid)
+    except ValueError:
+        return WebException("Invalid problem id")
+    if 'viewed_problems' in useracct:
+        if pid in useracct['viewed_problems']:
+            return WebSuccess(data={'viewed': True})
+    return WebSuccess(data={'viewed': False})
+
+
+def set_game_problem_status(etcid, viewed):
+    if etcid_map is None:
+        gen_maps()
+
+    useracct = api.user.get_user()
+    uid = useracct['uid']
+    db = api.common.get_conn()
+
+    try:
+        pid = int(etcid)
+    except ValueError:
+        return WebException("Invalid problem id")
+
+    if 'viewed_problems' in useracct:
+        viewed_problems = useracct['viewed_problems']
+        if (pid not in viewed_problems) and viewed:
+            viewed_problems += [pid]
+            db.users.update({'uid': uid}, {'$set': {'viewed_problems': viewed_problems}})
+        elif (pid in viewed_problems) and not viewed:
+            viewed_problems.remove(pid)
+            db.users.update({'uid': uid}, {'$set': {'viewed_problems': viewed_problems}})
+
+    else:
+        db.users.update({'uid': uid}, {'$set': {'viewed_problems': [pid]}})
+    return WebSuccess()
 
 
 def etcid_to_pid(etcid):

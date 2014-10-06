@@ -320,7 +320,9 @@ def submit_key(tid, pid, key, uid=None, ip=None):
         raise InternalException("You can't submit flags to problems you haven't unlocked.")
 
     if pid in get_solved_pids(tid=tid):
-        raise WebException("You have already solved this problem.")
+        exp = WebException("You have already solved this problem.")
+        exp.data = {'code': 'solved'}
+        raise exp
 
     user = api.user.get_user(uid=uid)
     if user is None:
@@ -344,7 +346,9 @@ def submit_key(tid, pid, key, uid=None, ip=None):
     }
 
     if (key, pid) in [(submission["key"], submission["pid"]) for submission in  get_submissions(tid=tid)]:
-        raise WebException("You or one of your teammates has already tried this solution.")
+        exp = WebException("You or one of your teammates has already tried this solution.")
+        exp.data = {'code': 'repeat'}
+        raise exp
 
     db.submissions.insert(submission)
 

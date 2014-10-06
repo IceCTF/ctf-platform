@@ -261,7 +261,7 @@ def submit_key_hook():
     if result['correct']:
         return WebSuccess(result['message'], result['points'])
     else:
-        return WebError(result['message'])
+        return WebError(result['message'], {'code': 'wrong'})
 
 @app.route('/api/problems/<path:pid>', methods=['GET'])
 @api_wrapper
@@ -317,6 +317,22 @@ def get_solved_indices_hook():
 @block_after_competition(WebError("The competition is over!"))
 def get_game_problem_hook(etcid):
     return api.game.get_game_problem(etcid)
+
+@app.route('/api/game/get_problem_status/<path:etcid>', methods=['GET'])
+@api_wrapper
+@require_login
+@block_before_competition(WebError("The competition has not begun yet!"))
+@block_after_competition(WebError("The competition is over!"))
+def get_game_problem_status_hook(etcid):
+    return api.game.get_game_problem_status(etcid)
+
+@app.route('/api/game/set_problem_status/<path:etcid>', methods=['POST'])
+@api_wrapper
+@require_login
+@block_before_competition(WebError("The competition has not begun yet!"))
+@block_after_competition(WebError("The competition is over!"))
+def set_game_problem_status_hook(etcid):
+    return api.game.set_game_problem_status(etcid, request.form.get('viewed'))
 
 @app.route('/api/game/to_pid/<path:etcid>', methods=['GET'])
 @api_wrapper
