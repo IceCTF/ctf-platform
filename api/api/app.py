@@ -33,8 +33,7 @@ def guess_mimetype(resource_path):
     Returns:
         The mimetype string.
     """
-    print(resource_path)
-    print(mimetypes.guess_type(resource_path))
+    
     mime = mimetypes.guess_type(resource_path)[0]
 
     if mime is None:
@@ -62,14 +61,14 @@ def serve_autogen_hook(path):
 
     mime = guess_mimetype(path)
     if mime == 'text/html':
-        #return render_template(os.path.join(instance_path, path))
         return send_from_directory(instance_path, path, mimetype=None, as_attachment=False, attachment_filename=None)
     else:
         return send_from_directory(instance_path, path, mimetype=mime)
 
 def config_app(*args, **kwargs):
     """
-    Start the api with configured values.
+    Return the app object configured correctly.
+    This needed to be done for gunicorn.
     """
 
     app.secret_key = secret_key
@@ -77,6 +76,8 @@ def config_app(*args, **kwargs):
     app.config["SESSION_COOKIE_PATH"] = session_cookie_path
     app.config["SESSION_COOKIE_NAME"] = session_cookie_name
 
+    api.logger.setup_logs({"verbose": 2})
+    
     return app
 
 @app.after_request

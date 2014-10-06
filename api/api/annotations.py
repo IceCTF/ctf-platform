@@ -1,6 +1,6 @@
-__author__ = ['Peter Chapman', 'Collin Petty']
+""" API annotations and assorted wrappers. """
 
-import json
+import json, traceback
 import api
 
 from api.common import WebSuccess, WebError, WebException, InternalException, SevereInternalException
@@ -60,13 +60,13 @@ def api_wrapper(f):
         except InternalException as error:
             message = _get_message(error)
             if type(error) == SevereInternalException:
-                wrapper_log.critical(message)
+                wrapper_log.critical(traceback.format_exc())
                 web_result = WebError("There was a critical internal error. Contact an administrator.")
             else:
-                wrapper_log.error(message)
+                wrapper_log.error(traceback.format_exc())
                 web_result = WebError(message)
         except Exception as error:
-            wrapper_log.exception(error)
+            wrapper_log.error(traceback.format_exc())
 
         return json.dumps(web_result)
 

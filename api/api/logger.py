@@ -16,7 +16,6 @@ from datetime import datetime
 critical_error_timeout = 600
 log = logging.getLogger(__name__)
 
-#TODO: Add configuration for this.
 class StatsHandler(logging.StreamHandler):
     """
     Logs statistical information into the mongodb.
@@ -28,8 +27,60 @@ class StatsHandler(logging.StreamHandler):
         "api.user.create_user_request":
             lambda params, result=None: {
                 "username": params["username"],
-                "new_team": params["create-new-team"] == "on"
-            }
+                "new_team": params["create-new-team"]
+            },
+        "api.achievement.process_achievement":
+            lambda aid, data, result=None: {
+                "aid": aid,
+                "success": result[0]
+            },
+        "api.autogen.grade_problem_instance":
+            lambda pid, tid, key, result=None: {
+                "pid": pid,
+                "key": key,
+                "correct": result["correct"]
+            },
+        "api.game.get_game_problem":
+            lambda etcid, result=None: {
+                "etcid": etcid
+            },
+        "api.group.create_group":
+            lambda uid, group_name, result=None: {
+                "name": group_name,
+                "owner": uid
+            },
+        "api.group.join_group":
+            lambda tid, gid, result=None: {
+                "gid": gid
+            },
+        "api.group.leave_group":
+            lambda tid, gid, result=None: {
+                "gid": gid
+            },
+        "api.group.delete_group":
+            lambda gid, result=None: {
+                "gid": gid
+            },
+        "api.problem.submit_key":
+            lambda tid, pid, key, uid=None, ip=None, result=None: {
+                "pid": pid,
+                "key": key,
+                "success": result["correct"]
+            },
+        "api.problem_feedback.add_problem_feedback":
+            lambda pid, uid, feedback, result=None: {
+                "pid": pid,
+                "feedback": feedback
+            },
+        "api.user.update_password_request":
+            lambda params, uid=None, check_current=False, result=None: {},
+        "api.utilities.request_password_reset":
+            lambda username, result=None: {},
+        "api.team.create_team":
+            lambda params, result=None: params,
+        "api.team.assign_shell_account":
+            lambda tid, result=None: {}
+        
     }
 
     def __init__(self):
@@ -52,15 +103,14 @@ class StatsHandler(logging.StreamHandler):
                 "time": datetime.now().strftime(self.time_format)
             })
 
-            information["action"] = {
-                "pass": True
-            }
+            information["pass"] = True
+            information["action"] = {}
 
             if "exception" in result:
-                information["action"].update({
-                    "exception": result["exception"],
-                    "pass": False
-                })
+                
+                information["action"]["exception"] = result["exception"]
+                information["pass"] = False
+                
             elif result["name"] in self.action_parsers:
                 action_parser = self.action_parsers[result["name"]]
 
@@ -70,6 +120,32 @@ class StatsHandler(logging.StreamHandler):
                 information["action"].update(action_result)
 
             api.common.get_conn().statistics.insert(information)
+            
+class ExceptionHandler(logging.StreamHandler):
+    """
+    Logs exceptions into mongodb.
+    """
+
+    time_format = "%H:%M:%S %Y-%m-%d"
+
+    def __init__(self):
+
+        logging.StreamHandler.__init__(self)
+
+    def emit(self, record):
+        """
+        Store record into the db.
+        """
+
+        information = get_request_information()
+
+        information.update({
+            "event": "exception",
+            "time": datetime.now().strftime(self.time_format),
+            "trace": record.msg
+        })
+
+        api.common.get_conn().exceptions.insert(information)
 
 class SevereHandler(logging.handlers.SMTPHandler):
 
@@ -90,6 +166,7 @@ class SevereHandler(logging.handlers.SMTPHandler):
         """
         Don't excessively emit the same message.
         """
+        
         last_time = self.messages.get(record.msg, None)
         if last_time is None or time.time() - last_time > critical_error_timeout:
             super(SevereHandler, self).emit(record)
@@ -164,17 +241,18 @@ def setup_logs(args):
     Args:
         args: dict containing the configuration options.
     """
-
+    
     flask_logging.create_logger = lambda app: use(app.logger_name)
 
-    if not args['debug']:
+    if not args.get("debug", True):
         set_level("werkzeug", logging.ERROR)
 
     level = [logging.WARNING, logging.INFO, logging.DEBUG][
         min(args.get("verbose", 1), 2)]
 
-    internal_error_log = logging.StreamHandler(stdout)
+    internal_error_log = ExceptionHandler()
     internal_error_log.setLevel(logging.ERROR)
+    
     log.root.setLevel(level)
     log.root.addHandler(internal_error_log)
 
