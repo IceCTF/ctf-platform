@@ -49,6 +49,9 @@ def login(username, password):
     if user is None:
         raise WebException("Incorrect username.")
 
+    if user.get("disabled", False):
+        raise WebException("This account has been disabled.")
+
     if confirm_password(password, user['password_hash']):
         if debug_disable_general_login:
             if session.get('debugaccount', False):
@@ -63,10 +66,10 @@ def login(username, password):
 
 @log_action
 def logout():
-    """ 
+    """
     Clears the session
     """
-    
+
     session.clear()
 
 def is_logged_in():
