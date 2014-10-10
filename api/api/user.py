@@ -76,7 +76,7 @@ existing_team_schema = Schema({
         ("There is no existing team named that.", [
             lambda name: api.team.get_team(name=name) != None]),
         ("There are too many members on that team for you to join.", [
-            lambda name: len(api.team.get_team_uids(name=name)) < api.team.max_team_users
+            lambda name: len(api.team.get_team_uids(name=name, show_disabled=False)) < api.team.max_team_users
         ])
     ),
     Required('team-password-existing'):
@@ -401,10 +401,22 @@ def update_password(uid, password):
     db = api.common.get_conn()
     db.users.update({'uid': uid}, {'$set': {'password_hash': hash_password(password)}})
 
-@log_action
-def update_password_request(params, uid=None, check_current=False):
+def disable_account(uid):
     """
-    Update account password.
+    Disables a user account. They will no longer be able to login and do not count
+    towards a team's maximum size limit.
+
+    Args:
+        uid: user's uid
+    """
+
+    db = api.common.get_conn()
+    db.users.update({"uid": uid}, {"$set": {"disabled": True}})
+
+@log_action
+def disable_account_request(params, uid=None, check_current=False):
+    """
+    Disable user account so they can't login or consume space on a team.
     Assumes args are keys in params.
 
     Args:
@@ -412,19 +424,12 @@ def update_password_request(params, uid=None, check_current=False):
         check_current: whether to ensure that current-password is correct
         params:
             current-password: the users current password
-            new-password: the new password
-            new-password-confirmation: confirmation of password
     """
-    
+
     user = get_user(uid=uid)
 
     if check_current and not api.auth.confirm_password(params["current-password"], user['password_hash']):
         raise WebException("Your current password is incorrect.")
+    disable_account(user['uid'])
 
-    if params["new-password"] != params["new-password-confirmation"]:
-        raise WebException("Your passwords do not match.")
-
-    if len(params["new-password"]) == 0:
-        raise WebException("Your password cannot be empty.")
-
-    update_password(user['uid'], params["new-password"])
+    api.auth.logout()
