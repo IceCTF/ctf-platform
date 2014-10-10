@@ -91,7 +91,7 @@ def create_team(params):
     db = api.common.get_conn()
 
     if not shell_accounts_available() and api.config.enable_shell:
-        raise SevereInternalException("There are no shell accounts available.")    
+        raise SevereInternalException("There are no shell accounts available.")
 
     params['tid'] = api.common.token()
 
@@ -102,7 +102,7 @@ def create_team(params):
 
     return params['tid']
 
-def get_team_members(tid=None, name=None):
+def get_team_members(tid=None, name=None, show_disabled=True):
     """
     Retrieves the members on a team.
 
@@ -117,9 +117,10 @@ def get_team_members(tid=None, name=None):
 
     tid = get_team(name=name, tid=tid)["tid"]
 
-    return list(db.users.find({"tid": tid}, {"_id": 0, "uid": 1, "username": 1}))
+    users = list(db.users.find({"tid": tid}, {"_id": 0, "uid": 1, "username": 1, "disabled": 1}))
+    return [user for user in users if show_disabled or not user.get("disabled", False)]
 
-def get_team_uids(tid=None, name=None):
+def get_team_uids(tid=None, name=None, show_disabled=True):
     """
     Gets the list of uids that belong to a team
 
@@ -130,7 +131,7 @@ def get_team_uids(tid=None, name=None):
         A list of uids
     """
 
-    return [team['uid'] for team in get_team_members(tid=tid, name=name)]
+    return [user['uid'] for user in get_team_members(tid=tid, name=name, show_disabled=show_disabled)]
 
 def get_team_information(tid=None):
     """
@@ -150,7 +151,7 @@ def get_team_information(tid=None):
         tid = team_info["tid"]
 
     team_info["score"] = api.stats.get_score(tid=tid)
-    team_info["members"] = [member["username"] for member in get_team_members(tid=tid)]
+    team_info["members"] = [member["username"] for member in get_team_members(tid=tid, show_disabled=False)]
     team_info["competition_active"] = api.utilities.check_competition_active()
     team_info["max_team_size"] = max_team_users
 
