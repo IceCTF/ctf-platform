@@ -33,7 +33,7 @@ def guess_mimetype(resource_path):
     Returns:
         The mimetype string.
     """
-    
+
     mime = mimetypes.guess_type(resource_path)[0]
 
     if mime is None:
@@ -77,7 +77,7 @@ def config_app(*args, **kwargs):
     app.config["SESSION_COOKIE_NAME"] = session_cookie_name
 
     api.logger.setup_logs({"verbose": 2})
-    
+
     return app
 
 @app.after_request
@@ -119,6 +119,14 @@ def create_user_hook():
 def update_password_hook():
     api.user.update_password_request(api.common.flat_multi(request.form), check_current=True)
     return WebSuccess("Your password has been successfully updated!")
+
+@app.route('/api/user/disable_account', methods=['POST'])
+@api_wrapper
+@check_csrf
+@require_login
+def disable_account_hook():
+    api.user.disable_account_request(api.common.flat_multi(request.form), check_current=True)
+    return WebSuccess("Your have successfully disabled your account!")
 
 @app.route('/api/user/reset_password', methods=['GET'])
 @api_wrapper
