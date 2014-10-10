@@ -72,11 +72,13 @@ def get_all_team_scores():
 
     result = []
     for team in teams:
-        result.append({
-            "name": team['team_name'],
-            "tid": team['tid'],
-            "score": get_score(tid=team['tid'])
-        })
+        score = get_score(tid=team['tid'])
+        if score > 0:
+            result.append({
+                "name": team['team_name'],
+                "tid": team['tid'],
+                "score": score
+            })
 
     return sorted(result, key=lambda entry: entry['score'], reverse=True)
 
