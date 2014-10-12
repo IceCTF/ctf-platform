@@ -389,6 +389,36 @@ def find_user_by_reset_token(token):
 
     return user
 
+
+@log_action
+def update_password_request(params, uid=None, check_current=False):
+    """
+    Update account password.
+    Assumes args are keys in params.
+
+    Args:
+        uid: uid to reset
+        check_current: whether to ensure that current-password is correct
+        params:
+            current-password: the users current password
+            new-password: the new password
+            new-password-confirmation: confirmation of password
+    """
+
+    user = get_user(uid=uid)
+
+    if check_current and not api.auth.confirm_password(params["current-password"], user['password_hash']):
+        raise WebException("Your current password is incorrect.")
+
+    if params["new-password"] != params["new-password-confirmation"]:
+        raise WebException("Your passwords do not match.")
+
+    if len(params["new-password"]) == 0:
+        raise WebException("Your password cannot be empty.")
+
+    update_password(user['uid'], params["new-password"])
+
+
 def update_password(uid, password):
     """
     Updates an account's password.
