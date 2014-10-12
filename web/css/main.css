@@ -529,16 +529,16 @@ a.old-pico-link:hover {
 }
 
 .btn-danger {
-    background: #e54028;
-    background-color: #e54028;
-    border-color: #c22d18;
+    background: #d9534f;
+    background-color: #d9534f;
+    border-color: #d43f3a;
     color: white;
     text-shadow: 0 -1px 1px rgba(103, 24, 13, 0.35);
 }
 
 .btn-danger:hover {
-    background-color: #d9331a;
-    background: #d9331a;
+    background-color: #c9302c;
+    background: #c9302c;
 }
 
 
