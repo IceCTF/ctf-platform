@@ -93,8 +93,12 @@ startup_functions:
           <li><%- username %></li>
         <% }); %>
       </ul>
-        <p>You may have up to <%- data.max_team_size - _.size(data.members) %> more member<%- (data.max_team_size - _.size(data.members)) == 1 ? "" : "s" %> on your team.</p>
-        <p>New team members can join at any time, even once the competition has started.</p>
+        <% if (_.size(data.members) < data.max_team_size) { %>
+            <p>You may have up to <%- data.max_team_size - _.size(data.members) %> more member<%- (data.max_team_size - _.size(data.members)) == 1 ? "" : "s" %> on your team.</p>
+            <p>New team members can join at any time, even once the competition has started.</p>
+        <% } else { %>
+            <p>Your team is full. No more members may join your team.</p>
+        <% }; %>
     </div>
   </div>
 </script>
@@ -107,14 +111,18 @@ startup_functions:
     <div class="panel-body">
         <div style="height: 300px; overflow: auto;">
             <table>
-                <% _.each(data, function(achievement) { %>
-                    <tr><td><img class="image-achievement" src='<%- achievement.image %>'/></td>
-                        <td style="padding-left:15px">
-                            <div><h3 style="margin-top:0px;"><%- achievement.name %></h3></div>
-                            <div><%- achievement.description %></div>
-                        </td>
-                    </tr>
-                <% }); %>
+                <% if (_.size(data) > 0) { %>
+                    <% _.each(data, function(achievement) { %>
+                        <tr><td><img class="image-achievement" src='<%- achievement.image %>'/></td>
+                            <td style="padding-left:15px">
+                                <div><h3 style="margin-top:0px;"><%- achievement.name %></h3></div>
+                                <div><%- achievement.description %></div>
+                            </td>
+                        </tr>
+                    <% }); %>
+                <% } else { %>
+                    <tr><td>You currently have no achievements. Achievements are earned by solving challenges and playing through the story.</td></tr>
+                <% } %>
             </table>
         </div>
     </div>
