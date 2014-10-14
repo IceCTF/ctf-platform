@@ -327,6 +327,14 @@ def get_solved_indices_hook():
 def get_game_problem_hook(etcid):
     return api.game.get_game_problem(etcid)
 
+@app.route('/api/game/problems/', methods=['GET'])
+@api_wrapper
+@require_login
+@block_before_competition(WebError("The competition has not begun yet!"))
+@block_after_competition(WebError("The competition is over!"))
+def get_game_problems_hook():
+    return api.game.get_problems()
+
 @app.route('/api/game/get_problem_status/<path:etcid>', methods=['GET'])
 @api_wrapper
 @require_login

@@ -61,7 +61,7 @@ def get_solved_indices():
         gen_maps()
 
     solved_problems = api.problem.get_solved_problems(api.user.get_team()['tid'])
-    return WebSuccess(data=sorted([pid_map[p['pid']] for p in solved_problems]))
+    return WebSuccess(data=sorted([pid_map[p['pid']] for p in solved_problems if p['pid'] in pid_map.keys()]))
 
 
 def get_game_problem(etcid):
@@ -90,6 +90,28 @@ def get_game_problem_status(etcid):
         if pid in useracct['viewed_problems']:
             return WebSuccess(data={'viewed': True})
     return WebSuccess(data={'viewed': False})
+
+
+def get_problems():
+    if etcid_map is None:
+        gen_maps()
+    useracct = api.user.get_user()
+    unlocked_problems = [problem for problem in api.problem.get_unlocked_problems(useracct['tid']) if problem['pid'] in pid_map.keys()]
+    solved_problems = [p['pid'] for p in api.problem.get_solved_problems(api.user.get_team()['tid'])]
+    if 'viewed_problems' not in useracct:
+        db = api.common.get_conn()
+        db.users.update({'uid': useracct['uid']}, {'$set': {'viewed_problems': []}})
+        none_viewed = True
+    else:
+        none_viewed = False
+    for problem in unlocked_problems:
+        if none_viewed:
+            problem['viewed'] = False
+        else:
+            problem['viewed'] = pid_map[problem['pid']] in useracct['viewed_problems']
+        problem['game_id'] = pid_map[problem['pid']]
+        problem['solved'] = problem['pid'] in solved_problems
+    return WebSuccess(data=unlocked_problems)
 
 
 def set_game_problem_status(etcid, viewed):
