@@ -10,3 +10,6 @@
 [submodule "webex"]
 	path = webex
 	url = git@github.com:picoCTF/picoCTF-2014-Web-Extras.git
+[submodule "problems"]
+	path = problems
+	url = ssh://git@github.com/picoCTF/picoCTF-2014-Problems.git
