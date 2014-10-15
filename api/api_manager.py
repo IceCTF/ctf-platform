@@ -150,8 +150,15 @@ def load_problems(args):
     problem_dir = args.problems_directory[0]
     grader_dir = args.graders_directory[0]
     static_dir = args.static_directory[0]
+
+    if not path.exists(static_dir):
+        logging.debug("No directory {}. Creating...".format(static_dir))
+        makedirs(static_dir)
+    
     if not path.exists(problem_dir):
         logging.critical("No such directory: {}".format(problem_dir))
+        return
+
     for (dirpath, dirnames, filenames) in walk(problem_dir):
         if "problem.json" in filenames:
             json_file = path.join(dirpath, 'problem.json')
