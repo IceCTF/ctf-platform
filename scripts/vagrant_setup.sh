@@ -17,6 +17,7 @@ apt-get -y install libclosure-compiler-java
 apt-get -y install ruby-dev
 apt-get -y install dos2unix
 apt-get -y install tmux
+apt-get -y install openjdk-7-jdk
 
 npm install -g coffee-script
 npm install -g react-tools
