@@ -79,7 +79,9 @@ class StatsHandler(logging.StreamHandler):
         "api.team.create_team":
             lambda params, result=None: params,
         "api.team.assign_shell_account":
-            lambda tid, result=None: {}
+            lambda tid, result=None: {},
+        "api.app.hint":
+            lambda pid, source, result=None: {"pid": pid, "source": source}
     }
 
     def __init__(self):

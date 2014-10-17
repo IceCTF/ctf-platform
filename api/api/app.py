@@ -15,6 +15,7 @@ from datetime import datetime
 from api.common import WebSuccess, WebError
 from api.annotations import api_wrapper, require_login, require_teacher, require_admin, check_csrf
 from api.annotations import block_before_competition, block_after_competition
+from api.annotations import log_action
 
 log = api.logger.use(__name__)
 
@@ -302,6 +303,31 @@ def problem_feedback_hook():
 @block_before_competition(WebError("The competition has not begun yet!"))
 def problem_reviews_hook():
     return WebSuccess(data=api.problem_feedback.get_reviewed_pids())
+
+@app.route("/api/problems/hint", methods=['GET'])
+@api_wrapper
+@require_login
+@block_before_competition(WebError("The competition has not begun yet!"))
+def request_problem_hint_hook():
+
+    @log_action
+    def hint(pid, source):
+        return None
+
+    source = request.args.get("source")
+    pid = request.args.get("pid")
+
+    if pid is None:
+        return WebError("Please supply a pid.")
+    if source is None:
+        return WebError("You have to supply the source of the hint.")
+
+    tid = api.user.get_team()["tid"]
+    if pid not in api.problem.get_unlocked_pids(tid):
+        return WebError("Your team hasn't unlocked this problem yet!")
+
+    hint(pid, source)
+    return WebSuccess("Hint noted.")
 
 @app.route('/api/game/categorystats', methods=['GET'])
 @api_wrapper
