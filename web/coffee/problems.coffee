@@ -39,7 +39,7 @@ submitProblem = (e) ->
 
 addProblemReview = (e) ->
   e.preventDefault()
-  
+
   feedback = {
     metrics: {}
     comment: ""
@@ -65,6 +65,7 @@ addProblemReview = (e) ->
 
 toggleHint = (e) ->
   pid = $(e.target).data("pid")
+  apiCall "GET", "/api/problems/hint", {"pid": pid, "source": "basic"}
   $("#"+pid+"-hint").toggle("fast")
 
 loadProblems = ->
@@ -84,7 +85,7 @@ loadProblems = ->
             renderProblemReview: renderProblemReview,
             sanitizeMetricName: sanitizeMetricName
           })
-  
+
           #Should solved problem descriptions still be able to be viewed?
           #$("li.disabled>a").removeAttr "href"
 
