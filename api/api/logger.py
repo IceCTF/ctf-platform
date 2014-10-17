@@ -80,7 +80,6 @@ class StatsHandler(logging.StreamHandler):
             lambda params, result=None: params,
         "api.team.assign_shell_account":
             lambda tid, result=None: {}
-        
     }
 
     def __init__(self):
@@ -100,17 +99,17 @@ class StatsHandler(logging.StreamHandler):
 
             information.update({
                 "event": result["name"],
-                "time": datetime.now().strftime(self.time_format)
+                "time": datetime.now()
             })
 
             information["pass"] = True
             information["action"] = {}
 
             if "exception" in result:
-                
+
                 information["action"]["exception"] = result["exception"]
                 information["pass"] = False
-                
+
             elif result["name"] in self.action_parsers:
                 action_parser = self.action_parsers[result["name"]]
 
@@ -120,7 +119,7 @@ class StatsHandler(logging.StreamHandler):
                 information["action"].update(action_result)
 
             api.common.get_conn().statistics.insert(information)
-            
+
 class ExceptionHandler(logging.StreamHandler):
     """
     Logs exceptions into mongodb.
@@ -166,7 +165,7 @@ class SevereHandler(logging.handlers.SMTPHandler):
         """
         Don't excessively emit the same message.
         """
-        
+
         last_time = self.messages.get(record.msg, None)
         if last_time is None or time.time() - last_time > critical_error_timeout:
             super(SevereHandler, self).emit(record)
@@ -241,7 +240,7 @@ def setup_logs(args):
     Args:
         args: dict containing the configuration options.
     """
-    
+
     flask_logging.create_logger = lambda app: use(app.logger_name)
 
     if not args.get("debug", True):
@@ -252,7 +251,7 @@ def setup_logs(args):
 
     internal_error_log = ExceptionHandler()
     internal_error_log.setLevel(logging.ERROR)
-    
+
     log.root.setLevel(level)
     log.root.addHandler(internal_error_log)
 
