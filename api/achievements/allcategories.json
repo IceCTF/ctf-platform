@@ -1,0 +1,8 @@
+{"name": "Jacks of all Trades",
+ "description": "Your team solved one problem from each category.",
+ "event": "submit",
+ "hidden": false,
+ "score": 150,
+ "processor": "allcategories/allcategories.py",
+ "image": "/img/achievements/silver.png",
+ "smallimage": "/img/achievements/silver_unlock.png"}

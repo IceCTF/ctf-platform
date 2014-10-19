@@ -92,3 +92,5 @@ def add_problem_feedback(pid, uid, feedback):
         "timestamp": datetime.utcnow(),
         "feedback": feedback
     })
+
+    api.achievement.process_achievements("review", {"uid": uid, "tid": team['tid'], "pid": pid})

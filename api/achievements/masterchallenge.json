@@ -1,0 +1,8 @@
+{"name": "picoMaster",
+ "description": "Your team solved a Master Challenge.",
+ "event": "review",
+ "hidden": false,
+ "score": 250,
+ "processor": "masterchallenge/masterchallenge.py",
+ "image": "/img/achievements/silver.png",
+ "smallimage": "/img/achievements/silver_unlock.png"}

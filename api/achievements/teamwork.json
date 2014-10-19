@@ -1,0 +1,8 @@
+{"name": "Teamwork!",
+ "description": "Everyone on your team has solved a problem.",
+ "event": "submit",
+ "hidden": false,
+ "score": 10,
+ "processor": "teamwork/teamwork.py",
+ "image": "/img/achievements/silver.png",
+ "smallimage": "/img/achievements/silver_unlock.png"}

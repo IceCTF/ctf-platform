@@ -1,1 +1,8 @@
-{"name": "The 31337", "description": "Your team made it to the scoreboard graph!", "event": "scoreboard", "hidden": false, "score": 500, "processor": "topN/topN.py", "image": "/img/achievements/gold.png", "smallimage": "/img/achievements/gold_unlock.png"}
+{"name": "The 31337",
+ "description": "Your team made it to the scoreboard graph!",
+ "event": "scoreboard",
+ "hidden": false,
+ "score": 500,
+ "processor": "topN/topN.py",
+ "image": "/img/achievements/gold.png",
+ "smallimage": "/img/achievements/gold_unlock.png"}

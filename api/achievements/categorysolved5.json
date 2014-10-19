@@ -1,0 +1,9 @@
+{"name": "Category Solved 5",
+ "description": "You team has solved 5 'x' problems.",
+ "event": "submit",
+ "multiple": true,
+ "hidden": false,
+ "score": 10,
+ "processor": "categorysolved5/categorysolved5.py",
+ "image": "/img/achievements/silver.png",
+ "smallimage": "/img/achievements/silver_unlock.png"}

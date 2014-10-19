@@ -34,7 +34,6 @@ submitProblem = (e) ->
     .done (data) ->
       if data['status'] is 1
         new_achievements = (x for x in data.data when !x.seen)
-        console.log(new_achievements)
         constructAchievementCallbackChain new_achievements
 
 addProblemReview = (e) ->
@@ -62,6 +61,11 @@ addProblemReview = (e) ->
   .done (data) ->
     loadProblems()
     apiNotify data
+    apiCall "GET", "/api/achievements"
+    .done (data) ->
+      if data['status'] is 1
+        new_achievements = (x for x in data.data when !x.seen)
+        constructAchievementCallbackChain new_achievements
 
 toggleHint = (e) ->
   pid = $(e.target).data("pid")

@@ -16,10 +16,19 @@ def get_score(tid=None, uid=None):
     Returns:
         The users's or team's score
     """
-
     score = sum([problem['score'] for problem in api.problem.get_solved_problems(tid=tid, uid=uid)])
-
     return score
+
+
+def get_team_review_count(tid=None, uid=None):
+    if uid is not None:
+        return len(api.problem_feedback.get_reviewed_pids(uid=uid))
+    elif tid is not None:
+        count = 0
+        for member in api.team.get_team_members(tid=tid):
+            count += len(api.problem_feedback.get_reviewed_pids(uid=member['uid']))
+        return count
+
 
 def get_group_scores(gid=None, name=None):
     """
@@ -114,6 +123,23 @@ def get_problems_by_category():
                             for cat in api.problem.get_all_categories()}
 
     return result
+
+
+@api.cache.memoize(timeout=120, fast=True)
+def get_pids_by_category():
+    result = {cat: [x['pid'] for x in api.problem.get_all_problems(category=cat)]
+              for cat in api.problem.get_all_categories()}
+    return result
+
+
+@api.cache.memoize(timeout=120, fast=True)
+def get_pid_categories():
+    pid_map = {}
+    for cat in api.problem.get_all_categories():
+        for p in api.problem.get_all_problems(category=cat):
+            pid_map[p['pid']] = cat
+    return pid_map
+
 
 def get_team_member_stats(tid):
     """

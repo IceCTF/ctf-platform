@@ -5,10 +5,14 @@ def process(api, data):
     Data Required: tid, pid
     """
 
-    submissions = api.problem.get_submissions(pid=data["pid"], correctness=True)
-    problem = api.problem.get_problem(pid=data["pid"])
-    valid = len(submissions) == 1 and submissions[0]['tid'] == data['tid']
+    submission_count = api.problem.count_submissions(pid=data["pid"], correctness=True, eligibility=True)
+    if submission_count == 1:
+        submissions = api.problem.get_submissions(pid=data["pid"], correctness=True, eligibility=True)
+        problem = api.problem.get_problem(pid=data["pid"])
+        valid = submissions[0]['tid'] == data['tid']
+    else:
+        valid = False
     return valid, {
         "name": "Breakthrough!".format(problem["name"]),
-        "description": "Your team was the first to solve {}.".format(problem["name"])
+        "description": "Your team was the first team to solve {}.".format(problem["name"])
     }
