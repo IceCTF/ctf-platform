@@ -40,12 +40,16 @@ sudo cp -r /home/vagrant/game /srv/http/ctf
 sudo cp -r /home/vagrant/problem_static /srv/http/ctf/problem-static
 sudo mv /srv/http/ctf/game.html /srv/http/ctf/game/index.html
 
-# Make sure everything is in UNIX format. 
+# Make sure everything is in UNIX format.
 sudo dos2unix -q /srv/http/ctf/*.html
 
 # Start the server
 echo "Restarting the server"
 sudo service nginx start
+
+# Clear the cache
+echo "Clearing the API cache"
+/home/vagrant/api/api_manager.py database clear cache
 
 #Start picoCTF API
 echo "Starting the picoCTF API"

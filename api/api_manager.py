@@ -116,9 +116,9 @@ def list_problems(args):
         print("{} ({}) - {} points".format(problem["name"], "disabled" if problem["disabled"] else "enabled", problem["score"]))
 
 
-def drop_collections(collections):
+def clear_collections(args):
     db = api.common.get_conn()
-    for collection in collections:
+    for collection in args.collections:
         db[collection].remove()
 
 
@@ -154,7 +154,7 @@ def load_problems(args):
     if not path.exists(static_dir):
         logging.debug("No directory {}. Creating...".format(static_dir))
         makedirs(static_dir)
-    
+
     if not path.exists(problem_dir):
         logging.critical("No such directory: {}".format(problem_dir))
         return
@@ -255,6 +255,14 @@ def main():
     parser_achievements_load = subparser_achievements.add_parser('load', help='Load new achievements into the database')
     parser_achievements_load.add_argument("files", nargs="+", help="Files containing achievements to insert.")
     parser_achievements_load.set_defaults(func=add_new_achievements)
+
+    # Database
+    parser_database = subparser.add_parser("database", help="Deal with database")
+    subparser_database = parser_database.add_subparsers(help="Select one of the following actions")
+
+    parser_database_clear = subparser_database.add_parser("clear", help="Clear collections")
+    parser_database_clear.add_argument("collections", nargs="+", help="Collections to clear")
+    parser_database_clear.set_defaults(func=clear_collections)
 
     args = parser.parse_args()
     if args.silent:
