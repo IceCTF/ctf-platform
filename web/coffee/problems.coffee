@@ -60,6 +60,7 @@ addProblemReview = (e) ->
   pid = $(e.target).data("pid")
   sliderName = "#slider-" + pid
   feedback.timeSpent = $(sliderName).slider("option", "value");
+  feedback.source = 'basic'
 
   postData = {feedback: JSON.stringify(feedback), pid: pid}
 
@@ -76,7 +77,7 @@ addProblemReview = (e) ->
 toggleHint = (e) ->
   pid = $(e.target).data("pid")
   apiCall "GET", "/api/problems/hint", {"pid": pid, "source": "basic"}
-  $("#"+pid+"-hint").toggle("fast")
+  #$("#"+pid+"-hint").toggle("fast")
 
 loadProblems = ->
   apiCall "GET", "/api/problems"

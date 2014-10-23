@@ -19,9 +19,12 @@ feedback_schema = Schema({
         ])
     ),
     "comment": check(
-        ("The comment must be no more than 500 characters",[str, Length(max=500)])
+        ("The comment must be no more than 500 characters", [str, Length(max=500)])
     ),
-    "timeSpent": check(("Time spend must be a number", [int]))
+    "timeSpent": check(("Time spend must be a number", [int])),
+    "source": check(
+        ("The source must be no more than 500 characters", [str, Length(max=10)])
+    )
 })
 
 def get_problem_feedback(pid=None, tid=None, uid=None):
