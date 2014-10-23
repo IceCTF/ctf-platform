@@ -2,110 +2,120 @@
 layout: default
 title: Problems
 post_scripts:
- - js/problems.js
+- js/problems.js
 startup_functions:
- - redirectIfNotLoggedIn()
+- redirectIfNotLoggedIn()
 ---
 
 <script src="/js/libs/star-rating.min.js"></script>
 <link href="/css/star-rating.min.css" rel="stylesheet" type="text/css"/>
 
 <script type="text/template" id="problem-list-template">
-  <div class="problem-list panel-group">
-    <% _.each(problems, function(problem) { %>
-      <%= renderProblem({
-            problem: problem,
-            reviewData: reviewData,
-            renderProblemReview: renderProblemReview,
-            renderProblemSubmit: renderProblemSubmit,
-            sanitizeMetricName: sanitizeMetricName
-          }) %>
-    <% }); %>
-  </div>
+    <div class="problem-list panel-group">
+        <% _.each(problems, function(problem) { %>
+        <%= renderProblem({
+        problem: problem,
+        reviewData: reviewData,
+        renderProblemReview: renderProblemReview,
+        renderProblemSubmit: renderProblemSubmit,
+        sanitizeMetricName: sanitizeMetricName
+        }) %>
+        <% }); %>
+    </div>
 </script>
 
 <script type="text/template" id="problem-template">
-  <%
+    <%
     var alreadyReviewed = $.inArray(problem.pid, reviewData) !== -1;
     var panel = {
-      className: problem.solved ? "solved" : "",
-      collapseClass: problem.solved ? "" : "in",
-      title: problem.name + " - " + problem.score,
-      status: problem.solved ? "Solved" : "Unsolved"
+    className: problem.solved ? "solved" : "",
+    collapseClass: problem.solved ? "" : "in",
+    title: problem.name + " - " + problem.score,
+    status: problem.solved ? "Solved" : "Unsolved"
     };
-    
+
     var pill = {
-      solveId: problem.pid + "solve",
-      reviewId: problem.pid + "review",
-      solveClassName: problem.solved ? "disabled" : "active",
-      reviewClassName: problem.solved ? "active" : ""
+    solveId: problem.pid + "solve",
+    reviewId: problem.pid + "review",
+    hintId: problem.pid + "hint",
+    solveClassName: problem.solved ? "disabled" : "active",
+    reviewClassName: problem.solved ? "active" : ""
     };
-  %>
+    %>
 
-  <div class="problem <%= panel.className %> panel panel-default">
-    <div class="problem-header panel-heading" data-toggle="collapse" data-target="#<%- problem.pid %>">
-      <h4 class="panel-title">
-        <%- panel.title %>
-        <div class="pull-right"><%- panel.status %></div>
-      </h4>
-    </div>
-
-    <div class="panel-collapse collapse <%= panel.collapseClass %>" id="<%= problem.pid %>">
-      <div class="problem-body panel-body">
-        <ul class="nav nav-tabs">
-          <li class="<%= pill.solveClassName %>"><a href="#<%= pill.solveId %>" data-toggle="tab">Solve</a></li>
-          <li class="<%= pill.reviewClassName %>"><a href="#<%= pill.reviewId %>" data-toggle="tab">Review</a></li>
-        </ul>
-        <div class="tab-content">
-          <div class="tab-pane <%= pill.solveClassName %>" id="<%= pill.solveId %>">
-            <div class="panel-body">
-              <%= renderProblemSubmit({problem: problem}) %>
-            </div>
-          </div>
-          <div class="tab-pane <%= pill.reviewClassName %>" id="<%= pill.reviewId %>">
-            <div class="panel-body">
-              <%= renderProblemReview({
-                    problem: problem,
-                    alreadyReviewed: alreadyReviewed,
-                    sanitizeMetricName: sanitizeMetricName
-                  }) %>
-            </div>
-          </div>
+    <div class="problem <%= panel.className %> panel panel-default">
+        <div class="problem-header panel-heading" data-toggle="collapse" data-target="#<%- problem.pid %>">
+            <h4 class="panel-title">
+                <%- panel.title %>
+                <div class="pull-right"><%- panel.status %></div>
+            </h4>
         </div>
-      </div>
+
+        <div class="panel-collapse collapse <%= panel.collapseClass %>" id="<%= problem.pid %>">
+            <div class="problem-body panel-body">
+                <ul class="nav nav-tabs">
+                    <li class="<%= pill.solveClassName %>"><a href="#<%= pill.solveId %>" data-toggle="tab">Solve</a>
+                    </li>
+                    <li><a href="#<%= pill.hintId %>" data-toggle="tab" class="hint-tab-button" data-pid="<%= problem.pid %>">Hint</a>
+                    </li>
+                    <li class="<%= pill.reviewClassName %>"><a href="#<%= pill.reviewId %>" data-toggle="tab">Review</a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane <%= pill.solveClassName %>" id="<%= pill.solveId %>">
+                        <div class="panel-body">
+                            <%= renderProblemSubmit({problem: problem}) %>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="<%= pill.hintId %>">
+                        <div class="panel-body">
+                            <%= problem.hint %>
+                        </div>
+                    </div>
+                    <div class="tab-pane <%= pill.reviewClassName %>" id="<%= pill.reviewId %>">
+                        <div class="panel-body">
+                            <%= renderProblemReview({
+                            problem: problem,
+                            alreadyReviewed: alreadyReviewed,
+                            sanitizeMetricName: sanitizeMetricName
+                            }) %>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
 </script>
 
 <script type="text/template" id="problem-submit-template">
-  <p class="problem-description">
-    <%= problem.description %>
+    <p class="problem-description">
+        <%= problem.description %>
     <div class="row">
-      <div class="col-md-11">
-        <% if(problem.hint) { %>
-          <em class="problem-hint pull-left" id="<%= problem.pid %>-hint">
-            <strong><h4>Hint:</h4></strong>
-            <%= problem.hint %>
-          </em>
-        <% } %>
-      </div>
-      <div class="col-md-1">
-        <% if(problem.hint) { %>
-          <span data-pid="<%= problem.pid %>" class="glyphicon glyphicon-info-sign info-span pull-right"></span>
-        <% } %>
-      </div>
+        <div class="col-md-11">
+            <% if(problem.hint) { %>
+            <em class="problem-hint pull-left" id="<%= problem.pid %>-hint">
+                <strong><h4>Hint:</h4></strong>
+                <%= problem.hint %>
+            </em>
+            <% } %>
+        </div>
+        <div class="col-md-1">
+            <% if(problem.hint && false) { %>
+            <span data-pid="<%= problem.pid %>" class="glyphicon glyphicon-info-sign info-span pull-right"></span>
+            <% } %>
+        </div>
     </div>
-  </p>
-  <div class="row">
-    <form class="problem-submit">
-      <div class="input-group input-group-sm">
+    </p>
+    <div class="row">
+        <form class="problem-submit">
+            <div class="input-group input-group-sm">
         <span class="input-group-btn">
           <button class="btn btn-primary" type="submit">Submit!</button>
         </span>
-        <input type="text" data-pid="<%- problem.pid %>" class="form-control">
-      </div>
-    </form>
-  </div>
+                <input type="text" data-pid="<%- problem.pid %>" class="form-control">
+            </div>
+        </form>
+    </div>
 </script>
 
 <script type="text/template" id="achievement-message-template">
@@ -115,47 +125,80 @@ startup_functions:
                 <img src="<%= achievement.image %>"/>
             </td>
             <td>
-            <div><b><%= achievement.name %></b></div>
-            <p><%= achievement.description %></p>
+                <div><b><%= achievement.name %></b></div>
+                <p><%= achievement.description %></p>
             </td>
         </tr>
     </table>
 </script>
 
 <script type="text/template" id="problem-review-template">
-  <div class="row">
     <form class="form-horizontal problem-review-form" data-pid="<%= problem.pid %>">
-      <% if(alreadyReviewed) { %>
+        <% if(alreadyReviewed) { %>
         <div class="row">
-          <p><span class="label label-default">You have already reviewed this problem. Feel free to provide additional feedback.</span></p>
+            <p><span class="label label-default">You have already reviewed this problem. Feel free to provide additional feedback.</span>
+            </p>
         </div>
-      <% } %>
-      <div class="form-group">
-        <div class="col-md-4">
-          <table>
-            <tbody>
-              <% _.each(window.ratingMetrics, function(metric) { %>
-                <tr>
-                  <td><%- metric %></td>
-                  <td>
-                    <input name="rating-<%= sanitizeMetricName(metric) %>" class="problem-rating" novalidate>
-                  </td>
-                </tr>
-              <% }) %>
-            </tbody>
-          </table>
+        <% } %>
+        <div class="form-group" style="width: 615px; margin-left: auto; margin-right: auto">
+            <% _.each(window.ratingMetrics, function(metric) { %>
+            <div class="row">
+                <div class="col-md-12" style="text-align: center">
+                    <h4><%- window.ratingQuestion[metric] %></h4>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12" style="text-align: center; margin: auto">
+                    <center>
+                        <div>
+                            <div class="radio-bar"></div>
+                            <% _.each(window.ratingChoices[metric], function(choice, index, list) { %>
+                                <div class="feedback-radio">
+                                    <input type="radio" style="position: relative; z-index: 2;"
+                                           name="rating-<%= sanitizeMetricName(metric) %>"
+                                           value="<%= index %>">
+                                </div>
+                            <% }) %>
+                        </div>
+                        <div>
+                            <% _.each(window.ratingChoices[metric], function(choice) { %>
+                                <div class="feedback-label"><%- choice %></div>
+                            <% }) %>
+                        </div>
+                    </center>
+                </div>
+            </div>
+            <% }) %>
+            <div class="row" style="margin-top: 15px">
+                <div class="col-md-12">
+                    <h4>How long did this problem take you?</h4>
+
+                    <div class="time-slider" id="slider-<%= problem.pid %>"
+                         name="time-slider"
+                         data-label-target="slider-label-<%= problem.pid %>"></div>
+                    <div style="text-align: center">
+                        <h5 id="slider-label-<%= problem.pid %>"></h5>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <h4>Any other thoughts?</h4>
+                    <textarea name="feedback" class="form-control" placeholder="Leave a comment here!"></textarea>
+                </div>
+            </div>
+            <div class="row" style="margin-top: 15px">
+                <div class="col-md-12">
+                     <span class="input-group-btn">
+                        <button class="btn btn-default feedback-button" type="submit">Send Feedback</button>
+                    </span>
+                </div>
+            </div>
+
         </div>
-        <div class="col-md-8">
-          <textarea name="feedback" class="form-control" placeholder="Lave a comment here!"></textarea>
-          <span class="input-group-btn">
-            <button class="btn btn-default feedback-button" type="submit">Send Feedback</button>
-          </span>
-        </div>
-      </div>
     </form>
-  </div>
 </script>
 
 <div class="container">
-  <div id="problem-list-holder"></div>
+    <div id="problem-list-holder"></div>
 </div>

@@ -553,3 +553,30 @@ a.old-pico-link:hover {
 .btn-danger:active {    
     color: white;
 }
+
+.radio-bar {
+    display: inline-block;
+    position: absolute;
+    top: 0px;
+    left: 50px;
+    border-bottom: 1px solid black;
+    z-index: 1;
+    width: 540px;
+    height: 20px;
+}
+
+.feedback-label {
+    width:120px;
+    display:inline-block;
+    text-align:center;
+    vertical-align: top;
+    margin-bottom: 10px;
+}
+
+.feedback-radio {
+    margin-top:10px;
+    display: inline-block;
+    width:120px;
+    text-align:center;
+    z-index: 2;
+}

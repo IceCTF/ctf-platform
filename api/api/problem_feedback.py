@@ -20,7 +20,8 @@ feedback_schema = Schema({
     ),
     "comment": check(
         ("The comment must be no more than 500 characters",[str, Length(max=500)])
-    )
+    ),
+    "timeSpent": check(("Time spend must be a number", [int]))
 })
 
 def get_problem_feedback(pid=None, tid=None, uid=None):
@@ -82,6 +83,7 @@ def add_problem_feedback(pid, uid, feedback):
     team = api.user.get_team(uid=uid)
     solved = pid in api.problem.get_solved_pids(tid=team["tid"])
 
+    print(feedback)
     validate(feedback_schema, feedback)
 
     db.problem_feedback.insert({

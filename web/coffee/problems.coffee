@@ -5,6 +5,10 @@ renderProblemReview = _.template($("#problem-review-template").remove().text())
 renderAchievementMessage = _.template($("#achievement-message-template").remove().text())
 
 @ratingMetrics = ["Difficulty", "Enjoyment", "Educational Value"]
+@ratingQuestion = {"Difficulty": "How difficult is this problem?", "Enjoyment": "Did you enjoy this problem?", "Educational Value": "How much did you learn by doing this problem?"}
+@ratingChoices = {"Difficulty": ["Very Easy", "", "Average", "", "Too Hard"], "Enjoyment": ["Hated it!", "", "Neutral", "", "Loved it!"], "Educational Value": ["Learned Nothing","", "Some New Things", "", "A Lot"]}
+
+@timeValues = ["5 minutes or less", "10 minutes", "20 minutes", "40 minutes", "1 hour", "2 hours", "3 hours", "4 hours", "5 hours", "6 hours", "8 hours", "10 hours", "15 hours", "20 hours", "30 hours", "40 hours or more"]
 
 sanitizeMetricName = (metric) ->
   metric.toLowerCase().replace(" ", "-")
@@ -54,6 +58,8 @@ addProblemReview = (e) ->
       feedback.comment = value
 
   pid = $(e.target).data("pid")
+  sliderName = "#slider-" + pid
+  feedback.timeSpent = $(sliderName).slider("option", "value");
 
   postData = {feedback: JSON.stringify(feedback), pid: pid}
 
@@ -90,21 +96,25 @@ loadProblems = ->
             sanitizeMetricName: sanitizeMetricName
           })
 
+          $( ".time-slider" ).slider {
+            value: 2,
+            min: 0,
+            max: 15,
+            step: 1,
+            slide: ( event, ui ) ->
+              $( "#" + $(this).data("label-target")).html( window.timeValues[ui.value] );
+          }
+
+          $( ".time-slider" ).each (x) ->
+            $("#" + $(this).data("label-target")).html(window.timeValues[2]);
+
           #Should solved problem descriptions still be able to be viewed?
           #$("li.disabled>a").removeAttr "href"
 
           $(".problem-hint").hide()
           $(".problem-submit").on "submit", submitProblem
           $(".info-span").on "click", toggleHint
-
-          $(".problem-rating").rating({
-            showClear: false,
-            min: 0,
-            max: 5,
-            step: 0.5,
-            size: "xs",
-            showCaption: false
-          })
+          $(".hint-tab-button").on "click", toggleHint
 
           $(".problem-review-form").on "submit", addProblemReview
 
