@@ -156,7 +156,11 @@ startup_functions:
                                 <div class="feedback-radio">
                                     <input type="radio" style="position: relative; z-index: 2;"
                                            name="rating-<%= sanitizeMetricName(metric) %>"
-                                           value="<%= index %>">
+                                           value="<%= index %>"
+                                        <% if(index == 2) { %>
+                                           checked="checked"
+                                        <% } %>
+                                           >
                                 </div>
                             <% }) %>
                         </div>
