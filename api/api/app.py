@@ -505,6 +505,15 @@ def get_scoreboard_hook():
 
     return WebSuccess(data=result)
 
+@app.route('/api/stats/scoreboard_full', methods=['GET'])
+@api_wrapper
+@block_before_competition(WebError("The competition has not begun yet!"))
+def get_scoreboard_full_hook():
+    result = {}
+    result['public'] = api.stats.get_all_team_scores_full()
+    result['groups'] = []
+    return WebSuccess(data=result)
+
 @app.route('/api/stats/top_teams/score_progression', methods=['GET'])
 @api_wrapper
 def get_top_teams_score_progressions_hook():

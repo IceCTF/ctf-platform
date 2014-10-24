@@ -11,5 +11,7 @@ def cache(f, *args, **kwargs):
 def run():
     print("Caching the public scoreboard entries...")
     cache(api.stats.get_all_team_scores)
+    print("Caching the private scoreboard entries...")
+    cache(api.stats.get_all_team_scores_full)
     print("Caching the public scoreboard graph...")
     cache(api.stats.get_top_teams_score_progressions)
