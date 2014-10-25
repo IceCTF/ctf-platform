@@ -29,10 +29,13 @@ submitProblem = (e) ->
   apiCall "POST", "/api/problems/submit", {pid: input.data("pid"), key: input.val()}
   .done (data) ->
     if data['status'] is 1
+      ga('send', 'event', 'Problem', 'Solve', 'Basic')
       loadProblems()
       setTimeout( ->
         $("div[data-target='#" + input.data("pid") + "']").click()
       , 100)
+    else
+      ga('send', 'event', 'Problem', 'Wrong', 'Basic')
     apiNotify data
     apiCall "GET", "/api/achievements"
     .done (data) ->
@@ -68,6 +71,7 @@ addProblemReview = (e) ->
   .done (data) ->
     loadProblems()
     apiNotify data
+    ga('send', 'event', 'Problem', 'Review', 'Basic')
     apiCall "GET", "/api/achievements"
     .done (data) ->
       if data['status'] is 1
@@ -76,6 +80,7 @@ addProblemReview = (e) ->
 
 toggleHint = (e) ->
   pid = $(e.target).data("pid")
+  ga('send', 'event', 'Problem', 'OpenHint', 'Basic')
   apiCall "GET", "/api/problems/hint", {"pid": pid, "source": "basic"}
   #$("#"+pid+"-hint").toggle("fast")
 
