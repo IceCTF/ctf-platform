@@ -16,6 +16,10 @@ server {
             default_type text/html;
             alias /srv/http/ctf/$1.html;
         }
+        
+        location ~ /problem-static/ {
+            default_type application/octet-stream;
+        } 
 
         location ~ /api/ {
             proxy_pass http://localhost:8000;
