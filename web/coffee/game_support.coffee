@@ -36,6 +36,7 @@
 
   apiCall "POST", "/api/problems/feedback", postData
   .done (data) ->
+    ga('send', 'event', 'Problem', 'Review', 'Game');
     apiNotify data
     ig.game.getEntitiesByType(EntityQuestions)[0].CloseLearnPanel();
     ig.gui.element.action('showGroup', 'Group_QA');
