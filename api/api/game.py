@@ -51,7 +51,7 @@ name_map[5] = "Caesar"                          # Top of table
 name_map[6] = "Common Vulnerability Exercise"   # Bedside table
 
 # Level 2
-name_map[7] = "grepfriend"                      # Upper right table ("Documents that need to be cracked")
+name_map[7] = "Grep is Still Your Friend"                      # Upper right table ("Documents that need to be cracked")
 name_map[8] = "Substitution"                       # Middle upper right ("hard drive is locked")
 name_map[9] = "Javascrypt"                      # Officer needs your help
 name_map[10] = "ZOR"                    # Officer needs your help
@@ -92,18 +92,18 @@ name_map[32] = None
 name_map[33] = "RSA Mistakes"
 name_map[34] = None
 name_map[35] = "Block"
-name_map[36] = None
-name_map[37] = None
-name_map[38] = None
+name_map[36] = "Low Entropy"
+name_map[37] = "Web Interception"
+name_map[38] = "RSA"
 name_map[39] = None
 name_map[40] = None
 name_map[41] = None
 name_map[42] = None
 
 # Forensics
-name_map[43] = "supercow"
-name_map[44] = None
-name_map[45] = None
+name_map[43] = "Supercow"
+name_map[44] = "PNG or Not?"
+name_map[45] = "Snapcat"
 name_map[46] = None
 name_map[47] = None
 name_map[48] = None
@@ -137,7 +137,7 @@ name_map[71] = None
 name_map[72] = None
 
 # Master
-name_map[73] = None
+name_map[73] = "Baleful"
 name_map[74] = None
 name_map[75] = None
 name_map[76] = None
@@ -171,6 +171,8 @@ def gen_maps():
     for i, name in enumerate(name_map):
         if name is not None:
             problem = api.problem.get_problem(name=name)
+            if problem['category'] not in set(['Cryptography', 'Reverse Engineering', 'Web Exploitation', 'Binary Exploitation', 'Forensics', 'Miscellaneous', 'Master Challenge']):
+                print("WARNING: %s uses invalid category %s" % (problem['name'], problem['category']))
             if problem is not None:
                 etcid_map[i+1] = problem['pid']
             else:
