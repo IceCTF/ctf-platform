@@ -557,18 +557,20 @@ a.old-pico-link:hover {
 .radio-bar {
     display: inline-block;
     position: absolute;
-    top: 0px;
+    top: 20px;
     left: 50px;
     border-bottom: 1px solid black;
     z-index: 1;
     width: 540px;
-    height: 20px;
+    height: 2px;
 }
 
 .feedback-label {
-    width:120px;
+    width:115px;
     display:inline-block;
     text-align:center;
+    white-space:nowrap;
+    overflow:visible;
     vertical-align: top;
     margin-bottom: 10px;
 }
@@ -576,7 +578,7 @@ a.old-pico-link:hover {
 .feedback-radio {
     margin-top:10px;
     display: inline-block;
-    width:120px;
+    width:115px;
     text-align:center;
     z-index: 2;
 }

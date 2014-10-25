@@ -5,8 +5,8 @@ renderProblemReview = _.template($("#problem-review-template").remove().text())
 renderAchievementMessage = _.template($("#achievement-message-template").remove().text())
 
 @ratingMetrics = ["Difficulty", "Enjoyment", "Educational Value"]
-@ratingQuestion = {"Difficulty": "How difficult is this problem?", "Enjoyment": "Did you enjoy this problem?", "Educational Value": "How much did you learn by doing this problem?"}
-@ratingChoices = {"Difficulty": ["Very Easy", "", "Average", "", "Too Hard"], "Enjoyment": ["Hated it!", "", "Neutral", "", "Loved it!"], "Educational Value": ["Learned Nothing","", "Some New Things", "", "A Lot"]}
+@ratingQuestion = {"Difficulty": "How difficult is this problem?", "Enjoyment": "Did you enjoy this problem?", "Educational Value": "How much did you learn while solving this problem?"}
+@ratingChoices = {"Difficulty": ["Too easy", "", "A bit challenging", "", "Very hard"], "Enjoyment": ["Hated it!", "", "It was okay.", "", "Loved it!"], "Educational Value": ["Nothing at all","", "Something useful", "", "Learned a lot!"]}
 
 @timeValues = ["5 minutes or less", "10 minutes", "20 minutes", "40 minutes", "1 hour", "2 hours", "3 hours", "4 hours", "5 hours", "6 hours", "8 hours", "10 hours", "15 hours", "20 hours", "30 hours", "40 hours or more"]
 
@@ -98,7 +98,7 @@ loadProblems = ->
           })
 
           $( ".time-slider" ).slider {
-            value: 2,
+            value: 4,
             min: 0,
             max: 15,
             step: 1,
@@ -107,7 +107,7 @@ loadProblems = ->
           }
 
           $( ".time-slider" ).each (x) ->
-            $("#" + $(this).data("label-target")).html(window.timeValues[2]);
+            $("#" + $(this).data("label-target")).html(window.timeValues[4]);
 
           #Should solved problem descriptions still be able to be viewed?
           #$("li.disabled>a").removeAttr "href"
