@@ -33,7 +33,7 @@ teacherLoggedInNoCompetition =
 
 userLoggedIn =
   Game: "/game/"
-  Problems: "/problems"
+  #Problems: "/problems"
   Shell: "/shell"
   Team: "/team"
   Scoreboard: "/scoreboard"
