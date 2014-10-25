@@ -67,6 +67,21 @@ def get_group_average_score(gid=None, name=None):
     total_score = sum([entry['score'] for entry in group_scores])
     return int(total_score / len(group_scores)) if len(group_scores) > 0 else 0
 
+
+def get_all_team_scores_ex(show_ineligible=False):
+  teams = api.team.get_all_teams(show_ineligible)
+  result = []
+  for team in teams:
+      score = get_score(tid=team['tid'])
+      if score > 0:
+          result.append({
+              "name": team['team_name'],
+              "tid": team['tid'],
+              "score": score
+          })
+
+  return sorted(result, key=lambda entry: entry['score'], reverse=True)
+
 # Stored by the cache_stats daemon
 @api.cache.memoize()
 def get_all_team_scores():
@@ -77,19 +92,11 @@ def get_all_team_scores():
         A list of dictionaries with name and score
     """
 
-    teams = api.team.get_all_teams()
+    return get_all_team_scores_ex(show_ineligible=False)
 
-    result = []
-    for team in teams:
-        score = get_score(tid=team['tid'])
-        if score > 0:
-            result.append({
-                "name": team['team_name'],
-                "tid": team['tid'],
-                "score": score
-            })
-
-    return sorted(result, key=lambda entry: entry['score'], reverse=True)
+@api.cache.memoize()
+def get_all_team_scores_full():
+    return get_all_team_scores_ex(show_ineligible=True)
 
 def get_all_user_scores():
     """
