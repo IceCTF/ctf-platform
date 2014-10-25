@@ -127,8 +127,6 @@ class ExceptionHandler(logging.StreamHandler):
     Logs exceptions into mongodb.
     """
 
-    time_format = "%H:%M:%S %Y-%m-%d"
-
     def __init__(self):
 
         logging.StreamHandler.__init__(self)
@@ -142,7 +140,7 @@ class ExceptionHandler(logging.StreamHandler):
 
         information.update({
             "event": "exception",
-            "time": datetime.now().strftime(self.time_format),
+            "time": datetime.now(),
             "trace": record.msg
         })
 
