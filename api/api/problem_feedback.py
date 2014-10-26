@@ -86,7 +86,6 @@ def add_problem_feedback(pid, uid, feedback):
     team = api.user.get_team(uid=uid)
     solved = pid in api.problem.get_solved_pids(tid=team["tid"])
 
-    print(feedback)
     validate(feedback_schema, feedback)
 
     db.problem_feedback.insert({
