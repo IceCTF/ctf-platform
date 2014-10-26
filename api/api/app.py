@@ -201,7 +201,7 @@ def get_team_score_hook():
 @require_login
 @block_before_competition(WebError("The competition has not begun yet!"))
 def get_team_solved_problems_hook():
-    tid = request.args.get("tid", "")
+    tid = request.args.get("tid", None)
     stats = {
         "problems": api.stats.get_problems_by_category(),
         "members": api.stats.get_team_member_stats(tid)
