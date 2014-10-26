@@ -80,7 +80,7 @@ def is_logged_in():
         True if the user is logged in, false otherwise.
     """
 
-    return 'uid' in session
+    return 'uid' in session and safe_fail(api.user.get_user, uid=session["uid"])
 
 def is_admin():
     """
