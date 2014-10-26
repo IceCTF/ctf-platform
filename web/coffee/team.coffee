@@ -11,6 +11,8 @@ load_team_info = ->
         ga('send', 'event', 'Team', 'LoadFailure', data.message)
       when 1
         $("#team-info").html renderTeamInformation({data: data.data})
+        x = "<ul>" + ("<li>" + _.escape(j) + "</li>" for j in data.data.justification).join("") + "</ul>"
+        $('#eligibility-exp').data "content", x
 
 load_group_info = ->
   apiCall "GET", "/api/group/list"

@@ -34,10 +34,26 @@ body {
 }
 
 .second-place {
-    font-size: 16px;
-    font-weight: 600;
-    margin-bottom: 2px;
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 7px;
 }
+
+.third-place {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 7px;
+}
+
+.trip-prize {
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.team-photo-img {
+    width: 150px;
+}
+
 
 .btn-group-separate .btn {
     border-top-right-radius: 4px !important; 
@@ -368,14 +384,14 @@ img.logo-landscape {
 }
 
 .team-name {
+    margin-top: 8px;
     text-align: center;
     font-size: larger;
     font-weight: 700;
-    margin-bottom: 5px;
 }
 
 .team-role {
-    margin-top: 5px;
+    text-align: center;
     margin-bottom: 20px;
     margin-left: auto;
     margin-right: auto;

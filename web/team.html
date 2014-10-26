@@ -1,6 +1,9 @@
 ---
 layout: default
 title: Team
+pre_scripts:
+ - //cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/js/popover.js
+ - //cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/js/tooltip.js
 post_scripts:
  - js/progression_graphs.js
  - js/team.js
@@ -9,11 +12,6 @@ startup_functions:
  - redirectIfTeacher()
 ---
 <div class="container">
-  <div class="row">
-     <div class="col-md-12" style="margin-bottom: 10px">
-        {% include team.html %}    
-     </div>
-  </div>
   <div class="row">
     <div class="col-md-6">
       <div id="team-info"></div>
@@ -95,10 +93,16 @@ startup_functions:
       </ul>
         <% if (_.size(data.members) < data.max_team_size) { %>
             <p>You may have up to <%- data.max_team_size - _.size(data.members) %> more member<%- (data.max_team_size - _.size(data.members)) == 1 ? "" : "s" %> on your team.</p>
-            <p>New team members can join at any time, even once the competition has started.</p>
+            <p>New team members can join at any time.</p>
         <% } else { %>
             <p>Your team is full. No more members may join your team.</p>
         <% }; %>
+        <% if (data.eligible) { %>
+            <p>Your team is <b>eligible</b>.</p>
+        <% } else { %>
+            <p>Your team is <b>ineligible</b> (<a href="#" class="poptrigger" id='eligibility-exp' data-container="body" data-toggle="popover" data-placement="right"
+                                                  data-content="">See Explanation</a>).</p>
+        <% } %>
     </div>
   </div>
 </script>
@@ -127,4 +131,11 @@ startup_functions:
         </div>
     </div>
   </div>
+</script>
+
+<script language="javascript">
+    $(window).load(function() {
+        console.log($('.poptrigger'));
+        $('.poptrigger').popover({html: true});
+    });
 </script>

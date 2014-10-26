@@ -314,6 +314,7 @@ def create_user_request(params):
         if tid is None:
             raise InternalException("Failed to create new team")
         team = api.team.get_team(tid=tid)
+
     else:
         validate(existing_team_schema, params)
 
@@ -338,6 +339,7 @@ def create_user_request(params):
     if uid is None:
         raise InternalException("There was an error during registration.")
 
+    api.team.determine_eligibility(tid=team['tid'])
     return uid
 
 def is_teacher(uid=None):
