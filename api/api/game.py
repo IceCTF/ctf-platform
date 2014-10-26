@@ -37,14 +37,129 @@ def get_category_statistics():
 
 
 # The index of the problem corresponds to its etc id
-name_map = ["Failure to Boot", "Try Them All!", "Read the Manual", "Grep is Your Friend", "Spaceport Map",
-            "Bitwise", "Byte Code", "CFG to C", "GETKey", "Robomunication", "First Contact",
-            "Technician Challenge", "Yummy", "In Hex, No One Can Hear You Complain", "Spamcarver", "Core Decryption",
-            "Chromatophoria", "Second Contact", "NAVSAT", "Dark Star", "Trivial", "Classic", "Harder Serial",
-            "Python Eval 1", "Python Eval 2", "Python Eval 3", "Python Eval 4", "Python Eval 5", "avaJ", "Pretty Hard Programming",
-            "Evergreen", "RSA", "Format 1", "Format 2", "ROP 1", "ROP 2", "ROP 3", "ROP 4", "Overflow 1", "Overflow 2",
-            "Overflow 3", "Overflow 4", "Overflow 5", "Black Hole", "Broken CBC", "Injection", "Mildly Evil", 
-            "Client-Side is the Best Side", "DDoS Detection", "PHP2", "PHP3", "PHP4", "moreevil", "hotcoffee", "Broken RSA" ]
+name_map = [None] * 93
+
+# Level 1
+name_map[0] = "Tyrannosaurus Hex"
+
+# Level 1 - Floor
+name_map[1] = "The Valley of Fear"              # Left Closet
+name_map[2] = "RoboPhoto"                       # Right bookshelf ("Locked CD")
+name_map[3] = "No Comment"                      # Bottom of the table ("Just a CD")
+name_map[4] = "Internet Inspection"             # The computer
+name_map[5] = "Caesar"                          # Top of table
+name_map[6] = "Common Vulnerability Exercise"   # Bedside table
+
+# Level 2
+name_map[7] = "Grep is Still Your Friend"                      # Upper right table ("Documents that need to be cracked")
+name_map[8] = "Substitution"                       # Middle upper right ("hard drive is locked")
+name_map[9] = "Javascrypt"                      # Officer needs your help
+name_map[10] = "ZOR"                    # Officer needs your help
+name_map[11] = "Basic ASM"                   # Officer needs your help
+name_map[12] = "Spoof Proof"                            # Officer needs help "cracking this"
+name_map[13] = "Pickle Jar"                     # Trying to get a log of father's phone calls
+name_map[14] = "Easy Overflow"                  # Officer is stuck on a problem
+
+# Level 3-1
+name_map[15] = None
+name_map[16] = "Toaster Control"
+name_map[17] = "Towers of Toast"
+
+# Level 3-2
+name_map[18] = "Delicious!"
+name_map[19] = "CyborgSecrets"
+name_map[20] = "BLendian"
+name_map[21] = "Repeated XOR"
+name_map[22] = None
+
+#---------------------------------
+# Level 4
+#---------------------------------
+
+# Binary
+name_map[23] = "Write Right"
+name_map[24] = "ExecuteMe"
+name_map[25] = "Best Shell"
+name_map[26] = "ROP 1"
+name_map[27] = "Overflow 1"
+name_map[28] = "Overflow 2"
+name_map[29] = "Nevernote"
+name_map[30] = "Guess"
+name_map[31] = "Format"
+name_map[32] = None
+
+# Crypto
+name_map[33] = "RSA Mistakes"
+name_map[34] = None
+name_map[35] = "Block"
+name_map[36] = "Low Entropy"
+name_map[37] = "Web Interception"
+name_map[38] = "RSA"
+name_map[39] = None
+name_map[40] = None
+name_map[41] = None
+name_map[42] = None
+
+# Forensics
+name_map[43] = "Supercow"
+name_map[44] = "PNG or Not?"
+name_map[45] = "Snapcat"
+name_map[46] = None
+name_map[47] = None
+name_map[48] = None
+name_map[49] = None
+name_map[50] = None
+name_map[51] = None
+name_map[52] = None
+
+# Web
+name_map[53] = "Injection 1"
+name_map[54] = "Injection 2"
+name_map[55] = "Injection 3"
+name_map[56] = "Injection 4"
+name_map[57] = "Massive Fail"
+name_map[58] = "Potentially Hidden Password"
+name_map[59] = None
+name_map[60] = None
+name_map[61] = None
+name_map[62] = None
+
+# Misc
+name_map[63] = None
+name_map[64] = None
+name_map[65] = None
+name_map[66] = None
+name_map[67] = None
+name_map[68] = None
+name_map[69] = None
+name_map[70] = None
+name_map[71] = None
+name_map[72] = None
+
+# Master
+name_map[73] = "Baleful"
+name_map[74] = None
+name_map[75] = None
+name_map[76] = None
+name_map[77] = None
+name_map[78] = None
+name_map[79] = None
+name_map[80] = None
+name_map[81] = None
+name_map[82] = None
+
+# Reversing
+name_map[83] = "Obfuscation"
+name_map[84] = "Bit Puzzle"
+name_map[85] = "Function Address"
+name_map[86] = None
+name_map[87] = None
+name_map[88] = None
+name_map[89] = None
+name_map[90] = None
+name_map[91] = None
+name_map[92] = None
+1
 
 etcid_map = None
 pid_map = None
@@ -52,7 +167,16 @@ pid_map = None
 def gen_maps():
     global etcid_map, pid_map
     # grabs the pid of the problem and creates the mapping from index (etcid) to pid
-    etcid_map = {i+1: api.problem.get_problem(name=name)['pid'] for i, name in enumerate(name_map)}
+    etcid_map = {}
+    for i, name in enumerate(name_map):
+        if name is not None:
+            problem = api.problem.get_problem(name=name)
+            if problem['category'] not in set(['Cryptography', 'Reverse Engineering', 'Web Exploitation', 'Binary Exploitation', 'Forensics', 'Miscellaneous', 'Master Challenge']):
+                print("WARNING: %s uses invalid category %s" % (problem['name'], problem['category']))
+            if problem is not None:
+                etcid_map[i+1] = problem['pid']
+            else:
+                print("WARNING: No problem: %s" % name)
     pid_map = {v : k for k, v in etcid_map.items()}
 
 

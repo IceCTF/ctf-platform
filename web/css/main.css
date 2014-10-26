@@ -23,6 +23,22 @@ body {
     background-color: #151314;
 }
 
+.prize-label {
+    text-align: center;
+}
+
+.first-place {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 7px;
+}
+
+.second-place {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 2px;
+}
+
 .btn-group-separate .btn {
     border-top-right-radius: 4px !important; 
     border-bottom-right-radius: 4px !important; 
@@ -39,6 +55,7 @@ body {
     background-color: #1e2936; 
     border: solid 3px #303030;
 }
+
 
 .front-page-thumbnails .caption h3 {
     text-align: center;   
@@ -350,6 +367,25 @@ img.logo-landscape {
     margin-bottom: 0;
 }
 
+.team-name {
+    text-align: center;
+    font-size: larger;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.team-role {
+    margin-top: 5px;
+    margin-bottom: 20px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 200px;
+}
+
+.team-photo {
+    text-align: center;
+}
+
 /* Style for charts that are disabled before the competition */
 
 .faded-chart {
@@ -557,18 +593,20 @@ a.old-pico-link:hover {
 .radio-bar {
     display: inline-block;
     position: absolute;
-    top: 0px;
+    top: 20px;
     left: 50px;
     border-bottom: 1px solid black;
     z-index: 1;
     width: 540px;
-    height: 20px;
+    height: 2px;
 }
 
 .feedback-label {
-    width:120px;
+    width:115px;
     display:inline-block;
     text-align:center;
+    white-space:nowrap;
+    overflow:visible;
     vertical-align: top;
     margin-bottom: 10px;
 }
@@ -576,7 +614,7 @@ a.old-pico-link:hover {
 .feedback-radio {
     margin-top:10px;
     display: inline-block;
-    width:120px;
+    width:115px;
     text-align:center;
     z-index: 2;
 }
