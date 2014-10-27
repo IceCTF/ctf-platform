@@ -119,7 +119,7 @@ name_map[55] = "Injection 3"
 name_map[56] = "Injection 4"
 name_map[57] = "Massive Fail"
 name_map[58] = "Potentially Hidden Password"
-name_map[59] = None  #Phishing
+name_map[59] = "Make a Face"
 name_map[60] = None
 name_map[61] = None
 name_map[62] = None
@@ -141,7 +141,7 @@ name_map[73] = "Baleful"
 name_map[74] = "Hardcore ROP"
 name_map[75] = "Steve's List"
 name_map[76] = "RSA Mistakes"
-name_map[77] = None
+name_map[77] = "Fancy Cache"
 name_map[78] = None
 name_map[79] = None
 name_map[80] = None
@@ -159,7 +159,7 @@ name_map[89] = None
 name_map[90] = None
 name_map[91] = None
 name_map[92] = None
-1
+
 
 etcid_map = None
 pid_map = None
