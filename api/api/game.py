@@ -120,14 +120,14 @@ name_map[56] = "Injection 4"
 name_map[57] = "Massive Fail"
 name_map[58] = "Potentially Hidden Password"
 name_map[59] = "Make a Face"
-name_map[60] = None
+name_map[60] = "secure_page_service"
 name_map[61] = None
 name_map[62] = None
 
 # Misc
 name_map[63] = "OBO"
-name_map[64] = None
-name_map[65] = None
+name_map[64] = "No Overflow"
+name_map[65] = "What The Flag"
 name_map[66] = None
 name_map[67] = None
 name_map[68] = None
