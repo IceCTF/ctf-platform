@@ -16,7 +16,7 @@ topTeamsGraphOptions = {
   },
   pointSize: 3,
   areaOpacity: 0.0,
-  enableInteractivity: false
+  enableInteractivity: true
 }
 
 teamGraphOptions = {
