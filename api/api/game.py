@@ -127,7 +127,7 @@ name_map[62] = None
 # Misc
 name_map[63] = "OBO"
 name_map[64] = "No Overflow"
-name_map[65] = "What the Flag"
+name_map[65] = "What The Flag"
 name_map[66] = None
 name_map[67] = None
 name_map[68] = None
