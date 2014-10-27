@@ -120,7 +120,7 @@ name_map[56] = "Injection 4"
 name_map[57] = "Massive Fail"
 name_map[58] = "Potentially Hidden Password"
 name_map[59] = "Make a Face"
-name_map[60] = "secure_password_service"
+name_map[60] = "secure_page_service"
 name_map[61] = None
 name_map[62] = None
 
