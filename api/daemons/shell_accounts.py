@@ -53,7 +53,7 @@ def run():
 
             shell_cmd = api.config.shell_user_creation.format(username=username, password=hashed_password)
 
-            result = shell.run(shell_cmd.split())
+            result = shell.run(shell_cmd.split(), allow_error=True)
 
             if result.return_code == 9:
                 print("Collision! Retrying.")
