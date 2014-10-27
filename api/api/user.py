@@ -445,6 +445,10 @@ def disable_account(uid):
     db = api.common.get_conn()
     db.users.update({"uid": uid}, {"$set": {"disabled": True}})
 
+    #Determine if the team is now eligible
+    tid = api.user.get_team()["tid"]
+    api.team.determine_eligibility(tid)
+
 @log_action
 def disable_account_request(params, uid=None, check_current=False):
     """
