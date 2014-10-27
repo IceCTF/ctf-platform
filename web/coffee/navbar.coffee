@@ -1,6 +1,7 @@
 apiOffline =
   FAQ: "/faq"
   Teachers: "/teachers"
+  Learn: "/learn"
   Sponsors: "/sponsors"
   About: "/about"
 
@@ -9,6 +10,7 @@ teacherLoggedIn =
   Shell: "/shell"
   Scoreboard: "/scoreboard"
   Classroom: "/classroom"
+  Learn: "/learn"
   About:
     FAQ: "/faq"
     Sponsors: "/sponsors"
@@ -22,6 +24,7 @@ teacherLoggedInNoCompetition =
   Classroom: "/classroom"
   About: "/about"
   FAQ: "/faq"
+  Learn: "/learn"
   Teachers: "/teachers"
   Sponsors: "/sponsors"
   Account:
@@ -32,8 +35,10 @@ userLoggedIn =
   Game: "/game/"
   Shell: "/shell"
   Team: "/team"
-  Chat: "/chat"
   Scoreboard: "/scoreboard"
+  Help:
+    Chat: "/chat"
+    Learn: "/learn"
   About:
     FAQ: "/faq"
     About: "/about"
@@ -47,6 +52,7 @@ userLoggedInNoCompetition =
   Chat: "/chat"
   About: "/about"
   FAQ: "/faq"
+  Learn: "/learn"
   Sponsors: "/sponsors"
   Account:
     Manage: "/account"
@@ -56,6 +62,7 @@ userLoggedInNoCompetition =
 userNotLoggedIn =
   About: "/about"
   FAQ: "/faq"
+  Learn: "/learn"
   Teachers: "/teachers"
   Sponsors: "/sponsors"
   Login: "/login"

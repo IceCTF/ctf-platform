@@ -10,16 +10,16 @@ server {
                 index  index.html;
         }
 
-        location ~ 
-^/(problems|login|chat|logout|compete|registration|team|scoreboard|classroom|account|reset|shell|faq|news|contact|teachers|game-preview|sponsors|about)$
+        location ~
+^/(problems|login|chat|logout|compete|registration|team|scoreboard|classroom|account|reset|shell|faq|news|contact|teachers|game-preview|sponsors|about|learn)$
         {
             default_type text/html;
             alias /srv/http/ctf/$1.html;
         }
-        
+
         location ~ /problem-static/ {
             default_type application/octet-stream;
-        } 
+        }
 
         location ~ /api/ {
             proxy_pass http://localhost:8000;
