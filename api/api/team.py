@@ -232,7 +232,7 @@ def assign_shell_account(tid=None):
 
 def determine_eligibility(tid=None):
     db = api.common.get_conn()
-    members = list(db.users.find({"tid": tid}))
+    members = get_team_members(tid=tid, show_disabled=False)
     eligible = True
     justification = []
     for member in members:
