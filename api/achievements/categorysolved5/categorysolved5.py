@@ -26,7 +26,7 @@ def process(api, data):
     elif category == "Master Challenge":
         earned = False
     elif category == "Miscellaneous":
-        name == "Mixing it Up"
+        earned = False
 
     description = "Solved 5 '%s' challenges" % category
     return earned, {"name": name, "description": description}
