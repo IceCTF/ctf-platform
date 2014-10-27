@@ -68,7 +68,7 @@ def generate_resource_link(pid, resource_path, static=False, title=None):
         The html link to the resource.
     """
 
-    return '<a href="/api/autogen/serve/{}?static={}&pid={}">{}</a>'.format(
+    return '<a target=_blank href="/api/autogen/serve/{}?static={}&pid={}">{}</a>'.format(
         resource_path,
         "true" if static else "false",
         pid,
