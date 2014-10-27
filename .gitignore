@@ -22,5 +22,6 @@ web/teachers.html
 web/game-preview.html
 web/sponsors.html
 web/promotional.html
+web/learn.html
 api/graders/autogentest/instances/*
 api/graders/*
