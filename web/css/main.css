@@ -26,54 +26,19 @@ body {
 
 .prize-label {
     font-size: 24px;
-    font-weight: 700;
-    margin-bottom: 7px;
+    font-weight: 500;
+    margin-bottom: 12px;
 }
 
 .prize-label-small {
     font-size: 20px;
-    font-weight: 700;
+    font-weight: 500;
     margin-bottom: 6px;
-}
-
-@media (max-width: 650px) {
-    .prize-label {
-        font-weight: 700;
-        font-size: 14px;
-    }
-    .prize-label-small {
-        font-weight: 700;
-        font-size: 14px;
-    }
-}
-
-table.top-3-prizes {
-    text-wrap: none;
-    text-align: left;
-    border-collapse: separate;
-    border-spacing: 0 6px;
-}
-div.top-3-prizes-alt {
-    display: none;
-}
-@media (max-width: 400px) {
-    table.top-3-prizes {
-        display: none;
-    }
-    div.top-3-prizes-alt {
-        display: block;
-    }
-}
-
-.trip-prize {
-    font-size: 24px;
-    font-weight: 700;
 }
 
 .team-photo-img {
     width: 150px;
 }
-
 
 .btn-group-separate .btn {
     border-top-right-radius: 4px !important;
