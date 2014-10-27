@@ -61,16 +61,16 @@ name_map[13] = "Pickle Jar"                     # Trying to get a log of father'
 name_map[14] = "Easy Overflow"                  # Officer is stuck on a problem
 
 # Level 3-1
-name_map[15] = None
+name_map[15] = "Redacted"
 name_map[16] = "Toaster Control"
 name_map[17] = "Towers of Toast"
 
 # Level 3-2
 name_map[18] = "Delicious!"
-name_map[19] = "CyborgSecrets"
-name_map[20] = "BLendian"
+name_map[19] = "Cyborg Secrets"
+name_map[20] = "Intercepted Post"
 name_map[21] = "Repeated XOR"
-name_map[22] = None
+name_map[22] = "This is the Endian"
 
 #---------------------------------
 # Level 4
@@ -86,16 +86,16 @@ name_map[28] = "Overflow 2"
 name_map[29] = "Nevernote"
 name_map[30] = "Guess"
 name_map[31] = "Format"
-name_map[32] = None
+name_map[32] = "CrudeCrypt"
 
 # Crypto
 name_map[33] = "RSA Mistakes"
-name_map[34] = None
+name_map[34] = "Revenge of the Bleichenbacher"
 name_map[35] = "Block"
 name_map[36] = "Low Entropy"
 name_map[37] = "Web Interception"
 name_map[38] = "RSA"
-name_map[39] = None
+name_map[39] = "ECC"
 name_map[40] = None
 name_map[41] = None
 name_map[42] = None
@@ -104,9 +104,9 @@ name_map[42] = None
 name_map[43] = "Supercow"
 name_map[44] = "PNG or Not?"
 name_map[45] = "Snapcat"
-name_map[46] = None
-name_map[47] = None
-name_map[48] = None
+name_map[46] = "Droid App"
+name_map[47] = None    # SSH Backdoor
+name_map[48] = None    #
 name_map[49] = None
 name_map[50] = None
 name_map[51] = None
@@ -119,7 +119,7 @@ name_map[55] = "Injection 3"
 name_map[56] = "Injection 4"
 name_map[57] = "Massive Fail"
 name_map[58] = "Potentially Hidden Password"
-name_map[59] = None
+name_map[59] = None  #Phishing
 name_map[60] = None
 name_map[61] = None
 name_map[62] = None
@@ -138,8 +138,8 @@ name_map[72] = None
 
 # Master
 name_map[73] = "Baleful"
-name_map[74] = None
-name_map[75] = None
+name_map[74] = None   # Hardcore ROP
+name_map[75] = "Steve's List"
 name_map[76] = None
 name_map[77] = None
 name_map[78] = None
