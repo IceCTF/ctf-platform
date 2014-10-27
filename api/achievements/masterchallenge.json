@@ -1,6 +1,6 @@
 {"name": "picoMaster",
  "description": "Your team solved a Master Challenge.",
- "event": "review",
+ "event": "submit",
  "hidden": false,
  "score": 250,
  "processor": "masterchallenge/masterchallenge.py",
