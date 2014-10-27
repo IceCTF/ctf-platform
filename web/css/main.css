@@ -23,26 +23,35 @@ body {
     background-color: #151314;
 }
 
+
 .prize-label {
-    text-align: center;
-}
-
-.first-place {
     font-size: 24px;
     font-weight: 700;
     margin-bottom: 7px;
 }
 
-.second-place {
-    font-size: 24px;
+.prize-label-small {
+    font-size: 20px;
     font-weight: 700;
-    margin-bottom: 7px;
+    margin-bottom: 6px;
 }
 
-.third-place {
-    font-size: 24px;
-    font-weight: 700;
-    margin-bottom: 7px;
+@media (max-width: 650px) {
+    .prize-label {
+        font-weight: 700;
+        font-size: 14px;
+    }
+    .prize-label-small {
+        font-weight: 700;
+        font-size: 14px;
+    }
+}
+
+table.top-3-prizes {
+    text-wrap: none;
+    text-align: left;
+    border-collapse: separate;
+    border-spacing: 0 7px;
 }
 
 .trip-prize {
