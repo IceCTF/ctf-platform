@@ -16,7 +16,7 @@ game_state_schema = Schema({
         ("Invalid Avatar Value.", [int, Range(min=0, max=3)]),
     ),
     Required('eventid'): check(
-        ("Invalid Event ID.", [int, Range(min=0, max=13)]),
+        ("Invalid Event ID.", [int, Range(min=0, max=15)]),
     )
 }, extra=True)
 
@@ -89,7 +89,7 @@ name_map[31] = "Format"
 name_map[32] = "CrudeCrypt"
 
 # Crypto
-name_map[33] = "RSA Mistakes"
+name_map[33] = None
 name_map[34] = "Revenge of the Bleichenbacher"
 name_map[35] = "Block"
 name_map[36] = "Low Entropy"
@@ -105,8 +105,8 @@ name_map[43] = "Supercow"
 name_map[44] = "PNG or Not?"
 name_map[45] = "Snapcat"
 name_map[46] = "Droid App"
-name_map[47] = None    # SSH Backdoor
-name_map[48] = None    #
+name_map[47] = "SSH Backdoor"
+name_map[48] = None
 name_map[49] = None
 name_map[50] = None
 name_map[51] = None
@@ -125,7 +125,7 @@ name_map[61] = None
 name_map[62] = None
 
 # Misc
-name_map[63] = None
+name_map[63] = "OBO"
 name_map[64] = None
 name_map[65] = None
 name_map[66] = None
@@ -138,9 +138,9 @@ name_map[72] = None
 
 # Master
 name_map[73] = "Baleful"
-name_map[74] = None   # Hardcore ROP
+name_map[74] = "Hardcore ROP"
 name_map[75] = "Steve's List"
-name_map[76] = None
+name_map[76] = "RSA Mistakes"
 name_map[77] = None
 name_map[78] = None
 name_map[79] = None
@@ -152,9 +152,9 @@ name_map[82] = None
 name_map[83] = "Obfuscation"
 name_map[84] = "Bit Puzzle"
 name_map[85] = "Function Address"
-name_map[86] = None
-name_map[87] = None
-name_map[88] = None
+name_map[86] = "Netsino"
+name_map[87] = "Tick Tock"
+name_map[88] = "Police Records"
 name_map[89] = None
 name_map[90] = None
 name_map[91] = None
@@ -288,7 +288,6 @@ def get_state():
 def update_state(avatar, eventid, level):
     db = api.common.get_conn()
     useracct = api.user.get_user()
-
     try:
         avatar = int(avatar)
         eventid = int(eventid)
@@ -300,7 +299,8 @@ def update_state(avatar, eventid, level):
         "eventid": eventid
     })
 
-    db.users.update({'uid': useracct['uid']},
-                    {'$set': {'avatar': avatar, 'eventid': eventid, 'level': level}})
+    if useracct['eventid'] <= eventid:
+        db.users.update({'uid': useracct['uid']},
+                        {'$set': {'avatar': avatar, 'eventid': eventid, 'level': level}})
 
     return WebSuccess("Update Successful")
