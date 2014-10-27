@@ -51,7 +51,18 @@ table.top-3-prizes {
     text-wrap: none;
     text-align: left;
     border-collapse: separate;
-    border-spacing: 0 7px;
+    border-spacing: 0 6px;
+}
+div.top-3-prizes-alt {
+    display: none;
+}
+@media (max-width: 400px) {
+    table.top-3-prizes {
+        display: none;
+    }
+    div.top-3-prizes-alt {
+        display: block;
+    }
 }
 
 .trip-prize {
