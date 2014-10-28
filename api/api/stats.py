@@ -86,6 +86,7 @@ def get_all_team_scores():
             result.append({
                 "name": team['team_name'],
                 "tid": team['tid'],
+                "school": team["school"],
                 "score": score
             })
 
