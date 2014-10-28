@@ -232,11 +232,11 @@ def assign_shell_account(tid=None):
 
 def determine_eligibility(tid=None):
     db = api.common.get_conn()
-    members = get_team_members(tid=tid, show_disabled=False)
+    members = [x for x in db.users.find({"tid": tid}) if 'disabled' not in x or not x['disabled']]
     eligible = True
     justification = []
     for member in members:
-        if member['background'] not in set(['student_hs', 'student_ms', 'student_el']):
+        if member['background'] not in set(['student_hs', 'student_ms', 'student_el', 'student_home']):
             eligible = False
             justification.append("User %s is not a middle or high school student" % member['username'])
         if member['country'] != "US":
@@ -244,6 +244,8 @@ def determine_eligibility(tid=None):
             justification.append("User %s is not from the United States" % member['username'])
     db.teams.update({'tid': tid}, {'$set': {'eligible': eligible, 'justification': justification}})
     return eligible
+
+    
 
 def recalculate_all_eligibility():
     for team in get_all_teams(show_ineligible=True):
