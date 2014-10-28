@@ -7,6 +7,12 @@ post_scripts:
 startup_functions:
 ---
 
+<script type="text/template" id="scoreboard-teamscore-template">
+  <div class="pull-right">
+    <h3>Score: <strong><%= teamscore%></strong></h3>
+  </div>
+</script>
+
 <script type="text/template" id="scoreboard-tabs-template">
   <ul class="nav nav-tabs">
     <li class="active"><a data-toggle="tab" href="#public">Public</a></li>
@@ -23,13 +29,11 @@ startup_functions:
   </ul>
   <div class="tab-content">
     <div id="public" class="tab-pane fade in active">
-      <h3>Public</h3>
       <div id="top-team-score-progression-graph"></div>
       <%= renderScoreboard({scoreboard: data.public}) %>
     </div>
     <% _.each(data.groups, function(group) { %>
       <div id="<%= group.gid %>" class="tab-pane fade">
-        <h3><%- group.name %></h3>
         <%= renderScoreboard({scoreboard: group.scoreboard}) %>
       </div>
     <% }); %>
@@ -41,8 +45,8 @@ startup_functions:
     <table class="table">
       <thead>
         <tr>
-          <th>#</th>
-          <th>Team Name</th>
+          <th></th>
+          <th>Team</th>
           <th>Score</th>
         </tr>
       </thead>
@@ -64,5 +68,6 @@ startup_functions:
 </script>
 
 <div class="container">
+  <div id="scoreboard-teamscore"></div>
   <div id="scoreboard-tabs"></div>
 </div>
