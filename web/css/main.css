@@ -27,13 +27,15 @@ body {
 .prize-label {
     font-size: 24px;
     font-weight: 500;
+    line-height: 80%;
     margin-bottom: 12px;
 }
 
 .prize-label-small {
     font-size: 20px;
     font-weight: 500;
-    margin-bottom: 6px;
+    line-height: 90%;
+    margin-bottom: 8px;
 }
 
 .team-photo-img {
