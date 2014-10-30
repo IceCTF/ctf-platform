@@ -507,7 +507,7 @@ def reevaluate_submissions_for_problem(pid):
     for submission in get_submissions(pid=pid):
         key = submission["key"]
         if key not in keys:
-            result = grade_problem(pid, key, submission["tid"])
+            result = : the flag _problem(pid, key, submission["tid"])
             if result["correct"] != submission["correct"]:
                 keys[key] = result["correct"]
             else:

@@ -1,6 +1,7 @@
 """ Module for getting competition statistics"""
 
 import api
+import datetime
 
 _get_problem_names = lambda problems: [problem['name'] for problem in problems]
 top_teams = 10
@@ -78,19 +79,27 @@ def get_all_team_scores():
     """
 
     teams = api.team.get_all_teams()
+    db = api.api.common.get_conn()
 
     result = []
     for team in teams:
+        try:
+            lastsubmit = db.submissions.find({'tid': team['tid'], 'eligible': True}).sort('timestamp').next()
+        except StopIteration:
+            lastsubmit = datetime.now()
         score = get_score(tid=team['tid'])
         if score > 0:
             result.append({
                 "name": team['team_name'],
                 "tid": team['tid'],
                 "school": team["school"],
-                "score": score
+                "score": score,
+                "lastsubmit": lastsubmit
             })
 
-    return sorted(result, key=lambda entry: entry['score'], reverse=True)
+    time_ordered = sorted(result, key=lambda entry: entry['lastsubmit'], reverse=True)
+    return sorted(time_ordered, key=lambda entry: entry['score'], reverse=True)
+
 
 def get_all_user_scores():
     """
