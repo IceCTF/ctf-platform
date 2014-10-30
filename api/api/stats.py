@@ -98,8 +98,9 @@ def get_all_team_scores():
                 "lastsubmit": lastsubmit
             })
 
-    time_ordered = sorted(result, key=lambda entry: entry['lastsubmit'], reverse=True)
-    return sorted(time_ordered, key=lambda entry: entry['score'], reverse=True)
+    time_ordered = sorted(result, key=lambda entry: entry['lastsubmit'])    
+    time_ordered_time_removed = [{'name': x['name'], 'tid': x['tid'], 'school': x['school'], 'score': x['score']} for x in time_ordered]
+    return sorted(time_ordered_time_removed, key=lambda entry: entry['score'], reverse=True)
 
 
 def get_all_user_scores():
