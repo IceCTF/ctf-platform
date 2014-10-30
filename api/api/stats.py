@@ -83,10 +83,10 @@ def get_all_team_scores():
 
     result = []
     for team in teams:
-        try:
-            lastsubmit = db.submissions.find({'tid': team['tid'], 'eligible': True}).sort('timestamp').next()
-        except StopIteration:
-            lastsubmit = datetime.now()
+        if db.submissions.find({'tid': team['tid'], 'eligible': True}).count() > 0:
+            lastsubmit = db.submissions.find({'tid': team['tid'], 'eligible': True}).sort('timestamp')[0]['timestamp']
+        else:
+            lastsubmit = datetime.datetime.now()
         score = get_score(tid=team['tid'])
         if score > 0:
             result.append({
