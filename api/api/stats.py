@@ -83,7 +83,7 @@ def get_all_team_scores():
 
     result = []
     for team in teams:
-        team_query = db.submissions.find({'tid': team['tid'], 'eligible': True})
+        team_query = db.submissions.find({'tid': team['tid'], 'eligible': True, 'correct': True})
         if team_query.count() > 0:
             lastsubmit = team_query.sort('timestamp')[0]['timestamp']
         else:
