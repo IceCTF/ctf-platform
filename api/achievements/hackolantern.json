@@ -1,0 +1,20 @@
+{"name": "Hack-O-Lantern",
+ "description": "Solved a problem on Halloween.",
+ "event": "submit",
+ "hidden": false,
+ "score": 10,
+ "processor": "hackolantern/hackolantern.py",
+ "image": "/img/achievements/hackolantern.png",
+ "smallimage": "/img/achievements/hackolantern_unlock.png"}
+
+
+
+
+
+
+
+
+
+
+
+
