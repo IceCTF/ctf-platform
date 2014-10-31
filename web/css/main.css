@@ -23,6 +23,9 @@ body {
     background-color: #151314;
 }
 
+#top-team-score-progression-graph {
+    padding-top: 20px;
+}
 
 .prize-label {
     font-size: 24px;
