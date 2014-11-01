@@ -598,7 +598,7 @@ def get_solved_pids(tid=None, uid=None, category=None):
         List of solved problem ids
     """
 
-    return [sub['pid'] for sub in get_submissions(tid=tid, uid=uid, category=category, correctness=True)]
+    return list(set([sub['pid'] for sub in get_submissions(tid=tid, uid=uid, category=category, correctness=True)]))
 
 def get_solved_problems(tid=None, uid=None, category=None):
     """
