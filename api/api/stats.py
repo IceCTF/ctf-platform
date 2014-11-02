@@ -2,6 +2,7 @@
 
 import api
 import datetime
+import pymongo
 
 _get_problem_names = lambda problems: [problem['name'] for problem in problems]
 top_teams = 10
@@ -85,7 +86,7 @@ def get_all_team_scores():
     for team in teams:
         team_query = db.submissions.find({'tid': team['tid'], 'eligible': True, 'correct': True})
         if team_query.count() > 0:
-            lastsubmit = team_query.sort('timestamp')[0]['timestamp']
+            lastsubmit = team_query.sort('timestamp', direction=pymongo.DESCENDING)[0]['timestamp']
         else:
             lastsubmit = datetime.datetime.now()
         score = get_score(tid=team['tid'])
