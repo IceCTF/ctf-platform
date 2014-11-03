@@ -61,6 +61,7 @@ userLoggedInNoCompetition =
 
 userNotLoggedIn =
   About: "/about"
+  Scoreboard: "/scoreboard"
   FAQ: "/faq"
   Learn: "/learn"
   Teachers: "/teachers"
