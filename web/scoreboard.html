@@ -17,14 +17,9 @@ startup_functions:
   <ul class="nav nav-tabs">
     <li class="active"><a data-toggle="tab" href="#public">Public</a></li>
     <% if(data.groups.length > 0) { %>
-      <li class="dropdown">
-        <a data-toggle="dropdown" class="dropdown-toggle" href="#">Classes <span class="caret"></span></a>
-        <ul class="dropdown-menu">
-          <% _.each(data.groups, function(group) { %>
-            <li><a data-toggle="tab" href="#<%= group.gid %>"><%- group.name %></a></li>
-          <% }); %>
-        </ul>
-      </li>
+      <% _.each(data.groups, function(group) { %>
+        <li><a data-toggle="tab" href="#<%= group.gid %>"><%- group.name %></a></li>
+      <% }); %>
     <% } %>
   </ul>
   <div class="tab-content">
@@ -42,7 +37,7 @@ startup_functions:
 
 <script type="text/template" id="scoreboard-template">
   <% if(!($.isEmptyObject(scoreboard))) { %>
-    <table class="table">
+    <table class="table" class="scoreboard-table">
       <thead>
         <tr>
           <th></th>

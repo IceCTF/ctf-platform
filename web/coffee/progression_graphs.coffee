@@ -96,7 +96,7 @@ progressionDataToPoints = (data, dataPoints, currentDate = 0) ->
   .done (data) ->
     apiCall "GET", "/api/time", {}
     .done (timedata) ->
-      if data.data.length >= 2
+      if data.data.length >= 2 && $(selector).is(":visible")
         scoreData = (team.score_progression for team in data.data)
 
         #Ensure there are submissions to work with

@@ -27,6 +27,16 @@ body {
     padding-top: 30px;
 }
 
+@media (max-width: 600px) {
+    #top-team-score-progression-graph {
+        display:none;
+    }
+}
+
+.scoreboard-table {
+    background-color: white;
+}
+
 .prize-label {
     font-size: 24px;
     font-weight: 500;
