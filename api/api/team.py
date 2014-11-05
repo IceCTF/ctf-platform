@@ -233,7 +233,11 @@ def assign_shell_account(tid=None):
 def determine_eligibility(tid=None):
     db = api.common.get_conn()
     members = [x for x in db.users.find({"tid": tid}) if 'disabled' not in x or not x['disabled']]
-    if len(members) == 0:
+    team = api.team.get_team(tid=tid)
+    if 'disqualified' in team and team['disqualified']:
+        eligible = False
+        justification = ["Team has been disqualified"]
+    elif len(members) == 0:
         eligible = False
         justification = ["Team has no members"]
     else:
