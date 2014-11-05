@@ -128,22 +128,3 @@ def check_competition_active():
     """
 
     return api.config.start_time.timestamp() < datetime.utcnow().timestamp() < api.config.end_time.timestamp()
-
-def load_news():
-    """
-    Get news to populate the news page.
-
-    Queries the database for all news articles, loads them into a json document and returns them ordered by their date.
-    Newest articles are at the beginning of the list to appear at the top of the news page.
-    """
-
-    db = api.common.get_conn()
-    news = cache.get('news')
-    if news is not None:
-        return json.loads(news)
-    news = sorted([{'date': str(n['date']) if 'date' in n else "2000-01-01",
-                    'header': n['header'] if 'header' in n else None,
-                    'articlehtml': n['articlehtml' if 'articlehtml' in n else None]}
-                   for n in list(db.news.find())], key=lambda k: k['date'], reverse=True)
-    cache.set('news', json.dumps(news), 60 * 2)
-    return news
