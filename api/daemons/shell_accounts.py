@@ -49,7 +49,7 @@ def run():
             plaintext_password = api.common.token()[:api.config.shell_password_length]
 
             hashed_password = shell.run(["bash", "-c", "echo '{}' | openssl passwd -1 -stdin".format(plaintext_password)])
-            hashed_password = hashed_password.output.decode("utf-8")
+            hashed_password = hashed_password.output.decode("utf-8").strip()
 
             shell_cmd = api.config.shell_user_creation.format(username=username, password=hashed_password)
 
