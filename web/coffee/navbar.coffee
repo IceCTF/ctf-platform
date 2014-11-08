@@ -50,10 +50,14 @@ userLoggedIn =
 userLoggedInNoCompetition =
   Team: "/team"
   Chat: "/chat"
-  About: "/about"
-  FAQ: "/faq"
-  Learn: "/learn"
-  Sponsors: "/sponsors"
+  Scoreboard: "/scoreboard"
+  Help:
+    Chat: "/chat"
+    Learn: "/learn"
+  About:
+    FAQ: "/faq"
+    About: "/about"
+    Sponsors: "/sponsors"
   Account:
     Manage: "/account"
     Logout: "#"
