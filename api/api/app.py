@@ -492,7 +492,7 @@ def get_achievements_hook():
 @block_before_competition(WebError("The competition has not begun yet!"))
 def get_scoreboard_hook():
     result = {}
-    result['public'] = api.stats.get_all_team_scores()
+    result['public'] = [] # api.stats.get_all_team_scores()  # JB: Disabled post competition
     result['groups'] = []
 
     if api.auth.is_logged_in():
