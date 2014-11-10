@@ -101,7 +101,6 @@ def get_all_team_scores():
                 "score": score,
                 "lastsubmit": lastsubmit
             })
-
     time_ordered = sorted(result, key=lambda entry: entry['lastsubmit'])    
     time_ordered_time_removed = [{'name': x['name'], 'tid': x['tid'], 'school': x['school'], 'score': x['score']} for x in time_ordered]
     return sorted(time_ordered_time_removed, key=lambda entry: entry['score'], reverse=True)
@@ -191,8 +190,12 @@ def get_score_progression(tid=None, uid=None, category=None):
     result = []
     score = 0
 
+    problems_counted = set()
+
     for submission in sorted(correct_submissions, key=lambda sub: sub["timestamp"]):
-        score += api.problem.get_problem(pid=submission["pid"])["score"]
+        if submission['pid'] not in problems_counted:
+            score += api.problem.get_problem(pid=submission["pid"])["score"]
+            problems_counted.append(submission['pid'])
         result.append({
             "score": score,
             "time": int(submission["timestamp"].timestamp())
