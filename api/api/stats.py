@@ -195,7 +195,7 @@ def get_score_progression(tid=None, uid=None, category=None):
     for submission in sorted(correct_submissions, key=lambda sub: sub["timestamp"]):
         if submission['pid'] not in problems_counted:
             score += api.problem.get_problem(pid=submission["pid"])["score"]
-            problems_counted.append(submission['pid'])
+            problems_counted.add(submission['pid'])
         result.append({
             "score": score,
             "time": int(submission["timestamp"].timestamp())
