@@ -11,7 +11,7 @@ server {
         }
 
         location ~
-^/(problems|login|chat|logout|compete|registration|team|scoreboard|classroom|account|reset|shell|faq|news|contact|teachers|game-preview|sponsors|about|learn|promotional)$
+^/(problems|login|chat|logout|compete|registration|team|scoreboard|classroom|account|reset|shell|faq|news|contact|teachers|game-preview|sponsors|about|learn|promotional|tshirts)$
         {
             default_type text/html;
             alias /srv/http/ctf/$1.html;
