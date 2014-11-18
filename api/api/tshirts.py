@@ -12,6 +12,7 @@ def get_team_tshirt_info(tid=None, name=None, show_disabled=False):
               'adviser_name': team['adviser_name'],
               'adviser_email': team['adviser_email'],
               'address': team.get('address', ""),
+              'tshirt_winner': team.get('tshirt_winner', ""),
               'members': [user for user in users if show_disabled or not user.get("disabled", False)]}
     return result
 
