@@ -267,6 +267,8 @@ def set_achievement_disabled(aid, disabled):
         The updated achievement object.
     """
 
+    return update_achievement(aid, {"disabled": disabled})
+
 def get_processor(aid):
     """
     Returns the processor module for a given achievement.
@@ -278,8 +280,8 @@ def get_processor(aid):
     """
 
     try:
-        path = get_achievement(aid=aid, show_disabled=True)["grader"]
-        return imp.load_source(path[:-3], join(achievement_base_path, path))
+        path = get_achievement(aid=aid, show_disabled=True)["processor"]
+        return imp.load_source(path[:-3], join(processor_base_path, path))
     except FileNotFoundError:
         raise InternalException("Achievement processor is offline.")
 
@@ -419,8 +421,6 @@ def update_achievement(aid, updated_achievement):
     achievement.pop("aid")
     validate(achievement_schema, achievement)
     achievement["aid"] = aid
-
-
 
     db.achievements.update({"aid": aid}, achievement)
     api.cache.fast_cache.clear()

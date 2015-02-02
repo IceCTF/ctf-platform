@@ -446,7 +446,7 @@ def disable_account(uid):
     db.users.update({"uid": uid}, {"$set": {"disabled": True}})
 
     #Determine if the team is now eligible
-    tid = api.user.get_team()["tid"]
+    tid = api.user.get_team(uid=uid)["tid"]
     api.team.determine_eligibility(tid)
 
 @log_action

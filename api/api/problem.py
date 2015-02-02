@@ -182,6 +182,7 @@ def set_problem_disabled(pid, disabled):
     Returns:
         The updated problem object.
     """
+
     return update_problem(pid, {"disabled": disabled})
 
 def update_problem(pid, updated_problem):
@@ -361,7 +362,7 @@ def submit_key(tid, pid, key, uid=None, ip=None):
     if submission["correct"]:
         api.cache.invalidate_memoization(api.stats.get_score, {"kwargs.tid":tid}, {"kwargs.uid":uid})
         api.cache.invalidate_memoization(get_unlocked_pids, {"args":tid})
-        api.cache.invalidate_memoization(get_solved_pids, {"kwargs.tid":tid} , {"kwargs.uid":uid})
+        api.cache.invalidate_memoization(get_solved_pids, {"kwargs.tid":tid}, {"kwargs.uid":uid})
 
         api.cache.invalidate_memoization(api.stats.get_score_progression, {"kwargs.tid":tid}, {"kwargs.uid":uid})
 
@@ -406,7 +407,7 @@ def get_submissions(pid=None, uid=None, tid=None, category=None, correctness=Non
         pid: problem filter.
         correctness: correct filter
     Returns:
-        A list of submissions from the given entity
+        A list of submissions from the given entity.
     """
 
     db = api.common.get_conn()
@@ -414,15 +415,15 @@ def get_submissions(pid=None, uid=None, tid=None, category=None, correctness=Non
     match = {}
 
     if uid is not None:
-      match.update({"uid": uid})
+        match.update({"uid": uid})
     elif tid is not None:
-      match.update({"tid": tid})
+        match.update({"tid": tid})
 
     if pid is not None:
-      match.update({"pid": pid})
+        match.update({"pid": pid})
 
     if category is not None:
-      match.update({"category": category})
+        match.update({"category": category})
 
     if correctness is not None:
         match.update({"correct": correctness})
@@ -579,7 +580,7 @@ def get_all_problems(category=None, show_disabled=False):
 
     match = {}
     if category is not None:
-      match.update({'category': category})
+        match.update({'category': category})
 
     if not show_disabled:
         match.update({'disabled': False})
