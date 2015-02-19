@@ -3,8 +3,10 @@ Flask routing
 """
 
 from flask import Flask, request, session, send_from_directory, render_template
+from werkzeug.contrib.fixers import ProxyFix
 
 app = Flask(__name__, static_path="/")
+app.wsgi_app = ProxyFix(app.wsgi_app)
 
 import api
 import json
