@@ -15,9 +15,6 @@ true
   config.vm.synced_folder "api", "/home/vagrant/api"
   config.vm.synced_folder "web", "/home/vagrant/web"
   config.vm.synced_folder "scripts", "/home/vagrant/scripts"
-  config.vm.synced_folder "minigames", "/home/vagrant/minigames"
-  config.vm.synced_folder "game", "/home/vagrant/game"
-  config.vm.synced_folder "webex", "/home/vagrant/webex"
   config.vm.provision :shell, :path => "scripts/vagrant_setup.sh"
   config.ssh.forward_agent = true
 
@@ -25,4 +22,3 @@ true
     vb.customize ["modifyvm", :id, "--memory", "2048"]
   end
 end
-
