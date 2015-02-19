@@ -4,9 +4,6 @@
 echo "Transpiling Coffeescript"
 coffee -c -o /home/vagrant/web/js/ /home/vagrant/web/coffee/
 
-# Run minigames devploy (this should be removed for release)
-#/home/vagrant/minigames/scripts/ipf-devploy
-
 # Shutdown the server
 echo "Shutting down nginx"
 sudo service nginx stop
@@ -15,30 +12,13 @@ sudo service nginx stop
 echo "Cleaning up old files"
 sudo rm -rf /srv/http/ctf/*
 
-# Copy files to the server
-sudo chmod -R a+w /home/vagrant/web
-echo "Building site with Jekyll"
+echo "Generating web with Jekyll"
 cd /home/vagrant/web
-cp /home/vagrant/game/game.html .
-# Block writing to copied in HTML to avoid mistakes
-sudo chmod a-w game.html
-sudo chmod -R a-w /home/vagrant/webex/web/*
-sudo chmod -R a-w /home/vagrant/webex/includes/*
-cp -p -r /home/vagrant/webex/web/* .
-cp -p -r /home/vagrant/webex/includes/* _includes/
-sudo chmod -R a+w /home/vagrant/webex/web/*
-sudo chmod -R a+w /home/vagrant/webex/includes/*
 sudo jekyll build
-cd -
 
 echo "Copying files to server"
-sudo cp -r /home/vagrant/webex/img/* /srv/http/ctf/img
-sudo cp -r /home/vagrant/webex/css/* /srv/http/ctf/css
-sudo cp -r /home/vagrant/webex/js/* /srv/http/ctf/js
-sudo cp -r /home/vagrant/minigames /srv/http/ctf
-sudo cp -r /home/vagrant/game /srv/http/ctf
+#sudo cp -r /home/vagrant/web/* /srv/http/ctf/
 sudo cp -r /home/vagrant/problem_static /srv/http/ctf/problem-static
-sudo mv /srv/http/ctf/game.html /srv/http/ctf/game/index.html
 
 # Make sure everything is in UNIX format.
 sudo dos2unix -q /srv/http/ctf/*.html
