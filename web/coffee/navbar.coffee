@@ -1,19 +1,15 @@
 apiOffline =
   FAQ: "/faq"
   Teachers: "/teachers"
-  Learn: "/learn"
-  Sponsors: "/sponsors"
   About: "/about"
 
 teacherLoggedIn =
-  Game: "/game/"
   Shell: "/shell"
   Scoreboard: "/scoreboard"
   Classroom: "/classroom"
   Learn: "/learn"
   About:
     FAQ: "/faq"
-    Sponsors: "/sponsors"
     Teachers: "/teachers"
     About: "/about"
   Account:
@@ -24,7 +20,6 @@ teacherLoggedInNoCompetition =
   Classroom: "/classroom"
   About: "/about"
   FAQ: "/faq"
-  Learn: "/learn"
   Teachers: "/teachers"
   Sponsors: "/sponsors"
   Account:
@@ -32,17 +27,13 @@ teacherLoggedInNoCompetition =
     Logout: "#"
 
 userLoggedIn =
-  Game: "/game/"
   Shell: "/shell"
   Team: "/team"
+  Chat: "/chat"
   Scoreboard: "/scoreboard"
-  Help:
-    Chat: "/chat"
-    Learn: "/learn"
   About:
     FAQ: "/faq"
     About: "/about"
-    Sponsors: "/sponsors"
   Account:
     Manage: "/account"
     Logout: "#"
@@ -51,13 +42,9 @@ userLoggedInNoCompetition =
   Team: "/team"
   Chat: "/chat"
   Scoreboard: "/scoreboard"
-  Help:
-    Chat: "/chat"
-    Learn: "/learn"
   About:
     FAQ: "/faq"
     About: "/about"
-    Sponsors: "/sponsors"
   Account:
     Manage: "/account"
     Logout: "#"
@@ -69,7 +56,6 @@ userNotLoggedIn =
   FAQ: "/faq"
   Learn: "/learn"
   Teachers: "/teachers"
-  Sponsors: "/sponsors"
   Login: "/login"
 
 loadNavbar = (renderNavbarLinks, renderNestedNavbarLinks) ->

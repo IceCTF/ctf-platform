@@ -17,7 +17,7 @@ startup_functions:
       <div id="team-info"></div>
       <div class="panel panel-default" id="team-progression-graph-container" >
           <div class="panel-heading">
-             <h3 class="panel-title">Team Score Progression</h3>             
+             <h3 class="panel-title">Team Score Progression</h3>
           </div>
           <div class="panel-body team-panel-body">
              <div id="team-progression-graph"></div>
@@ -26,7 +26,7 @@ startup_functions:
     </div>
     <div class="col-md-6">
       <div id="group-info"></div>
-      <div id="achievement-info"></div>        
+      <div id="achievement-info"></div>
     </div>
   </div>
 </div>
@@ -35,9 +35,6 @@ startup_functions:
   <div class="panel panel-default">
     <div class="panel-heading">
       <h3 class="panel-title">Class Membership</h3>
-    </div>
-    <div class="col-md-12" style="margin-top: 10px">
-        {% include class_membership.html %}    
     </div>
     <% if(data.length > 0) { %>
       <table class="table">
@@ -69,10 +66,10 @@ startup_functions:
             <input type="text" class="form-control class-class-name" id="group-name-input" placeholder="Class Name">
         </div>
         <div class="form-group">
-            <label class="sr-only" for="group-owner-input">Teacher</label>        
+            <label class="sr-only" for="group-owner-input">Teacher</label>
             <input type="text" class="form-control class-teacher-username" id="group-owner-input" placeholder="Teacher Username">
         </div>
-        <button class="btn btn-primary" id="join-group">Join</button>        
+        <button class="btn btn-primary" id="join-group">Join</button>
       </div>
     </form>
   </div>
