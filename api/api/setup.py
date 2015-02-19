@@ -19,6 +19,7 @@ def index_mongo():
     db.groups.ensure_index("gid", unique=True, name="unique gid")
     db.problems.ensure_index("pid", unique=True, name="unique pid")
     db.submissions.ensure_index("tid", name="submission tids")
+    db.ssh.ensure_index("tid", unique=True, name="unique ssh tid")
     db.cache.ensure_index("expireAt", expireAfterSeconds=0)
     db.cache.ensure_index("kwargs", name="kwargs")
     db.cache.ensure_index("args", name="args")
