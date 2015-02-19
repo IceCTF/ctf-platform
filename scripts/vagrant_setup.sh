@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Updates
-apt-get -y update 
+apt-get -y update
 apt-get -y upgrade
 
 # CTF-Platform Dependencies
@@ -25,13 +25,6 @@ npm install -g jsxhint
 
 pip3 install -r /home/vagrant/api/requirements.txt
 
-#kernprof/line_profiler
-hg clone https://bitbucket.org/kmike/line_profiler /home/vagrant/libs/line_profiler
-cd /home/vagrant/libs/line_profiler
-python3 /home/vagrant/libs/line_profiler/setup.py install
-
-pip3 install -e git+https://github.com/joerick/pyinstrument.git#egg=pyinstrument
-
 # Jekyll
 gem install jekyll
 
@@ -43,6 +36,3 @@ cp /vagrant/config/ctf.nginx /etc/nginx/sites-enabled/ctf
 rm /etc/nginx/sites-enabled/default
 mkdir -p /srv/http/ctf
 service nginx restart
-
-# call minigames setup (this should be removed for release)
-/home/vagrant/minigames/scripts/setup.sh
