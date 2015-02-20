@@ -291,8 +291,8 @@ def create_user_request(params):
 
     elif params.get("create-new-team", "false") == "true":
 
-        # JB: Remove this for public release
-        eligible = params['country'] == "US" and params['background'] in ['student_el', 'student_ms', 'student_hs', 'student_home']
+        # This can be customized.
+        eligible = True
 
         if eligible:
             validate(new_eligible_team_schema, params)
