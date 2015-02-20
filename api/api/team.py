@@ -94,6 +94,7 @@ def create_team(params):
         raise SevereInternalException("There are no shell accounts available.")
 
     params['tid'] = api.common.token()
+    params['size'] = 0
 
     db.teams.insert(params)
 

@@ -168,6 +168,14 @@ def create_user(username, firstname, lastname, email, password_hash, tid, teache
     if safe_fail(get_user, name=username) is not None:
         raise InternalException("User already exists!")
 
+    updated_team = db.teams.find_and_modify(
+        query={"tid": tid, "size": {"$lt": api.team.max_team_users}},
+        update={"$inc": {"size": 1}},
+        new=True)
+
+    if not updated_team:
+        raise InternalException("There are too many users on this team!")
+
     user = {
         'uid': uid,
         'firstname': firstname,
@@ -298,7 +306,6 @@ def create_user_request(params):
             validate(new_eligible_team_schema, params)
         else:
             validate(new_team_schema, params)
-
 
         team_params = {
             "team_name": params["team-name-new"],
