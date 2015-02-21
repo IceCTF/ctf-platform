@@ -101,7 +101,7 @@ def get_all_team_scores():
                 "score": score,
                 "lastsubmit": lastsubmit
             })
-    time_ordered = sorted(result, key=lambda entry: entry['lastsubmit'])    
+    time_ordered = sorted(result, key=lambda entry: entry['lastsubmit'])
     time_ordered_time_removed = [{'name': x['name'], 'tid': x['tid'], 'school': x['school'], 'score': x['score']} for x in time_ordered]
     return sorted(time_ordered_time_removed, key=lambda entry: entry['score'], reverse=True)
 
@@ -381,34 +381,6 @@ def get_user_countries():
     for user in all_users:
         countries[user['country']] += 1
     return countries
-
-
-def get_user_game_progress():
-    event_map = {}
-    event_map[0] = "00 - Not Started"
-    event_map[1] = "01 - Level 1: Father Gets Kidnapped"
-    event_map[2] = "02 - Level 1: Player Looks for Father"
-    event_map[3] = "03 - Level 1: Player Decides to Investigate Flash Drive"
-    event_map[4] = "04 - Level 1: Player Accesses Flash Drive"
-    event_map[5] = "05 - Level 1: Police Arrive"
-    event_map[6] = "06 - Level 1: Player Leaves for Police HQ"
-    event_map[7] = "07 - Level 2: Player Arrives at Police HQ"
-    event_map[8] = "08 - Level 2: Player Gathers Enough Evidence"
-    event_map[9] = "09 - Level 2: Player Receives Call From Daedalus"
-    event_map[10] = "10 - Level 3: Player Arrives at Tower"
-    event_map[11] = "11 - Level 3: Player Heads to Boss Room"
-    event_map[12] = "12 - Level 3: Player Enters Boss Room"
-    event_map[13] = "13 - Level 3: Player Defeats Boss"
-    event_map[14] = "14 - Level 3: Player Enters Secret Rooms"
-    event_map[15] = "15 - Level 4: Player Completes Game"
-    db = api.api.common.get_conn()
-    all_users = db.users.find()
-    events = defaultdict(int)
-    for user in all_users:
-        events[user['eventid']] += 1
-    pretty_events = {event_map[x]: y for x, y in events.items()}
-    return pretty_events
-
 
 def get_team_size_distribution(eligible=True):
     teams = api.team.get_all_teams(show_ineligible=(not eligible))

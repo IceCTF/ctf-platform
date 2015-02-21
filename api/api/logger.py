@@ -40,10 +40,6 @@ class StatsHandler(logging.StreamHandler):
                 "key": key,
                 "correct": result["correct"]
             },
-        "api.game.get_game_problem":
-            lambda etcid, result=None: {
-                "etcid": etcid
-            },
         "api.group.create_group":
             lambda uid, group_name, result=None: {
                 "name": group_name,
