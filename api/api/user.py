@@ -450,11 +450,21 @@ def disable_account(uid):
     """
 
     db = api.common.get_conn()
-    db.users.update({"uid": uid}, {"$set": {"disabled": True}})
+    result = db.users.update({"uid": uid, "disabled": {"$exists": False}},
+                    {"$set": {"disabled": True}})
 
-    #Determine if the team is now eligible
-    tid = api.user.get_team(uid=uid)["tid"]
-    api.team.determine_eligibility(tid)
+    team = api.user.get_team(uid=uid)
+
+    # Making certain that we have actually made a change.
+    # result["n"] refers to how many documents have been updated.
+    if team is not None and result["n"] == 1:
+        tid = team["tid"]
+        db.teams.find_and_modify(
+            query={"tid": tid, "size": {"$gt": 0}},
+            update={"$inc": {"size": -1}},
+            new=True)
+
+        api.team.determine_eligibility(tid)
 
 @log_action
 def disable_account_request(params, uid=None, check_current=False):
