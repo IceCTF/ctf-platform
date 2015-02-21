@@ -187,6 +187,7 @@ def create_user(username, firstname, lastname, email, password_hash, tid, teache
         'teacher': teacher,
         'avatar': 3,
         'eventid': 0,
+        'disabled': False,
         'level': 'Not Started',
         'background': background,
         'country': country,
@@ -450,15 +451,15 @@ def disable_account(uid):
     """
 
     db = api.common.get_conn()
-    result = db.users.update({"uid": uid, "disabled": {"$exists": False}},
-                    {"$set": {"disabled": True}})
+    result = db.users.update(
+        {"uid": uid, "disabled": False},
+        {"$set": {"disabled": True}})
 
-    team = api.user.get_team(uid=uid)
+    tid = api.user.get_team(uid=uid)["tid"]
 
     # Making certain that we have actually made a change.
     # result["n"] refers to how many documents have been updated.
-    if team is not None and result["n"] == 1:
-        tid = team["tid"]
+    if result["n"] == 1:
         db.teams.find_and_modify(
             query={"tid": tid, "size": {"$gt": 0}},
             update={"$inc": {"size": -1}},
