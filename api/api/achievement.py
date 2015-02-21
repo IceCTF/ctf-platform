@@ -216,8 +216,6 @@ def get_earned_achievements(tid=None, uid=None):
         List of solved achievement dictionaries
     """
 
-    #TODO: Evaluate which fields are sensitive.
-
     achievements = get_earned_achievement_instances(tid=tid, uid=uid)
     set_earned_achievements_seen(tid=tid, uid=uid)
 
@@ -226,35 +224,6 @@ def get_earned_achievements(tid=None, uid=None):
         achievement.pop("data")
 
     return achievements
-
-def reevaluate_earned_achievements(aid):
-    """
-    In the case of the achievement or processor being updated, this will reevaluate earned achievements for an achievement.
-
-    Args:
-        aid: the aid of the achievement to be reevaluated.
-    """
-
-    db = api.common.get_conn()
-
-    get_achievement(aid=aid, show_disabled=True)
-
-    keys = []
-    for earned_achievement in get_earned_achievements():
-        acquired, _ = process_achievement(aid, data=earned_achievement["data"])
-        if not acquired:
-            keys.append({"aid": aid, "tid":earned_achievement["tid"]})
-
-    db.earned_achievements.remove({"$or": keys})
-
-def reevaluate_all_earned_acheivements():
-    """
-    In the case of the achievement or processor being updated, this will reevaluate all earned achievements.
-    """
-
-    api.cache.clear_all()
-    for achievement in get_earned_achievements():
-        reevaluate_earned_achievements(achievement["aid"])
 
 def set_achievement_disabled(aid, disabled):
     """
