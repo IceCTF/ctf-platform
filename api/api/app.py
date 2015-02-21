@@ -18,7 +18,6 @@ from api.common import WebSuccess, WebError
 from api.annotations import api_wrapper, require_login, require_teacher, require_admin, check_csrf
 from api.annotations import block_before_competition, block_after_competition
 from api.annotations import log_action
-import api.tshirts
 
 log = api.logger.use(__name__)
 
@@ -445,18 +444,3 @@ def get_top_teams_score_progressions_hook():
 @api_wrapper
 def get_time():
     return WebSuccess(data=int(datetime.utcnow().timestamp()))
-
-@app.route('/api/tshirts/team', methods=['GET'])
-@api_wrapper
-@require_login
-def team_shirt_info_hook():
-    return WebSuccess(data=api.tshirts.get_team_tshirt_info())
-
-
-@app.route('/api/tshirts/update', methods=['POST'])
-@api_wrapper
-@require_login
-@check_csrf
-def update_tshirt_info():
-    api.tshirts.set_tshirt_info(users=json.loads(request.form['users']), address=request.form['address'])
-    return WebSuccess("Updated")
