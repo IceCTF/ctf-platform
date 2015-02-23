@@ -18,6 +18,7 @@ sudo jekyll build
 
 echo "Copying files to server"
 #sudo cp -r /home/vagrant/web/* /srv/http/ctf/
+mkdir -p /home/vagrant/problem_static
 sudo cp -r /home/vagrant/problem_static /srv/http/ctf/problem-static
 
 # Make sure everything is in UNIX format.
