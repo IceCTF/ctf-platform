@@ -1,6 +1,3 @@
-[submodule "docs"]
-	path = docs
-	url = ssh://git@github.com/picoCTF/picoCTF-2014-Docs.git
 [submodule "game"]
 	path = game
 	url = ssh://git@github.com/picoCTF/picoCTF-2014-Game.git 
