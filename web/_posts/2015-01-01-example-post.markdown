@@ -1,9 +1,12 @@
 ---
-title:  "Welcome to picoCTF!"
-date:   2014-08-28 17:29:23
-categories: jekyll update
+title:  "This is my first post!"
+date:   2015-01-01 17:29:23
+categories: ctfs awesome
 ---
-You’ll find this post in your `_posts` directory. Go ahead and edit it and re-build the site to see your changes. You can rebuild the site in many different ways, but the most common way is to run `jekyll serve --watch`, which launches a web server and auto-regenerates your site when a file is updated.
+
+The following post was automatically produced by Jekyll:
+
+You’ll find this post in your `_posts` directory. Go ahead and edit it and re-build the site (devploy) to see your changes. You can rebuild the site in many different ways, but the most common way is to run `jekyll serve --watch`, which launches a web server and auto-regenerates your site when a file is updated.
 
 To add new posts, simply add a file in the `_posts` directory that follows the convention `YYYY-MM-DD-name-of-post.ext` and includes the necessary front matter. Take a look at the source for this post to get an idea about how it works.
 
