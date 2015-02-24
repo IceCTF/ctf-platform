@@ -1,5 +1,5 @@
 # Site settings
-title: CTF Platform 2
+title: picoCTF Platform 2
 
 destination: /srv/http/ctf
 exclude: ['coffee', 'node_modules']

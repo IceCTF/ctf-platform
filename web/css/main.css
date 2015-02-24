@@ -1,26 +1,6 @@
-body {
-    background-color: #303030;
-}
 
 #main-content {
     min-height: 35vh;
-}
-
-.navbar {
-    background-color: #151314;
-}
-
-.navbar-lime ul.navbar-nav > li > a {
-    border-top: solid 4px #151314;
-}
-
-.navbar-lime .navbar-nav > li.active > a,
-.navbar-lime .navbar-nav > li.active > a:hover,
-.navbar-lime .navbar-nav > li > a:hover,
-.navbar-lime .navbar-nav > .open > a,
-.navbar-lime .navbar-nav > .open > a:hover,
-.navbar-lime .navbar-nav > .open > a:focus {
-    background-color: #151314;
 }
 
 #top-team-score-progression-graph {
@@ -37,20 +17,6 @@ body {
     background-color: white;
 }
 
-.prize-label {
-    font-size: 24px;
-    font-weight: 500;
-    line-height: 80%;
-    margin-bottom: 12px;
-}
-
-.prize-label-small {
-    font-size: 20px;
-    font-weight: 500;
-    line-height: 90%;
-    margin-bottom: 8px;
-}
-
 .team-photo-img {
     width: 150px;
 }
@@ -62,167 +28,6 @@ body {
     border-top-left-radius: 4px !important;
     margin-left: 15px;
     margin-right: 15px;
-}
-
-#pico-selector-menu {
-    left:auto;
-    right:0;
-    width: 280px;
-    background-color: #1e2936;
-    border: solid 3px #303030;
-}
-
-
-.front-page-thumbnails .caption h3 {
-    text-align: center;
-    margin-bottom: 0px;
-}
-
-.front-page-thumbnails .thumbnail {
-    border: none;
-    text-align: center;
-    margin-bottom: 0px;
-}
-
-
-@media (max-width: 442px) {
-    .front-page-thumbnails .col-xs-6 {
-        width: 100%;
-    }
-}
-
-
-@media (min-width: 992px) {
-    .front-page-thumbnails .thumbnail .caption {
-        margin-bottom: 0px;
-        padding-bottom: 0px;
-    }
-}
-
-.front-page-thumbnails #frontpage-thumbnail-lock {
-    top: 26px;
-}
-
-.front-page-thumbnails #frontpage-thumbnail-trophy {
-    top: 33px;
-}
-
-.front-page-thumbnails #frontpage-thumbnail-book {
-    top: 33px;
-}
-
-.front-page-thumbnails .frontpage-thumbnail {
-    height: 96px;
-    width: 96px;
-    position: relative;
-    top: 30px;
-}
-
-.front-page-thumbnails .circle-img-box {
-    border-radius: 50%;
-    width: 156px;
-    height: 156px;
-    text-align: center;
-    margin: 0 auto;
-    background-color: #25acb4;
-}
-
-/*
-@media (min-width: 992px) {
-    nav .container {
-        width: auto;
-    }
-}
-
-
-@media (min-width: 1130px) {
-    nav .container {
-        width: 1100px;
-    }
-}
-*/
-
-@media (min-width: 1200px) {
-    .container {
-        width: 970px;
-    }
-/*
-    nav .container {
-        width: 1100px;
-    }
-*/
-}
-
-
-@media (max-width: 250px) {
-    #twitter-box {
-        display: none;
-    }
-}
-
-@media (max-width: 400px) {
-    #date-label {
-        font-size: 10px;
-        font-size: 4vw;
-    }
-}
-
-@media (max-width: 1032px) {
-    #date-label, #hacking-label {
-        font-size: 4vw;
-    }
-}
-
-@media (min-width: 1032px) {
-    #date-label, #hacking-label {
-        font-size: 41px;
-    }
-}
-
-
-#date-label {
-    position: absolute;
-    bottom: 33%;
-    width: 100%;
-    color: white !important;
-    text-align: center;
-}
-
-#hacking-label {
-    position: absolute;
-    bottom: 40%;
-    width: 100%;
-    color: white !important;
-    text-align: center;
-}
-
-#register-button {
-    position: absolute;
-    bottom: 23%;
-    width: 100%;
-    text-align: center;
-}
-
-@media (max-width: 768px) {
-    #register-button {
-        display: none;
-    }
-    #backup-register-button {
-        display: inline-block;
-    }
-    #date-label {
-        bottom: 28%;
-    }
-}
-
-@media (min-width: 768px) {
-    #backup-register-button {
-        display: none;
-    }
-}
-
-#backup-register-button {
-    text-align: center; margin-top: 20px; width:100%;
 }
 
 a.navbar-brand {
@@ -246,22 +51,6 @@ a.navbar-brand {
     display: none;
 }
 
-.footer-widget p {
-    line-height: 130%;
-}
-
-.footer-widget h3 {
-    margin-bottom: 5px;
-}
-
-.footer-widget h3:first-of-type {
-    margin-top: 0px;
-}
-
-.footer-widget h3 {
-    margin-top: 10px;
-}
-
 img {
     max-width: 100%;
 }
@@ -271,12 +60,12 @@ img {
 #main-content h3,
 #main-content h4,
 #main-content h5, #main-content h6 {
-    color: #1B7B81;
+    color: #000000;
     font-weight: 500;
 }
 
 .lead {
-   color: #1B7B81;
+   color: #000000;
    font-weight: 500;
 }
 
@@ -314,10 +103,6 @@ img.logo {
 img.logo-landscape {
     max-width: 400px;
     width: 100%;
-}
-
-.sponsor-label {
-    margin-bottom: 20px;
 }
 
 .home-section {
@@ -440,17 +225,6 @@ img.logo-landscape {
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d1d1d1', endColorstr='#ffffff', GradientType=0 );
 }
 
-/* FAQ styles */
-
-.faq-search-box {
-    float: right;
-    width: 20em;
-}
-
-.faq-no-results {
-    display: none;
-}
-
 /* Team page forms */
 
 .form-inline .class-class-name {
@@ -467,49 +241,6 @@ img.logo-landscape {
 	padding: 0 5%;
 }
 
-/* Style trickery for the pico dropdown selector */
-
-a.old-pico-link:hover {
-    background-color: #1e2936 !important;
-}
-
-#dropdown-pico-selector {
-    padding-left: 0px;
-    padding-right: 0px;
-    min-width: 0px;
-    color: #24acb4;
-}
-
-@media (max-width: 768px) {
-    #pico-selector-menu-list {
-        display: none;
-    }
-    #dropdown-pico-selector {
-        display: none;
-    }
-    #pico-selector-menu {
-        display: none;
-    }
-    #mobile-old-pico-link {
-        display: block;
-    }
-}
-
-@media (min-width: 768px) {
-    #dropdown-pico-selector {
-        display: block;
-    }
-    #mobile-old-pico-link {
-        display: none;
-    }
-}
-
-.caret {
-    border-top: 0.4em solid;
-    border-right: 0.4em solid transparent;
-    border-left: 0.4em solid transparent;
-}
-
 /* Panels */
 
 .panel-primary {
@@ -524,86 +255,6 @@ a.old-pico-link:hover {
 
 .panel-primary > .panel-heading+.panel-collapse > .panel-body {
    border-color: #1B7B81;
-}
-
-
-
-/* Buttons */
-
-
-/* line 43, ../scss/partials/_buttons.scss */
-
-.btn {
-    -webkit-box-shadow: none;
-    -moz-box-shadow: none;
-    box-shadow: none;
-    background-color: #eeeeee;
-    background: #eeeeee;
-}
-
-.btn:hover {
-    background-color: #dcdcdc;
-    background: #dcdcdc;
-}
-
-.btn-primary {
-    /* background: #00a1cb;
-    background-color:  #00a1cb; */
-    background: #25acb4;
-    background-color: #25acb4;
-    border-color: #007998;
-    color: white;
-    text-shadow: 0 -1px 1px rgba(0, 40, 50, 0.35);
-}
-
-.btn-primary:hover {
-    /* background-color: #008db2;
-    background: #008db2; */
-    background: #1f9299;
-    background-color: #1f9299;
-}
-
-.btn-primary.active {
-    background: #1B7B81;
-}
-
-.btn-success {
-    background: #7db500;
-    background-color: #7db500;
-    border-color: #5a8200;
-    color: white;
-    text-shadow: 0 -1px 1px rgba(19, 28, 0, 0.35);
-}
-
-.btn-success:hover {
-    background-color: #6b9c00;
-    background: #6b9c00;
-}
-
-.btn-danger {
-    background: #d9534f;
-    background-color: #d9534f;
-    border-color: #d43f3a;
-    color: white;
-    text-shadow: 0 -1px 1px rgba(103, 24, 13, 0.35);
-}
-
-.btn-danger:hover {
-    background-color: #c9302c;
-    background: #c9302c;
-}
-
-
-.btn-success:active {
-    color: white;
-}
-
-.btn-primary:active {
-    color: white;
-}
-
-.btn-danger:active {
-    color: white;
 }
 
 .radio-bar {
@@ -634,11 +285,3 @@ a.old-pico-link:hover {
     text-align:center;
     z-index: 2;
 }
-
-/* this is here for the learn page */
-.accordion{margin-bottom:20px;}
-.accordion-group{margin-bottom:2px;border:1px solid #e5e5e5;-webkit-border-radius:4px;-moz-border-radius:4px;border-radius:4px;}
-.accordion-heading{border-bottom:0;}
-.accordion-heading .accordion-toggle{display:block;padding:8px 15px;}
-.accordion-toggle{cursor:pointer;}
-.accordion-inner{padding:9px 15px;border-top:1px solid #e5e5e5;}
