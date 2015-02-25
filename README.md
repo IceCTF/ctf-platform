@@ -38,6 +38,7 @@ There are two types of problems supported by this framework: *basic* problems, a
 
 Every basic problem needs two components: a *problem.json* file and a *grader* directory containing a grading script. A *problem.json* file should look like this:
 
+```json
     {"name": "Problem Name",
      "score": 10,
      "category": "Category Name",
@@ -46,14 +47,17 @@ Every basic problem needs two components: a *problem.json* file and a *grader* d
      "threshold": 0,
      "weightmap": {},
      "hint": "Hint text. HTML can be used here"}
+```
 
-A grading script should look like this:
+A grading script, written in Python, should look like this:
 
+```python
     def grade(arg, key):
         if "this_is_the_flag" in key:
             return True, "Correct"
         else:
             return False, "Incorrect"
+``` 
 
 Note that the problem loading script (`api_manager.py problems load`) makes a number of assumptions about the folder structure used to hold your problems. Suppose you want to create a new problem *My Problem* and you are storing all of your problems in ~/problems. First we make a directory for our problem, such as `/problems/misc/myproblem`. Now we place our *problem.json* file at `/problems/misc/myproblem/problem.json` and our grading script at `/problems/misc/myproblem/grader/grader.py`. Now we double check that our "grader" path in *problem.json* points to the grader. Note that this path is NOT an absolute path. It instead has the following format: if our grader is at `[problem directory]/[path to problem in problem directory]/grader/[grader name]`, then the "grader" path should be set to `[path to problem in problem directory]/[grader name]`. Thus, for `/problems/misc/myproblem/grader/grader.py`, we use `misc/myproblem/grader.py`.
 
