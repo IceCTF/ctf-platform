@@ -24,6 +24,7 @@ import api.routes.user
 import api.routes.team
 import api.routes.stats
 import api.routes.admin
+import api.routes.problem
 
 log = api.logger.use(__name__)
 
@@ -49,6 +50,7 @@ def config_app(*args, **kwargs):
     app.register_blueprint(api.routes.team.blueprint, url_prefix="/api/team")
     app.register_blueprint(api.routes.stats.blueprint, url_prefix="/api/stats")
     app.register_blueprint(api.routes.admin.blueprint, url_prefix="/api/admin")
+    app.register_blueprint(api.routes.problem.blueprint, url_prefix="/api/problems")
 
     api.logger.setup_logs({"verbose": 2})
     return app
@@ -73,96 +75,6 @@ def after_request(response):
         response.mimetype = 'appication/json'
     return response
 
-@app.route('/api/problems', methods=['GET'])
-@api_wrapper
-@require_login
-@block_before_competition(WebError("The competition has not begun yet!"))
-def get_unlocked_problems_hook():
-    return WebSuccess(data=api.problem.get_unlocked_problems(api.user.get_user()['tid']))
-
-@app.route('/api/problems/solved', methods=['GET'])
-@api_wrapper
-@require_login
-@block_before_competition(WebError("The competition has not begun yet!"))
-def get_solved_problems_hook():
-    return WebSuccess(api.problem.get_solved_problems(api.user.get_user()['tid']))
-
-@app.route('/api/problems/submit', methods=['POST'])
-@api_wrapper
-@check_csrf
-@require_login
-@block_before_competition(WebError("The competition has not begun yet!"))
-@block_after_competition(WebError("The competition is over!"))
-def submit_key_hook():
-    user_account = api.user.get_user()
-    tid = user_account['tid']
-    uid = user_account['uid']
-    pid = request.form.get('pid', '')
-    key = request.form.get('key', '')
-    ip = request.remote_addr
-
-    result = api.problem.submit_key(tid, pid, key, uid, ip)
-
-    if result['correct']:
-        return WebSuccess(result['message'], result['points'])
-    else:
-        return WebError(result['message'], {'code': 'wrong'})
-
-@app.route('/api/problems/<path:pid>', methods=['GET'])
-@api_wrapper
-@require_login
-@block_before_competition(WebError("The competition has not begun yet!"))
-@block_after_competition(WebError("The competition is over!"))
-def get_single_problem_hook(pid):
-    problem_info = api.problem.get_problem(pid, tid=api.user.get_user()['tid'])
-    return WebSuccess(data=problem_info)
-
-@app.route('/api/problems/feedback', methods=['POST'])
-@api_wrapper
-@check_csrf
-@require_login
-@block_before_competition(WebError("The competition has not begun yet!"))
-def problem_feedback_hook():
-    feedback = json.loads(request.form.get("feedback", ""))
-    pid = request.form.get("pid", None)
-
-    if feedback is None or pid is None:
-        return WebError("Please supply a pid and feedback.")
-
-    api.problem_feedback.add_problem_feedback(pid, api.auth.get_uid(), feedback)
-    return WebSuccess("Your feedback has been accepted.")
-
-@app.route('/api/problems/feedback/reviewed', methods=['GET'])
-@api_wrapper
-@require_login
-@block_before_competition(WebError("The competition has not begun yet!"))
-def problem_reviews_hook():
-    return WebSuccess(data=api.problem_feedback.get_reviewed_pids())
-
-@app.route("/api/problems/hint", methods=['GET'])
-@api_wrapper
-@require_login
-@block_before_competition(WebError("The competition has not begun yet!"))
-def request_problem_hint_hook():
-
-    @log_action
-    def hint(pid, source):
-        return None
-
-    source = request.args.get("source")
-    pid = request.args.get("pid")
-
-    if pid is None:
-        return WebError("Please supply a pid.")
-    if source is None:
-        return WebError("You have to supply the source of the hint.")
-
-    tid = api.user.get_team()["tid"]
-    if pid not in api.problem.get_unlocked_pids(tid):
-        return WebError("Your team hasn't unlocked this problem yet!")
-
-    hint(pid, source)
-    return WebSuccess("Hint noted.")
 
 @app.route('/api/group/list')
 @api_wrapper
