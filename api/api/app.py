@@ -20,6 +20,7 @@ from api.annotations import block_before_competition, block_after_competition
 from api.annotations import log_action
 
 import api.routes.autogen
+import api.routes.user
 
 log = api.logger.use(__name__)
 
@@ -28,9 +29,6 @@ session_cookie_path = "/"
 session_cookie_name = "flask"
 
 secret_key = ""
-app.register_blueprint(api.routes.autogen.blueprint, url_prefix="/api/autogen")
-
-print(app.url_map)
 
 def config_app(*args, **kwargs):
     """
@@ -42,7 +40,8 @@ def config_app(*args, **kwargs):
     app.config["SESSION_COOKIE_DOMAIN"] = session_cookie_domain
     app.config["SESSION_COOKIE_PATH"] = session_cookie_path
     app.config["SESSION_COOKIE_NAME"] = session_cookie_name
-
+    app.register_blueprint(api.routes.autogen.blueprint, url_prefix="/api/autogen")
+    app.register_blueprint(api.routes.user.blueprint, url_prefix="/api/user")
     api.logger.setup_logs({"verbose": 2})
     return app
 
@@ -66,92 +65,12 @@ def after_request(response):
         response.mimetype = 'appication/json'
     return response
 
-@app.route('/api/user/shell', methods=['GET'])
-@api_wrapper
-def get_shell_account_hook():
-    return WebSuccess(data=api.team.get_shell_account())
-
-@app.route('/api/user/create', methods=['POST'])
-@api_wrapper
-def create_user_hook():
-    new_uid = api.user.create_user_request(api.common.flat_multi(request.form))
-    session['uid'] = new_uid
-    return WebSuccess("User '{}' registered successfully!".format(request.form["username"]))
-
-@app.route('/api/user/update_password', methods=['POST'])
-@api_wrapper
-@check_csrf
-@require_login
-def update_password_hook():
-    api.user.update_password_request(api.common.flat_multi(request.form), check_current=True)
-    return WebSuccess("Your password has been successfully updated!")
-
-@app.route('/api/user/disable_account', methods=['POST'])
-@api_wrapper
-@check_csrf
-@require_login
-def disable_account_hook():
-    api.user.disable_account_request(api.common.flat_multi(request.form), check_current=True)
-    return WebSuccess("Your have successfully disabled your account!")
-
-@app.route('/api/user/reset_password', methods=['GET'])
-@api_wrapper
-def reset_password_hook():
-    username = request.args.get("username", None)
-
-    api.utilities.request_password_reset(username)
-    return WebSuccess("A password reset link has been sent to the email address provided during registration.")
-
-@app.route('/api/user/confirm_password_reset', methods=['POST'])
-@api_wrapper
-def confirm_password_reset_hook():
-    password = request.form.get("new-password")
-    confirm = request.form.get("new-password-confirmation")
-    token = request.form.get("reset-token")
-
-    api.utilities.reset_password(token, password, confirm)
-    return WebSuccess("Your password has been reset")
-
-@app.route('/api/user/login', methods=['POST'])
-@api_wrapper
-def login_hook():
-    username = request.form.get('username')
-    password = request.form.get('password')
-    api.auth.login(username, password)
-    return WebSuccess(message="Successfully logged in as " + username, data={'teacher': api.user.is_teacher()})
-
-@app.route('/api/user/logout', methods=['GET'])
-@api_wrapper
-def logout_hook():
-    if api.auth.is_logged_in():
-        api.auth.logout()
-        return WebSuccess("Successfully logged out.")
-    else:
-        return WebError("You do not appear to be logged in.")
-
-@app.route('/api/user/status', methods=['GET'])
-@api_wrapper
-def status_hook():
-    status = {
-        "logged_in": api.auth.is_logged_in(),
-        "admin": api.auth.is_admin(),
-        "teacher": api.auth.is_logged_in() and api.user.is_teacher(),
-        "enable_teachers": api.config.enable_teachers,
-        "enable_feedback": api.config.enable_feedback,
-        "shell": api.config.enable_shell,
-        "enable_captcha": api.config.enable_captcha,
-        "competition_active": api.utilities.check_competition_active(),
-        "username": api.user.get_user()['username'] if api.auth.is_logged_in() else ""
-    }
-
-    return WebSuccess(data=status)
 
 @app.route('/api/team', methods=['GET'])
 @api_wrapper
 @require_login
 def team_information_hook():
     return WebSuccess(data=api.team.get_team_information())
-
 
 @app.route('/api/team/score', methods=['GET'])
 @api_wrapper
