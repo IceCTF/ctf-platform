@@ -23,6 +23,7 @@ import api.routes.autogen
 import api.routes.user
 import api.routes.team
 import api.routes.stats
+import api.routes.admin
 
 log = api.logger.use(__name__)
 
@@ -47,6 +48,7 @@ def config_app(*args, **kwargs):
     app.register_blueprint(api.routes.user.blueprint, url_prefix="/api/user")
     app.register_blueprint(api.routes.team.blueprint, url_prefix="/api/team")
     app.register_blueprint(api.routes.stats.blueprint, url_prefix="/api/stats")
+    app.register_blueprint(api.routes.admin.blueprint, url_prefix="/api/admin")
 
     api.logger.setup_logs({"verbose": 2})
     return app
@@ -70,26 +72,6 @@ def after_request(response):
     if request.path[0:19] != "/api/autogen/serve/":
         response.mimetype = 'appication/json'
     return response
-
-
-
-@app.route('/api/admin/getallproblems', methods=['GET'])
-@api_wrapper
-@require_admin
-def get_all_problems_hook():
-    problems = api.problem.get_all_problems()
-    if problems is None:
-        return WebError("There was an error querying problems from the database.")
-    return WebSuccess(data=problems)
-
-@app.route('/api/admin/getallusers', methods=['GET'])
-@api_wrapper
-@require_admin
-def get_all_users_hook():
-    users = api.user.get_all_users()
-    if users is None:
-        return WebError("There was an error query users from the database.")
-    return WebSuccess(data=users)
 
 @app.route('/api/problems', methods=['GET'])
 @api_wrapper
