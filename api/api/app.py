@@ -21,6 +21,7 @@ from api.annotations import log_action
 
 import api.routes.autogen
 import api.routes.user
+import api.routes.team
 
 log = api.logger.use(__name__)
 
@@ -40,8 +41,11 @@ def config_app(*args, **kwargs):
     app.config["SESSION_COOKIE_DOMAIN"] = session_cookie_domain
     app.config["SESSION_COOKIE_PATH"] = session_cookie_path
     app.config["SESSION_COOKIE_NAME"] = session_cookie_name
+
     app.register_blueprint(api.routes.autogen.blueprint, url_prefix="/api/autogen")
     app.register_blueprint(api.routes.user.blueprint, url_prefix="/api/user")
+    app.register_blueprint(api.routes.team.blueprint, url_prefix="/api/team")
+
     api.logger.setup_logs({"verbose": 2})
     return app
 
@@ -64,22 +68,6 @@ def after_request(response):
     if request.path[0:19] != "/api/autogen/serve/":
         response.mimetype = 'appication/json'
     return response
-
-
-@app.route('/api/team', methods=['GET'])
-@api_wrapper
-@require_login
-def team_information_hook():
-    return WebSuccess(data=api.team.get_team_information())
-
-@app.route('/api/team/score', methods=['GET'])
-@api_wrapper
-@require_login
-def get_team_score_hook():
-    score = api.stats.get_score(tid=api.user.get_user()['tid'])
-    if score is not None:
-        return WebSuccess(data={'score': score})
-    return WebError("There was an error retrieving your score.")
 
 @app.route('/api/stats/team/solved_problems', methods=['GET'])
 @api_wrapper
