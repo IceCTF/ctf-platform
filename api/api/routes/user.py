@@ -16,7 +16,9 @@ blueprint = Blueprint("user_api", __name__, template_folder="templates")
 @blueprint.route('/shell', methods=['GET'])
 @api_wrapper
 def get_shell_account_hook():
-    return WebSuccess(data=api.team.get_shell_account())
+    if api.config.enable_shell:
+        return WebSuccess(data=api.team.get_shell_account())
+    return WebError(data="Shell is not available.")
 
 @blueprint.route('/create', methods=['POST'])
 @api_wrapper
