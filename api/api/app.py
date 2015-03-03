@@ -22,6 +22,7 @@ from api.annotations import log_action
 import api.routes.autogen
 import api.routes.user
 import api.routes.team
+import api.routes.stats
 
 log = api.logger.use(__name__)
 
@@ -45,6 +46,7 @@ def config_app(*args, **kwargs):
     app.register_blueprint(api.routes.autogen.blueprint, url_prefix="/api/autogen")
     app.register_blueprint(api.routes.user.blueprint, url_prefix="/api/user")
     app.register_blueprint(api.routes.team.blueprint, url_prefix="/api/team")
+    app.register_blueprint(api.routes.stats.blueprint, url_prefix="/api/stats")
 
     api.logger.setup_logs({"verbose": 2})
     return app
@@ -69,29 +71,7 @@ def after_request(response):
         response.mimetype = 'appication/json'
     return response
 
-@app.route('/api/stats/team/solved_problems', methods=['GET'])
-@api_wrapper
-@require_login
-@block_before_competition(WebError("The competition has not begun yet!"))
-def get_team_solved_problems_hook():
-    tid = request.args.get("tid", None)
-    stats = {
-        "problems": api.stats.get_problems_by_category(),
-        "members": api.stats.get_team_member_stats(tid)
-    }
 
-    return WebSuccess(data=stats)
-
-@app.route('/api/stats/team/score_progression', methods=['GET'])
-@api_wrapper
-@require_login
-@block_before_competition(WebError("The competition has not begun yet!"))
-def get_team_score_progression():
-    category = request.form.get("category", None)
-
-    tid = api.user.get_team()["tid"]
-
-    return WebSuccess(data=[api.stats.get_score_progression(tid=tid, category=category)])
 
 @app.route('/api/admin/getallproblems', methods=['GET'])
 @api_wrapper
