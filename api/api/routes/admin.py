@@ -5,7 +5,7 @@ from api.common import WebSuccess, WebError
 from api.annotations import api_wrapper, require_login, require_teacher, require_admin
 from api.annotations import log_action
 
-blueprint = Blueprint("admin_api", __name__, template_folder="templates")
+blueprint = Blueprint("admin_api", __name__)
 
 @blueprint.route('/getallproblems', methods=['GET'])
 @api_wrapper

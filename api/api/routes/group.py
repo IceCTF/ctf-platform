@@ -7,7 +7,7 @@ from api.annotations import api_wrapper, require_login, require_teacher, require
 from api.annotations import block_before_competition, block_after_competition
 from api.annotations import log_action
 
-blueprint = Blueprint("group_api", __name__, template_folder="templates")
+blueprint = Blueprint("group_api", __name__)
 
 @blueprint.route('', methods=['GET'])
 @api_wrapper
