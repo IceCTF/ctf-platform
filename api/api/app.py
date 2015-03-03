@@ -25,6 +25,7 @@ import api.routes.team
 import api.routes.stats
 import api.routes.admin
 import api.routes.problem
+import api.routes.achievements
 
 log = api.logger.use(__name__)
 
@@ -51,6 +52,7 @@ def config_app(*args, **kwargs):
     app.register_blueprint(api.routes.stats.blueprint, url_prefix="/api/stats")
     app.register_blueprint(api.routes.admin.blueprint, url_prefix="/api/admin")
     app.register_blueprint(api.routes.problem.blueprint, url_prefix="/api/problems")
+    app.register_blueprint(api.routes.achievements.blueprint, url_prefix="/api/achievements")
 
     api.logger.setup_logs({"verbose": 2})
     return app
@@ -74,92 +76,6 @@ def after_request(response):
     if request.path[0:19] != "/api/autogen/serve/":
         response.mimetype = 'appication/json'
     return response
-
-
-@app.route('/api/group/list')
-@api_wrapper
-@require_login
-def get_group_list_hook():
-    return WebSuccess(data=api.team.get_groups())
-
-@app.route('/api/group', methods=['GET'])
-@api_wrapper
-@require_login
-def get_group_hook():
-    name = request.form.get("group-name")
-    owner = request.form.get("group-owner")
-    owner_uid = api.user.get_user(name=owner)["uid"]
-    if not api.group.is_member_of_group(name=name, owner_uid=owner_uid):
-        return WebError("You are not a member of this group.")
-    return WebSuccess(data=api.group.get_group(name=request.form.get("group-name"), owner_uid=owner_uid))
-
-@app.route('/api/group/member_information', methods=['GET'])
-@api_wrapper
-def get_memeber_information_hook(gid=None):
-    gid = request.args.get("gid")
-    if not api.group.is_owner_of_group(gid):
-        return WebError("You do not own that group!")
-
-    return WebSuccess(data=api.group.get_member_information(gid=gid))
-
-@app.route('/api/group/score', methods=['GET'])
-@api_wrapper
-@require_teacher
-def get_group_score_hook():  #JB: Fix this
-    name = request.args.get("group-name")
-    if not api.group.is_owner_of_group(gid=name):
-        return WebError("You do not own that group!")
-
-    #TODO: Investigate!
-    score = api.stats.get_group_scores(name=name)
-    if score is None:
-        return WebError("There was an error retrieving your score.")
-
-    return WebSuccess(data={'score': score})
-
-@app.route('/api/group/create', methods=['POST'])
-@api_wrapper
-@check_csrf
-@require_teacher
-def create_group_hook():
-    gid = api.group.create_group_request(api.common.flat_multi(request.form))
-    return WebSuccess("Successfully created group", gid)
-
-@app.route('/api/group/join', methods=['POST'])
-@api_wrapper
-@check_csrf
-@require_login
-def join_group_hook():
-    api.group.join_group_request(api.common.flat_multi(request.form))
-    return WebSuccess("Successfully joined group")
-
-@app.route('/api/group/leave', methods=['POST'])
-@api_wrapper
-@check_csrf
-@require_login
-def leave_group_hook():
-    api.group.leave_group_request(api.common.flat_multi(request.form))
-    return WebSuccess("Successfully left group")
-
-@app.route('/api/group/delete', methods=['POST'])
-@api_wrapper
-@check_csrf
-@require_teacher
-def delete_group_hook():
-    api.group.delete_group_request(api.common.flat_multi(request.form))
-    return WebSuccess("Successfully deleted group")
-
-@app.route('/api/achievements', methods=['GET'])
-@require_login
-@api_wrapper
-def get_achievements_hook():
-    tid = api.user.get_team()["tid"]
-    achievements = api.achievement.get_earned_achievements_display(tid=tid)
-
-    for achievement in achievements:
-        achievement["timestamp"] = None  # JB : Hack to temporarily fix achievements timestamp problem
-
-    return WebSuccess(data=achievements)
 
 @app.route('/api/time', methods=['GET'])
 @api_wrapper
