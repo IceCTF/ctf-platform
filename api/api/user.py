@@ -185,10 +185,7 @@ def create_user(username, firstname, lastname, email, password_hash, tid, teache
         'password_hash': password_hash,
         'tid': tid,
         'teacher': teacher,
-        'avatar': 3,
-        'eventid': 0,
         'disabled': False,
-        'level': 'Not Started',
         'background': background,
         'country': country,
         'receive_ctf_emails': receive_ctf_emails
