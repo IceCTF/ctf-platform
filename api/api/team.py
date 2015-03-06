@@ -79,8 +79,6 @@ def create_team(params):
 
     Args:
         team_name: Name of the team
-        adviser_name: Full name of the team's adviser
-        adviser_email: Adviser's email address
         school: Name of the school
         password: Team's password
         eligible: the teams eligibility
