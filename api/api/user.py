@@ -48,12 +48,6 @@ new_eligible_team_schema = Schema({
     ),
     Required('team-password-new'):
         check(("Team passphrase must be between 3 and 20 characters.", [str, Length(min=3, max=20)])),
-    Required('team-adv-name-new'):
-        check(("Adviser names should be between 3 and 50 characters.", [str, Length(min=3, max=50)])),
-    Required('team-adv-email-new'): check(
-        ("Adviser emails must be between 5 and 50 characters.", [str, Length(min=5, max=50)]),
-        ("Your adviser email does not look like an email address.", [_check_email_format])
-    ),
     Required('team-school-new'):
         check(("School names must be between 3 and 100 characters.", [str, Length(min=3, max=100)]))
 
@@ -257,8 +251,6 @@ def create_user_request(params):
         team-password-existing: Password of existing team to join.
 
         team-name-new: Name of new team.
-        team-adv-name-new: Name of adviser.
-        team-adv-email-new: Adviser's email address.
         team-school-new: Name of the team's school.
         team-password-new: Password to join team.
 
@@ -307,8 +299,6 @@ def create_user_request(params):
 
         team_params = {
             "team_name": params["team-name-new"],
-            "adviser_name": params["team-adv-name-new"],
-            "adviser_email": params["team-adv-email-new"],
             "school": params["team-school-new"],
             "password": params["team-password-new"],
             "eligible": eligible

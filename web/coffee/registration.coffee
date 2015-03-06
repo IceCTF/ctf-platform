@@ -20,23 +20,23 @@ checkEligibility = ->
     is_us = $("#country-select").val() in ["US", ""]
     is_k12 = $("#background-select").val() in ["student_el", "student_ms", "student_hs", "student_home"]
     is_student = $("#background-select").val() in ["student_el", "student_ms", "student_hs", "student_home", "student_undergrad", "student_grad"]
+    is_teacher = $("#background-select").val() == "teacher"
 
     # This should be changed to reflect your eligibility requirements
     if not is_k12
         $("#eligibility-warning").show()
-        $("#adviser-group").hide()
     else
         $("#eligibility-warning").hide()
-        $("#adviser-group").show()
 
     if is_student
         $("#school-group").show()
-        $("#button-adviser").hide()
         if $("#registration-adviser-page").is(":visible")
             $("#button-new-team").click()
-    else
-        $("#school-group").hide()
+
+    if is_teacher
         $("#button-adviser").show()
+    else
+        $("#button-adviser").hide()
 
     setRequired()
 
