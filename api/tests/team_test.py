@@ -10,33 +10,13 @@ import bcrypt
 
 from api.common import WebException, InternalException
 from common import clear_collections, ensure_empty_collections
+from common import base_team, base_user
 from conftest import setup_db, teardown_db
 
 class TestTeams(object):
     """
     API Tests for team.py
     """
-
-    base_team = {
-        "team_name": "team",
-        "school": "Test HS",
-        "password": "much_protected",
-        "eligible": True
-    }
-
-    base_user = {
-        "username": "valid",
-        "firstname": "Fred",
-        "lastname": "Hacker",
-        "password": "valid",
-        "email": "valid@hs.edu",
-        "ctf-emails": False,
-        "create-new-team": "false",
-        "background": "student_hs",
-        "country": "US",
-        "team-name-existing": base_team['team_name'],
-        "team-password-existing": base_team['password']
-    }
 
     def setup_class(self):
         setup_db()
@@ -57,7 +37,7 @@ class TestTeams(object):
         """
         tids = []
         for i in range(teams):
-            team = self.base_team.copy()
+            team = base_team.copy()
             team["team_name"] += str(i)
             tids.append(api.team.create_team(team))
 
@@ -66,7 +46,7 @@ class TestTeams(object):
         assert len(api.team.get_all_teams()) == len(tids), "Not all teams were created."
 
         for i, tid in enumerate(tids):
-            name = self.base_team['team_name'] + str(i)
+            name = base_team['team_name'] + str(i)
 
             team_from_tid = api.team.get_team(tid=tid)
             team_from_name = api.team.get_team(name=name)
@@ -85,11 +65,11 @@ class TestTeams(object):
             team.get_team_uids
         """
 
-        tid = api.team.create_team(self.base_team.copy())
+        tid = api.team.create_team(base_team.copy())
 
         uids = []
         for i in range(api.team.max_team_users):
-            test_user = self.base_user.copy()
+            test_user = base_user.copy()
             test_user['username'] += str(i)
             uids.append(api.user.create_user_request(test_user))
 
@@ -108,21 +88,21 @@ class TestTeams(object):
             user.create_user_request
         """
 
-        api.team.create_team(self.base_team.copy())
+        api.team.create_team(base_team.copy())
 
         uid = None
         for i in range(api.team.max_team_users):
-            test_user = self.base_user.copy()
+            test_user = base_user.copy()
             test_user['username'] += str(i)
             uid = api.user.create_user_request(test_user)
 
         with pytest.raises(WebException):
-            api.user.create_user_request(self.base_user.copy())
+            api.user.create_user_request(base_user.copy())
             assert False, "Team has too many users"
 
         api.user.disable_account(uid)
 
         #Should be able to add another user after disabling one.
-        test_user = self.base_user.copy()
+        test_user = base_user.copy()
         test_user['username'] += "addition"
         api.user.create_user_request(test_user)

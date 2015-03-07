@@ -11,6 +11,7 @@ import api.team
 
 from api.common import safe_fail, WebException, InternalException
 from common import clear_collections, ensure_empty_collections
+from common import base_team, base_user
 from conftest import setup_db, teardown_db
 
 class TestUsers(object):
@@ -47,28 +48,6 @@ class TestUsers(object):
         "team-password-new": "leet_hax"
     }
 
-    existing_team_user = {
-        "username": "valid",
-        "firstname": "Fred",
-        "lastname": "Hacker",
-        "password": "valid",
-        "email": "valid@hs.edu",
-        "ctf-emails": False,
-        "create-new-team": "false",
-        "background": "student_hs",
-        "country": "US",
-
-        "team-password-existing": "leet_hax",
-        "team-name-existing": "massive_hacks"
-    }
-
-    #TB: This is sort of also testing team.py. Is there a better way to seperate these?
-    base_team = {
-        "team_name" : "massive_hacks",
-        "school": "Hacks HS",
-        "password": "leet_hax"
-    }
-
     def setup_class(self):
         setup_db()
 
@@ -87,7 +66,7 @@ class TestUsers(object):
             user.get_user
         """
 
-        tid = api.team.create_team(self.base_team.copy())
+        tid = api.team.create_team(base_team.copy())
 
         uids = []
         for i in range(api.team.max_team_users):
@@ -118,10 +97,10 @@ class TestUsers(object):
             partially: user.create_user_request
         """
 
-        team = self.base_team.copy()
+        team = base_team.copy()
         api.team.create_team(team)
 
-        invalid_email_user = self.existing_team_user.copy()
+        invalid_email_user = base_user.copy()
         invalid_email_user["email"] = "not_an_email"
 
         with pytest.raises(Exception):
@@ -134,7 +113,7 @@ class TestUsers(object):
             api.user.create_user_request(invalid_email_user)
             assert False, "Was able to register a user with invalid characters"
 
-        valid_email_user = self.existing_team_user.copy()
+        valid_email_user = base_user.copy()
         assert api.user.create_user_request(valid_email_user), "Was not able to register a valid email."
 
     @ensure_empty_collections("users", "teams")
@@ -149,9 +128,9 @@ class TestUsers(object):
             user.get_team
         """
 
-        team = self.base_team.copy()
+        team = base_team.copy()
         tid = api.team.create_team(team)
-        uid = api.user.create_user_request(self.existing_team_user.copy())
+        uid = api.user.create_user_request(base_user.copy())
 
         result_team = api.user.get_team(uid=uid)
         assert tid == result_team['tid'], "Unable to pair uid and tid."
@@ -203,24 +182,24 @@ class TestUsers(object):
             team.create_team
         """
 
-        tid = api.team.create_team(self.base_team.copy())
+        tid = api.team.create_team(base_team.copy())
         assert tid, "Team was not created."
 
-        uid = api.user.create_user_request(self.existing_team_user.copy())
+        uid = api.user.create_user_request(base_user.copy())
         assert uid == api.user.get_user(name="valid")["uid"], "Good user created unsuccessfully."
 
         with pytest.raises(WebException):
-            api.user.create_user_request(self.existing_team_user.copy())
+            api.user.create_user_request(base_user.copy())
             assert False, "Was able to register and join the team twice."
 
         with pytest.raises(WebException):
-            invalid_team_user = self.existing_team_user.copy()
+            invalid_team_user = base_user.copy()
             invalid_team_user["team-name-existing"] = "Totally Invalid"
             api.user.create_user_request(invalid_team_user)
             assert False, "Was able to join a team that doesn't exist."
 
         with pytest.raises(WebException):
-            invalid_team_user = self.existing_team_user.copy()
+            invalid_team_user = base_user.copy()
             invalid_team_user["team-password-existing"] = "Not correct"
             api.user.create_user_request(invalid_team_user)
             assert False, "Was able to join a team with an invalid password."
@@ -241,7 +220,7 @@ class TestUsers(object):
             user.hash_password
         """
 
-        tid = api.team.create_team(self.base_team.copy())
+        tid = api.team.create_team(base_team.copy())
         uid = api.user.create_user("fred", "fred", "fred", "fred@gmail.com", "HASH", tid)
 
         old_hash = api.user.get_user(uid=uid)["password_hash"]
@@ -279,27 +258,3 @@ class TestUsers(object):
         assert api.user.is_teacher(uid=teacher_uid), "Teacher account is not flagged as teacher"
         assert teacher_uid not in eligible_uids, "Teacher was set to be eligible"
         assert teacher_uid in all_uids, "Teacher was not in list of all users"
-
-
-    @ensure_empty_collections("users", "teams")
-    @clear_collections("users", "teams")
-    def test_unicode_fields(self):
-        """
-        Ensures that unicode characters will work in user and team fields
-        """
-
-        team_name = u"Team \N{GREEK CAPITAL LETTER DELTA}"
-        username = u"User \u039B"
-
-        user1 = self.new_team_user.copy()
-        user2 = self.existing_team_user.copy()
-
-        user1["username"] = username
-        user1["team-name-new"] =  team_name
-        user2["team-name-existing"] = team_name
-
-        api.user.create_user_request(user1)
-        api.user.create_user_request(user2)
-
-        assert safe_fail(api.user.get_user, name=username) is not None, "Cannot look up unicode username"
-        assert safe_fail(api.team.get_team, name=team_name) is not None, "Cannot look up unicode team name"
