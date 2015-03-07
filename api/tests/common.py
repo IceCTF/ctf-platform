@@ -13,6 +13,21 @@ base_team = {
     "eligible": True
 }
 
+new_team_user = {
+    "username": "valid",
+    "firstname": "Fred",
+    "lastname": "Hacker",
+    "password": "valid",
+    "email": "valid@hs.edu",
+    "ctf-emails": False,
+    "create-new-team": "true",
+    "background": "student_hs",
+    "country": "US",
+    "team-school-new": "hacker edu",
+    "team-name-new": base_team['team_name'],
+    "team-password-new": base_team['password']
+}
+
 base_user = {
     "username": "valid",
     "firstname": "Fred",
