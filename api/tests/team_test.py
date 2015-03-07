@@ -19,8 +19,6 @@ class TestTeams(object):
 
     base_team = {
         "team_name": "team",
-        "adviser_name": "Dr. Test",
-        "adviser_email": "test@hs.edu",
         "school": "Test HS",
         "password": "much_protected",
         "eligible": True
@@ -28,10 +26,14 @@ class TestTeams(object):
 
     base_user = {
         "username": "valid",
+        "firstname": "Fred",
+        "lastname": "Hacker",
         "password": "valid",
         "email": "valid@hs.edu",
+        "ctf-emails": False,
         "create-new-team": "false",
-
+        "background": "student_hs",
+        "country": "US",
         "team-name-existing": base_team['team_name'],
         "team-password-existing": base_team['password']
     }
