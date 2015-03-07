@@ -11,42 +11,13 @@ import api.team
 
 from api.common import safe_fail, WebException, InternalException
 from common import clear_collections, ensure_empty_collections
-from common import base_team, base_user
+from common import base_team, base_user, new_team_user, teacher_user
 from conftest import setup_db, teardown_db
 
 class TestUsers(object):
     """
     API Tests for user.py
     """
-
-    teacher_user = {
-        "username": "valid",
-        "password": "valid",
-        "firstname": "Mr. Fred",
-        "lastname": "Hacker",
-        "email": "valid@hs.edu",
-        "background": "teacher",
-        "create-new-teacher": "true",
-        "teacher-school": "Hacks HS",
-        "country": "US",
-        "ctf-emails": False
-    }
-
-    new_team_user = {
-        "username": "valid",
-        "password": "valid",
-        "firstname": "Fred",
-        "lastname": "Hacker",
-        "email": "valid@hs.edu",
-        "create-new-team": "true",
-        "background": "student_hs",
-        "country": "US",
-        "ctf-emails": False,
-
-        "team-name-new": "Valid Hacks",
-        "team-school-new": "Hacks HS",
-        "team-password-new": "leet_hax"
-    }
 
     def setup_class(self):
         setup_db()
@@ -147,23 +118,23 @@ class TestUsers(object):
             team.get_team_uids
         """
 
-        uid = api.user.create_user_request(self.new_team_user)
-        assert uid == api.user.get_user(name=self.new_team_user["username"])["uid"], "Good user created unsuccessfully."
+        uid = api.user.create_user_request(new_team_user)
+        assert uid == api.user.get_user(name=new_team_user["username"])["uid"], "Good user created unsuccessfully."
 
-        team = api.team.get_team(name=self.new_team_user["team-name-new"])
+        team = api.team.get_team(name=new_team_user["team-name-new"])
         assert team, "Team was not created."
 
         team_uids = api.team.get_team_uids(team["tid"])
         assert uid in team_uids, "User was not successfully placed into the new team."
 
-        sheep_user = self.new_team_user.copy()
+        sheep_user = new_team_user.copy()
         sheep_user["username"] = "something_different"
 
         with pytest.raises(WebException):
             api.user.create_user_request(sheep_user)
             assert False, "Was able to create a new team... twice"
 
-        sheep_user = self.new_team_user.copy()
+        sheep_user = new_team_user.copy()
         sheep_user["team-name-new"] = "noneixstent_team"
 
         with pytest.raises(WebException):
@@ -249,7 +220,7 @@ class TestUsers(object):
             user.get_all_users
         """
 
-        teacher_uid = api.user.create_user_request(self.teacher_user.copy())
+        teacher_uid = api.user.create_user_request(teacher_user.copy())
 
 
         eligible_uids = [u['uid'] for u in api.user.get_all_users()]
