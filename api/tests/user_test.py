@@ -9,7 +9,7 @@ import api.user
 import api.common
 import api.team
 
-from api.common import safe_fail, WebException
+from api.common import safe_fail, WebException, InternalException
 from common import clear_collections, ensure_empty_collections
 from conftest import setup_db, teardown_db
 
@@ -21,29 +21,42 @@ class TestUsers(object):
     teacher_user = {
         "username": "valid",
         "password": "valid",
+        "firstname": "Mr. Fred",
+        "lastname": "Hacker",
         "email": "valid@hs.edu",
+        "background": "teacher",
         "create-new-teacher": "true",
-        "teacher-school": "Hacks HS"
+        "teacher-school": "Hacks HS",
+        "country": "US",
+        "ctf-emails": False
     }
 
     new_team_user = {
         "username": "valid",
         "password": "valid",
+        "firstname": "Fred",
+        "lastname": "Hacker",
         "email": "valid@hs.edu",
         "create-new-team": "true",
+        "background": "student_hs",
+        "country": "US",
+        "ctf-emails": False,
 
         "team-name-new": "Valid Hacks",
-        "team-adv-name-new": "Dr. Hacks",
-        "team-adv-email-new": "hacks@hs.edu",
         "team-school-new": "Hacks HS",
         "team-password-new": "leet_hax"
     }
 
     existing_team_user = {
         "username": "valid",
+        "firstname": "Fred",
+        "lastname": "Hacker",
         "password": "valid",
         "email": "valid@hs.edu",
+        "ctf-emails": False,
         "create-new-team": "false",
+        "background": "student_hs",
+        "country": "US",
 
         "team-password-existing": "leet_hax",
         "team-name-existing": "massive_hacks"
@@ -52,8 +65,6 @@ class TestUsers(object):
     #TB: This is sort of also testing team.py. Is there a better way to seperate these?
     base_team = {
         "team_name" : "massive_hacks",
-        "adviser_name": "Dr. Hacks",
-        "adviser_email": "hacks@hs.edu",
         "school": "Hacks HS",
         "password": "leet_hax"
     }
@@ -66,7 +77,7 @@ class TestUsers(object):
 
     @ensure_empty_collections("users", "teams")
     @clear_collections("users", "teams")
-    def test_create_batch_users(self, users=10):
+    def test_create_batch_users(self):
         """
         Tests user creation.
 
@@ -79,16 +90,15 @@ class TestUsers(object):
         tid = api.team.create_team(self.base_team.copy())
 
         uids = []
-        for i in range(users):
+        for i in range(api.team.max_team_users):
             name = "fred" + str(i)
             uids.append(api.user.create_user(
-                name, name + "@gmail.com", name, tid
+                name, name, name,  name + "@gmail.com", name, tid
             ))
 
-        assert len(set(uids)) == len(uids), "UIDs are not unique."
-
-        assert len(api.user.get_all_users()) == users and \
-            users == len(uids), "Not all users were created."
+        with pytest.raises(InternalException):
+            name = "fred" + str(api.team.max_team_users)
+            api.user.create_user(name, name, name, name+"@gmail.com", name, tid)
 
         for i, uid in enumerate(uids):
             name = "fred" + str(i)
@@ -114,7 +124,7 @@ class TestUsers(object):
         invalid_email_user = self.existing_team_user.copy()
         invalid_email_user["email"] = "not_an_email"
 
-        with pytest.raises(WebException):
+        with pytest.raises(Exception):
             api.user.create_user_request(invalid_email_user)
             assert False, "Was able to register a user with something that doesn't look like an email."
 
@@ -146,41 +156,6 @@ class TestUsers(object):
         result_team = api.user.get_team(uid=uid)
         assert tid == result_team['tid'], "Unable to pair uid and tid."
 
-    @ensure_empty_collections("users", "teams")
-    @clear_collections("users", "teams")
-    def test_create_user_request_general_validation(self):
-        """
-        Tests the registration form validation functionality.
-
-        Covers:
-            partially: user.create_user_request
-        """
-
-        #Generally invalidate every length requirement
-        for bad_length_mod in [0, 200]:
-            for user_blueprint in [self.new_team_user, self.existing_team_user]:
-                for key in user_blueprint.keys():
-                    sheep_user = user_blueprint.copy()
-
-                    #Make sure to keep the basic properties
-
-                    if key == "create-new-team":
-                        continue
-                    elif key == "email":
-                        sheep_user[key] = "x@x." + "x" * bad_length_mod
-                    else:
-                        sheep_user[key] = "A" * bad_length_mod
-
-                    if sheep_user["create-new-team"] != "true" and \
-                    safe_fail(api.team.get_team, name=sheep_user["team-name-existing"]) is None:
-                        team = self.base_team.copy()
-                        team['team_name'], team['password'] = \
-                                sheep_user["team-name-existing"], sheep_user["team-password-existing"]
-                        api.team.create_team(team)
-
-                    with pytest.raises(WebException):
-                        api.user.create_user_request(sheep_user)
-                        assert False, "Validation failed to catch {} length {}".format(bad_length_mod, key)
 
     @ensure_empty_collections("users", "teams")
     @clear_collections("users", "teams")
@@ -267,7 +242,7 @@ class TestUsers(object):
         """
 
         tid = api.team.create_team(self.base_team.copy())
-        uid = api.user.create_user("fred", "fred@gmail.com", "HASH", tid)
+        uid = api.user.create_user("fred", "fred", "fred", "fred@gmail.com", "HASH", tid)
 
         old_hash = api.user.get_user(uid=uid)["password_hash"]
         assert old_hash == "HASH", "Was unable to confirm password was stored correctly."
@@ -289,7 +264,7 @@ class TestUsers(object):
         """
         Tests teacher account creation.
 
-        Covers: 
+        Covers:
             user.create_user_request
             user.is_teacher
             user.get_all_users
