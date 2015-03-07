@@ -110,11 +110,19 @@ class TestTeams(object):
 
         api.team.create_team(self.base_team.copy())
 
+        uid = None
         for i in range(api.team.max_team_users):
             test_user = self.base_user.copy()
             test_user['username'] += str(i)
-            api.user.create_user_request(test_user)
+            uid = api.user.create_user_request(test_user)
 
         with pytest.raises(WebException):
             api.user.create_user_request(self.base_user.copy())
             assert False, "Team has too many users"
+
+        api.user.disable_account(uid)
+
+        #Should be able to add another user after disabling one.
+        test_user = self.base_user.copy()
+        test_user['username'] += "addition"
+        api.user.create_user_request(test_user)
