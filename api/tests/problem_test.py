@@ -9,25 +9,13 @@ import api
 
 from api.common import APIException
 from common import clear_collections, ensure_empty_collections, clear_cache
+from common import new_team_user
 from conftest import setup_db, teardown_db
 
 class TestProblems(object):
     """
     API Tests for problem.py
     """
-
-    test_user = {
-        "username": "valid",
-        "password": "valid",
-        "email": "test@hs.edu",
-        "create-new-team": "true",
-
-        "team-name-new": "test",
-        "team-adv-name-new": "test",
-        "team-adv-email-new": "hacks@hs.edu",
-        "team-school-new": "Hacks HS",
-        "team-password-new": "leet_hax"
-    }
 
     # create 5 base problems
     base_problems = [
@@ -110,7 +98,7 @@ class TestProblems(object):
         setup_db()
 
         # initialization code
-        self.uid = api.user.create_user_request(self.test_user)
+        self.uid = api.user.create_user_request(new_team_user)
         self.tid = api.user.get_team(uid=self.uid)['tid']
 
         # insert all problems
