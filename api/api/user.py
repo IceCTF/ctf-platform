@@ -11,7 +11,7 @@ from api.common import WebException, InternalException
 from api.annotations import log_action
 from voluptuous import Required, Length, Schema
 
-_check_email_format = lambda email: re.match(r"[A-Za-z0-9\._%+-]+@[A-Za-z0-9\.-]+\.[A-Za-z]{2,4}", email) is not None
+_check_email_format = lambda email: re.match(r".+@.+\..{2,}", email) is not None
 
 user_schema = Schema({
     Required('email'): check(
