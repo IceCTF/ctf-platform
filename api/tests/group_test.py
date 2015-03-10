@@ -104,4 +104,4 @@ class TestGroups(object):
 
         with pytest.raises(WebException):
             api.group.leave_group_request(params, self.owner_tid)
-            assert False, "Was able to leve group twice!"
+            assert False, "Was able to leave group twice!"
