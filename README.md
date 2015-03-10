@@ -66,6 +66,19 @@ The "threshold" and "weightmap" fields are used to manage problem unlocking. If 
 Some problems need to provide additional files for the user to view or download (binaries, encrypted messages, images, etc.). To add static files to your problem, add a *static* folder in the directory for that problem (`/problems/misc/myproblem/static/`, for example) and place any files in that directory that you want to serve statically. Then, in your problem description (or hint), you can link to this file using the URL `/problem-static/[path to problem in problems directory]/[file name]`. Look at the example problem 'Sdrawkcab' to see this in action.
 
 
+Running the Regression Tests
+----------------------------
+
+The platform comes with a series of regression tests that should be run before any change is committed to the API.
+To run the tests:
+
+1. `vagrant ssh` into your virtual machine.
+2. Run `devploy` to bring up an instance from your latest code.
+3. To be able to import the API, `cd api` and run the tests with `./run_tests.sh`
+ 
+All tests should pass with your changes.
+
+
 Contact
 ------------
 
