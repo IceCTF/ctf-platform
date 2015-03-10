@@ -2,7 +2,7 @@
 Generator example.
 """
 
-def generate(random):
+def generate(random, pid, tools, n):
     """
     Generate an instance of the problem
 

@@ -6,6 +6,55 @@ import api
 
 from functools import wraps
 
+base_team = {
+    "team_name": "team",
+    "school": "Test HS",
+    "password": "much_protected",
+    "eligible": True
+}
+
+new_team_user = {
+    "username": "valid",
+    "firstname": "Fred",
+    "lastname": "Hacker",
+    "password": "valid",
+    "email": "valid@hs.edu",
+    "ctf-emails": False,
+    "create-new-team": "true",
+    "background": "student_hs",
+    "country": "US",
+    "team-school-new": "hacker edu",
+    "team-name-new": base_team['team_name'],
+    "team-password-new": base_team['password']
+}
+
+teacher_user = {
+    "username": "valid",
+    "password": "valid",
+    "firstname": "Mr. Fred",
+    "lastname": "Hacker",
+    "email": "valid@hs.edu",
+    "background": "teacher",
+    "create-new-teacher": "true",
+    "teacher-school": "Hacks HS",
+    "country": "US",
+    "ctf-emails": False
+}
+
+base_user = {
+    "username": "valid",
+    "firstname": "Fred",
+    "lastname": "Hacker",
+    "password": "valid",
+    "email": "valid@hs.edu",
+    "ctf-emails": False,
+    "create-new-team": "false",
+    "background": "student_hs",
+    "country": "US",
+    "team-name-existing": base_team['team_name'],
+    "team-password-existing": base_team['password']
+}
+
 def clear_cache():
     """
     Clears the cache before the function is run.
