@@ -1,3 +1,5 @@
+# coding: utf-8
+
 """
 Common Testing Functionality.
 """
@@ -7,7 +9,7 @@ import api
 from functools import wraps
 
 base_team = {
-    "team_name": "team",
+    "team_name": "team¢",
     "school": "Test HS",
     "password": "much_protected",
     "eligible": True
@@ -18,7 +20,7 @@ new_team_user = {
     "firstname": "Fred",
     "lastname": "Hacker",
     "password": "valid",
-    "email": "valid@hs.edu",
+    "email": "validʃ@hs.edu",
     "ctf-emails": False,
     "create-new-team": "true",
     "background": "student_hs",
@@ -30,19 +32,19 @@ new_team_user = {
 
 teacher_user = {
     "username": "valid",
-    "password": "valid",
+    "password": "valid❤",
     "firstname": "Mr. Fred",
     "lastname": "Hacker",
     "email": "valid@hs.edu",
     "background": "teacher",
     "create-new-teacher": "true",
-    "teacher-school": "Hacks HS",
+    "teacher-school": "µ Hacks HS",
     "country": "US",
     "ctf-emails": False
 }
 
 base_user = {
-    "username": "valid",
+    "username": "validµ",
     "firstname": "Fred",
     "lastname": "Hacker",
     "password": "valid",
