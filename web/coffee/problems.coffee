@@ -91,6 +91,10 @@ loadProblems = ->
       when 0
         apiNotify(data)
       when 1
+      	# We want the score to be level with the title, but the title
+	# is defined in a template. This solution is therefore a bit
+	# of a hack.
+        addScoreToTitle("#title")
         apiCall "GET", "/api/problems/feedback/reviewed", {}
         .done (reviewData) ->
           $("#problem-list-holder").html renderProblemList({
@@ -124,5 +128,11 @@ loadProblems = ->
 
           $(".problem-review-form").on "submit", addProblemReview
 
+addScoreToTitle = (selector) ->
+        apiCall "GET", "/api/team/score", {}
+        .done (data) ->
+          if data.data
+            $(selector).children("#team-score").remove()
+            $(selector).append("<span id='team-score' class='pull-right'>Score: " + data.data.score + "</span>")
 $ ->
   loadProblems()
