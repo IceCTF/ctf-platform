@@ -157,7 +157,7 @@ class TestUsers(object):
         assert tid, "Team was not created."
 
         uid = api.user.create_user_request(base_user.copy())
-        assert uid == api.user.get_user(name="valid")["uid"], "Good user created unsuccessfully."
+        assert uid == api.user.get_user(name=base_user["username"])["uid"], "Good user created unsuccessfully."
 
         with pytest.raises(WebException):
             api.user.create_user_request(base_user.copy())
