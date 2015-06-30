@@ -1,0 +1,16 @@
+ctf:
+  build: .
+  command: "./scripts/devploy"
+  ports:
+   - "8080:8080"
+   - "80:80"
+  volumes:
+   - .:/ctf
+  links:
+   - mongo
+  environment:
+    - DEBUG
+mongo:
+  image: mongo:3.1.4
+  ports:
+   - "27017"

@@ -2,7 +2,7 @@
 
 # Transpile the CoffeeScript files
 echo "Transpiling Coffeescript"
-coffee -c -o /home/vagrant/web/js/ /home/vagrant/web/coffee/
+coffee -c -o /ctf/web/js/ /ctf/web/coffee/
 
 # Shutdown the server
 echo "Shutting down nginx"
@@ -13,13 +13,13 @@ echo "Cleaning up old files"
 sudo rm -rf /srv/http/ctf/*
 
 echo "Generating web with Jekyll"
-cd /home/vagrant/web
+cd /ctf/web
 sudo jekyll build
 
 echo "Copying files to server"
-#sudo cp -r /home/vagrant/web/* /srv/http/ctf/
-mkdir -p /home/vagrant/problem_static
-sudo cp -r /home/vagrant/problem_static /srv/http/ctf/problem-static
+#sudo cp -r /ctf/web/* /srv/http/ctf/
+mkdir -p /ctf/problem_static
+sudo cp -r /ctf/problem_static /srv/http/ctf/problem-static
 
 # Make sure everything is in UNIX format.
 sudo dos2unix -q /srv/http/ctf/*.html
@@ -30,9 +30,8 @@ sudo service nginx start
 
 # Clear the cache
 echo "Clearing the API cache"
-/home/vagrant/api/api_manager.py database clear cache
+/ctf/api/api_manager.py database clear cache
 
 #Start picoCTF API
 echo "Starting the picoCTF API"
-tmux kill-session -t picoapi 2> /dev/null
-tmux new-session -s picoapi -d "cd /home/vagrant/api && python3 run.py"
+cd /ctf/api && python3 run.py
