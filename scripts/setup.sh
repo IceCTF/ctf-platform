@@ -26,12 +26,3 @@ pip3 install -r requirements.txt
 
 # Jekyll
 gem install jekyll --no-ri --no-rdoc
-
-# Configure Environment
-echo 'PATH=$PATH:/home/vagrant/scripts' >> /etc/profile
-
-# Configure Nginx
-cp ctf.nginx /etc/nginx/sites-enabled/ctf
-rm /etc/nginx/sites-enabled/default
-mkdir -p /srv/http/ctf
-service nginx restart

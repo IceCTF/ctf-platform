@@ -260,3 +260,4 @@ def setup_logs(args):
     stats_log.setLevel(logging.INFO)
 
     log.root.addHandler(stats_log)
+    log.error("hi")

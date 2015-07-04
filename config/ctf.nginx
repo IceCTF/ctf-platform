@@ -1,7 +1,8 @@
 server {
         server_name ctf;
         listen       80;
-        root   /srv/http/ctf;
+        root   /ctf/web/_site;
+        sendfile off;
 
 	error_page 404  =  /404.html;
 
@@ -14,7 +15,7 @@ server {
 ^/(problems|login|chat|logout|compete|registration|team|scoreboard|classroom|account|reset|shell|faq|news|contact|teachers|game-preview|sponsors|about|learn|promotional|tshirts)$
         {
             default_type text/html;
-            alias /srv/http/ctf/$1.html;
+            alias /ctf/web/_site/$1.html;
         }
 
         location ~ /problem-static/ {

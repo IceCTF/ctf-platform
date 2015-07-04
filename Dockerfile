@@ -19,8 +19,12 @@ RUN mkdir /ctf_setup
 WORKDIR /ctf_setup
 ADD ./scripts/setup.sh setup.sh
 ADD ./api/requirements.txt /ctf_setup/
-ADD ./config/ctf.nginx /ctf_setup/
 RUN ./setup.sh
+
+
+ADD ./scripts/setup_nginx.sh setup_nginx.sh
+ADD ./config/ctf.nginx /ctf_setup/
+RUN ./setup_nginx.sh
 
 # Create a mountpoint for the app
 RUN mkdir /ctf

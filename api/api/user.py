@@ -2,7 +2,7 @@
 API functions relating to user management and registration.
 """
 
-import bcrypt, re, urllib, flask
+import bcrypt, re, urllib, flask, json
 
 import api
 
@@ -219,15 +219,23 @@ def _validate_captcha(data):
     """
 
     post_data = urllib.parse.urlencode({
-        "privatekey": api.config.reCAPTCHA_private_key,
+        "secret": api.config.reCAPTCHA_private_key,
         "remoteip": flask.request.remote_addr,
-        "challenge": data["recaptcha_challenge_field"],
-        "response": data["recaptcha_response_field"]
+        "response": data["g-recaptcha-response"]
     }).encode("utf-8")
 
     request = urllib.request.Request(api.config.captcha_url, post_data)
     response = urllib.request.urlopen(request).read().decode("utf-8")
-    return response.split("\n")[0].lower() == "true"
+    data = json.loads(response)
+    if data["success"]:
+        return data["success"], None
+    else:
+        if "error-codes" in data: 
+            return False, data["error-codes"]
+        else:
+            return False, None
+    
+
 
 @log_action
 def create_user_request(params):
@@ -258,8 +266,10 @@ def create_user_request(params):
 
     validate(user_schema, params)
 
-    if api.config.enable_captcha and not _validate_captcha(params):
-        raise WebException("Incorrect captcha!")
+    if api.config.enable_captcha and False:
+        success, err = _validate_captcha(params)
+        if not success:
+            raise WebException("Incorrect or invalid captcha!")
 
     #Why are these strings? :o
     if params.get("create-new-teacher", "false") == "true":

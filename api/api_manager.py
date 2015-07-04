@@ -211,6 +211,9 @@ def load_problems(args):
     for error in errors:
         logging.warning(error)
 
+def recalculate_eligibility(args):
+    api.team.recalculate_all_eligibility()
+
 
 def main():
     parser = argparse.ArgumentParser(description="{} problem manager".format(api.config.competition_name))
@@ -263,6 +266,14 @@ def main():
     parser_database_clear = subparser_database.add_parser("clear", help="Clear collections")
     parser_database_clear.add_argument("collections", nargs="+", help="Collections to clear")
     parser_database_clear.set_defaults(func=clear_collections)
+
+
+    # Teams
+    parser_database = subparser.add_parser("team", help="Deal with team")
+    subparser_database = parser_database.add_subparsers(help="Select one of the following actions")
+
+    parser_database_clear = subparser_database.add_parser("eligibility", help="Recalculate Eligibility")
+    parser_database_clear.set_defaults(func=recalculate_eligibility)
 
     args = parser.parse_args()
     if args.silent:

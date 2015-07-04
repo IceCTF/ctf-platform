@@ -43,10 +43,8 @@
                         <label class="col-sm-4 control-label" for="background">Background</label>
                         <div class="col-sm-8">
                            <select class="form-control" id="background-select" name="background">
-                                <option value="student_el">Elementary School Student</option>
-                                <option value="student_ms">Middle School Student</option>
-                                <option value="student_hs" selected="selected">High School Student</option>
-                                <option value="student_home">Homeschooled Student</option>
+                                <option value="student_el">Elementary School Student (Grunnskólanemi)</option>
+                                <option value="student_hs" selected="selected">College Student (Menntaskólanemi)</option>
                                 <option value="student_undergrad">Undergraduate</option>
                                 <option value="student_grad">Graduate Student</option>
                                 <option value="teacher">Teacher</option>
@@ -69,7 +67,7 @@
                     <table>
                     <tr>
                         <td style="vertical-align: top; padding-right: 6px"><span class="glyphicon glyphicon glyphicon-exclamation-sign"></span></td>
-                        <td>Note that only K-12 students from the United States are eligible for prizes. Others are encouraged to play picoCTF, but will not appear on the public scoreboard.</td>
+                        <td>Note that only Icelandic students are eligible for prizes. Others are encouraged to play, but will not appear on the public scoreboard.</td>
                     </tr>
                     </table>
                 </div>
@@ -81,9 +79,6 @@
                              </label>
                              <label class="btn btn-primary" id="button-join-team">
                                 <input type="radio">Join an Existing Team
-                             </label>
-                             <label class="btn btn-primary" id="button-adviser" style="display: none">
-                                <input type="radio">Create a Teacher Account
                              </label>
                         </div>
                     </center>
@@ -162,35 +157,6 @@
                     <div class="form-group">
                         <div class="controls registration-controls">
                             <button id="register-button-existing" type="submit" class="btn btn-primary">
-                                Register
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <div id="registration-adviser-page" class="hidden-page">
-                    <div id="new-teacher" class="teacher-registration">
-                        <div class="row">
-                            <div class="col-md-6 form-group">
-                                <label class="col-sm-4 control-label" for="teacher-school">School</label>
-                                <div class="col-sm-8">
-                                    <input id="teacher-school" name="teacher-school" placeholder="School or Affiliation" type="text" class="form-control">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="checkbox">
-                            <label>
-                                <input type="checkbox" id="checkbox-emails-teacher"> I would like to receive emails about other CTFs for high school students.
-                            </label>
-                        </div>
-                    </div>
-                    <div>
-                        <p>Note that while Teacher Accounts can solve challenges during the competition, they do not appear on the public scoreboard.</p>
-                    </div>
-                    <div class="form-group">
-                        <div class="controls registration-controls">
-                            <button id="register-button-teacher" type="submit" class="btn btn-primary">
                                 Register
                             </button>
                         </div>

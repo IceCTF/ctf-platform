@@ -1,12 +1,15 @@
-recaptchaPublicKey = ""
+recaptchaPublicKey = "6LcVUwkTAAAAAHZed22DXWfp5KDOiM1ry9yPK0u6"
 
 reloadCaptcha = ->
   apiCall "GET", "/api/user/status", {}
   .done (data) ->
     console.log(data.data.enable_captcha)
     if data.data.enable_captcha
-        Recaptcha.reload()
+        grecaptcha.reset("captcha")
     ga('send', 'event', 'Registration', 'NewCaptcha')
+
+window.initCaptcha = initCaptcha = ->
+    grecaptcha.render("captcha", {sitekey: recaptchaPublicKey})
 
 
 setRequired = ->
@@ -17,26 +20,17 @@ setRequired = ->
 
 
 checkEligibility = ->
-    is_us = $("#country-select").val() in ["US", ""]
-    is_k12 = $("#background-select").val() in ["student_el", "student_ms", "student_hs", "student_home"]
+    is_is = $("#country-select").val() in ["IS", ""]
     is_student = $("#background-select").val() in ["student_el", "student_ms", "student_hs", "student_home", "student_undergrad", "student_grad"]
-    is_teacher = $("#background-select").val() == "teacher"
 
     # This should be changed to reflect your eligibility requirements
-    if not is_k12
+    if not is_student or not is_is
         $("#eligibility-warning").show()
     else
         $("#eligibility-warning").hide()
 
     if is_student
         $("#school-group").show()
-        if $("#registration-adviser-page").is(":visible")
-            $("#button-new-team").click()
-
-    if is_teacher
-        $("#button-adviser").show()
-    else
-        $("#button-adviser").hide()
 
     setRequired()
 
@@ -45,18 +39,12 @@ submitRegistration = (e) ->
 
   registrationData = $("#user-registration-form").serializeObject()
   creatingNewTeam = $("#registration-new-team-page").is(":visible")
-  creatingTeacherAccount = $("#registration-adviser-page").is(":visible")
   registrationData["create-new-team"] = creatingNewTeam
-  registrationData["create-new-teacher"] = creatingTeacherAccount
 
   if creatingNewTeam
     registrationData["ctf-emails"] = $("#checkbox-emails-create").is(':checked')
     submitButton = "#register-button-create"
     logType = "NewTeam"
-  else if creatingTeacherAccount
-    registrationData["ctf-emails"] = $("#checkbox-emails-teacher").is(':checked')
-    submitButton = "#register-button-teacher"
-    logType = "NewTeacher"
   else
     registrationData["ctf-emails"] = $("#checkbox-emails-existing").is(':checked')
     submitButton = "#register-button-existing"
@@ -71,22 +59,18 @@ submitRegistration = (e) ->
         reloadCaptcha()
       when 1
         ga('send', 'event', 'Registration', 'Success', logType)
-        if creatingTeacherAccount
-            document.location.href = "/classroom"
-        else
-            document.location.href = "/team"
+        document.location.href = "/team"
 
 $ ->
   apiCall "GET", "/api/user/status", {}
   .done (data) ->
     if data.data.enable_captcha
-        Recaptcha.create(recaptchaPublicKey, "captcha", { theme: "red" })
+        $.getScript("https://www.google.com/recaptcha/api.js?onload=initCaptcha&render=explicit")
 
   $("#user-registration-form").on "submit", submitRegistration
 
   $("#registration-new-team-page").hide()
   $("#registration-join-team-page").hide()
-  $("#registration-adviser-page").hide()
 
   pageTransitionSpeed = 200
 
@@ -97,26 +81,16 @@ $ ->
   $("#button-new-team").click () ->
     #$("#stretch-box").css("min-height", $("#stretch-box").height()+offset)
     $("#registration-join-team-page").hide "slide", { direction: "up" }, pageTransitionSpeed, () ->
-        $("#registration-adviser-page").hide "slide", { direction: "up" }, pageTransitionSpeed, () ->
-            $("#registration-new-team-page").show "slide", { direction: "up" }, pageTransitionSpeed, () ->
-                ga('send', 'event', 'Registration', 'Switch', 'NewTeam')
-                setRequired()
+        $("#registration-new-team-page").show "slide", { direction: "up" }, pageTransitionSpeed, () ->
+            ga('send', 'event', 'Registration', 'Switch', 'NewTeam')
+            setRequired()
 
   $("#button-join-team").click () ->
     #$("#stretch-box").css("min-height", $("#stretch-box").height()+offset)
     $("#registration-new-team-page").hide "slide", { direction: "up" }, pageTransitionSpeed, () ->
-        $("#registration-adviser-page").hide "slide", { direction: "up" }, pageTransitionSpeed, () ->
-            $("#registration-join-team-page").show "slide", { direction: "up" }, pageTransitionSpeed, () ->
-                ga('send', 'event', 'Registration', 'Switch', 'JoinTeam')
-                setRequired()
-
-  $("#button-adviser").click () ->
-    #$("#stretch-box").css("min-height", $("#stretch-box").height()+offset)
-    $("#registration-new-team-page").hide "slide", { direction: "up" }, pageTransitionSpeed, () ->
-        $("#registration-join-team-page").hide "slide", { direction: "up" }, pageTransitionSpeed, () ->
-            $("#registration-adviser-page").show "slide", { direction: "up" }, pageTransitionSpeed, () ->
-                ga('send', 'event', 'Registration', 'Switch', 'Teacher')
-                setRequired()
+        $("#registration-join-team-page").show "slide", { direction: "up" }, pageTransitionSpeed, () ->
+            ga('send', 'event', 'Registration', 'Switch', 'JoinTeam')
+            setRequired()
 
 
   $("#country-select").on "change", checkEligibility
@@ -124,7 +98,7 @@ $ ->
 
   $("#country-select").html('
         <option value="">Country...</option>
-        <option value="US">United States of America</option>
+        <option value="IS">Iceland</option>
         <option value="AF">Afghanistan</option>
         <option value="AL">Albania</option>
         <option value="DZ">Algeria</option>
@@ -223,7 +197,6 @@ $ ->
         <option value="HN">Honduras</option>
         <option value="HK">Hong Kong</option>
         <option value="HU">Hungary</option>
-        <option value="IS">Iceland</option>
         <option value="IN">India</option>
         <option value="ID">Indonesia</option>
         <option value="IA">Iran</option>
@@ -358,6 +331,7 @@ $ ->
         <option value="AE">United Arab Emirates</option>
         <option value="GB">United Kingdom</option>
         <option value="UY">Uruguay</option>
+        <option value="US">United States of America</option>
         <option value="UZ">Uzbekistan</option>
         <option value="VU">Vanuatu</option>
         <option value="VS">Vatican City State</option>

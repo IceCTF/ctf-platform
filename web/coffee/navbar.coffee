@@ -1,26 +1,5 @@
 apiOffline =
-  About: "/about"
   News: "/news"
-
-teacherLoggedIn =
-  Problems: "/problems"
-  Shell: "/shell"
-  Scoreboard: "/scoreboard"
-  Classroom: "/classroom"
-  About:
-    About: "/about"
-    News: "/news"
-  Account:
-    Manage: "/account"
-    Logout: "#"
-
-teacherLoggedInNoCompetition =
-  Classroom: "/classroom"
-  About: "/about"
-  News: "/news"
-  Account:
-    Manage: "/account"
-    Logout: "#"
 
 userLoggedIn =
   Problems: "/problems"
@@ -28,9 +7,7 @@ userLoggedIn =
   Team: "/team"
   Chat: "/chat"
   Scoreboard: "/scoreboard"
-  About:
-    About: "/about"
-    News: "/news"
+  News: "/news"
   Account:
     Manage: "/account"
     Logout: "#"
@@ -39,16 +16,13 @@ userLoggedInNoCompetition =
   Team: "/team"
   Chat: "/chat"
   Scoreboard: "/scoreboard"
-  About:  
-    About: "/about"
-    News: "/news"
+  News: "/news"
   Account:
     Manage: "/account"
     Logout: "#"
 
 
 userNotLoggedIn =
-  About: "/about"
   News: "/news"
   Scoreboard: "/scoreboard"
   Login: "/login"
@@ -67,12 +41,7 @@ loadNavbar = (renderNavbarLinks, renderNestedNavbarLinks) ->
     if data["status"] == 1
       if not data.data["logged_in"]
         $(".show-when-logged-out").css("display", "inline-block")
-      if data.data["teacher"]
-        if data.data["competition_active"]
-           navbarLayout.links = teacherLoggedIn
-        else
-           navbarLayout.links = teacherLoggedInNoCompetition
-      else if data.data["logged_in"]
+      if data.data["logged_in"]
          if data.data["competition_active"]
             navbarLayout.links = userLoggedIn
          else

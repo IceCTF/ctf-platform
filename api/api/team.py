@@ -243,12 +243,12 @@ def determine_eligibility(tid=None):
         eligible = True
         justification = []
         for member in members:
-            if member['background'] not in set(['student_hs', 'student_ms', 'student_el', 'student_home']):
+            if member['background'] not in set(["student_el", "student_ms", "student_hs", "student_home", "student_undergrad", "student_grad"]):
                 eligible = False
-                justification.append("User %s is not a middle or high school student" % member['username'])
-            if member['country'] != "US":
+                justification.append("User %s is not a student" % member['username'])
+            if member['country'] != "IS":
                 eligible = False
-                justification.append("User %s is not from the United States" % member['username'])
+                justification.append("User %s is not from Iceland" % member['username'])
     db.teams.update({'tid': tid}, {'$set': {'eligible': eligible, 'justification': justification}})
     return eligible
 
