@@ -14,7 +14,7 @@ sudo rm -rf /srv/http/ctf/*
 
 echo "Generating web with Jekyll"
 cd /ctf/web
-sudo jekyll build
+sudo jekyll serve &
 
 echo "Copying files to server"
 #sudo cp -r /ctf/web/* /srv/http/ctf/
@@ -34,4 +34,4 @@ echo "Clearing the API cache"
 
 #Start picoCTF API
 echo "Starting the picoCTF API"
-cd /ctf/api && python3 run.py
+cd /ctf/api && python3 run.py -d
