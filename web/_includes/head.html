@@ -7,12 +7,6 @@
         <link href="{{ css_file }}" rel="stylesheet" media="screen">
     {% endfor %}
 
-    {% if site.mode == 'production' %}
-        {% include analytics.html %}
-    {% else %}
-        <script language="javascript">var ga = function (a,b,c,d) {}</script>
-    {% endif %}
-
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <script src="//code.jquery.com/ui/1.11.3/jquery-ui.min.js"></script>
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>

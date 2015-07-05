@@ -24,6 +24,13 @@
 
         {% include footer.html %}
 
+
+        {% if site.mode == 'production' %}
+            {% include analytics.html %}
+        {% else %}
+            <script language="javascript">var ga = function (a,b,c,d) {}</script>
+        {% endif %}
+        
         {% for js_file in page.post_scripts %}
         <script src="{{site.baseurl}}{{ js_file }}"></script>
         {% endfor %}
