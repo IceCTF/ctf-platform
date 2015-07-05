@@ -1,0 +1,12 @@
+---
+title:  "This is my first post!"
+date:   2015-05-07 17:03:00
+categories: ctf
+---
+
+Hi! Welcome to IceCTF!
+
+The competition hasn't started yet, but while you wait for it to start, you can take a look at our [FAQ][faq], and at the [sample challenges][sample] to get ready!
+
+[faq]:      https://icec.tf/faq
+[sample]:   https://icec.tf/challenges
