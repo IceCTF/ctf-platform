@@ -32,7 +32,7 @@
             renderNestedNavbarLinks: renderNestedNavbarLinks
             }) %>
         <% } else { %>
-            <li><a href="<%= link %>" id="navbar-item-<%= name.split(' ').join('_').toLowerCase() %>"><%- name %></a></li>
+            <li><a href="{{site.baseurl}}<%= link %>" id="navbar-item-<%= name.split(' ').join('_').toLowerCase() %>"><%- name %></a></li>
         <% }; %>
     <% }); %>
 </script>

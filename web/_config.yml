@@ -11,3 +11,4 @@ markdown: kramdown
 permalink: none
 
 encoding: utf-8
+baseurl: ""

@@ -33,7 +33,6 @@ loadNavbar = (renderNavbarLinks, renderNestedNavbarLinks) ->
     renderNavbarLinks: renderNavbarLinks,
     renderNestedNavbarLinks: renderNestedNavbarLinks
   }
-
   apiCall "GET", "/api/user/status", {}
   .done (data) ->
     navbarLayout.links = userNotLoggedIn

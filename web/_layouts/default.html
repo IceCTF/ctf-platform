@@ -25,7 +25,7 @@
         {% include footer.html %}
 
         {% for js_file in page.post_scripts %}
-        <script src="{{ js_file }}"></script>
+        <script src="{{site.baseurl}}{{ js_file }}"></script>
         {% endfor %}
 
         <script>
