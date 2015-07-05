@@ -9,9 +9,9 @@ login = (e) ->
       when 1
         ga('send', 'event', 'Authentication', 'LogIn', 'Success')
         if (data.data['teacher'])
-                document.location.href = "/classroom"                
+                document.location.href = window.baseurl + "/classroom"                
             else
-                document.location.href = "/team"
+                document.location.href = window.baseurl + "/team"
 
 resetPassword = (e) ->
   $("#reset-password-button").html("Please Wait...")

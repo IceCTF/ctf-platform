@@ -59,7 +59,7 @@ submitRegistration = (e) ->
         reloadCaptcha()
       when 1
         ga('send', 'event', 'Registration', 'Success', logType)
-        document.location.href = "/team"
+        document.location.href = window.baseurl + "/team"
 
 $ ->
   apiCall "GET", "/api/user/status", {}

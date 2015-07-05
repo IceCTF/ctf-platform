@@ -14,7 +14,7 @@
       when 1
         if not data.data["logged_in"]
           ga('send', 'event', 'Redirect', 'NotLoggedIn')
-          window.location.href = "/login"
+          window.location.href = window.baseurl + "/login"
 
 @redirectIfLoggedIn = ->
   apiCall "GET", "/api/user/status", {}
@@ -23,7 +23,7 @@
       when 1
         if data.data["logged_in"]
           ga('send', 'event', 'Redirect', 'LoggedIn')
-          window.location.href = "/"
+          window.location.href = window.baseurl + "/"
 
 @redirectIfTeacher = ->
   apiCall "GET", "/api/user/status", {}
@@ -32,7 +32,7 @@
       when 1
         if data.data["teacher"]
           ga('send', 'event', 'Redirect', 'Teacher')
-          window.location.href = "/classroom"
+          window.location.href = window.baseurl + "/classroom"
 
 getStyle = (data) ->
   style = "info"
@@ -49,7 +49,7 @@ getStyle = (data) ->
 
   if redirect and data.status is 1
     setTimeout (->
-        window.location = redirect
+        window.location = window.baseurl + redirect
       ), 1000
 
 @apiNotifyElement = (elt, data, redirect) ->
@@ -57,7 +57,7 @@ getStyle = (data) ->
   elt.notify data.message, style
   if redirect and data.status is 1
     setTimeout (->
-        window.location = redirect
+        window.location = window.baseurl + redirect
       ), 1000
     
 @numericalSort = (data) ->
@@ -96,10 +96,10 @@ getStyle = (data) ->
     switch data['status'] 
       when 1
         ga('send', 'event', 'Authentication', 'LogOut', 'Success')
-        document.location.href = "/"
+        document.location.href = window.baseurl + "/"
       when 0
         ga('send', 'event', 'Authentication', 'LogOut', 'Failure::'+data.message)
-        document.location.href = "/login"
+        document.location.href = window.baseurl + "/login"
 
 $.fn.apiNotify = (data, configuration) ->
   configuration["className"] = getStyle data
