@@ -1,6 +1,6 @@
 ---
-title:  "This is my first post!"
-date:   2015-05-07 17:03:00
+title:  "Welcome to IceCTF!"
+date:   2015-07-05 17:03:00
 categories: ctf
 ---
 
