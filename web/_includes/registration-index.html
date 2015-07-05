@@ -44,8 +44,8 @@
                         <div class="col-sm-8">
                            <select class="form-control" id="background-select" name="background">
                                 <option value="student_el">Elementary School Student (Grunnskólanemi)</option>
-                                <option value="student_hs" selected="selected">College Student (Menntaskólanemi)</option>
-                                <option value="student_undergrad">Undergraduate</option>
+                                <option value="student_hs">College Student (Menntaskólanemi)</option>
+                                <option value="student_undergrad" selected="selected">Undergraduate</option>
                                 <option value="student_grad">Graduate Student</option>
                                 <option value="teacher">Teacher</option>
                                 <option value="secprof">Security Professional</option>
@@ -112,13 +112,13 @@
                             </div>
                         </div>
                     </div>
-                    <div class="form-group">
+                    {% comment %}<div class="form-group">
                         <div class="checkbox">
                             <label>
                                 <input type="checkbox" id="checkbox-emails-create"> I would like to receive emails about other CTFs for high school students.
                             </label>
                         </div>
-                    </div>
+                    </div>{% endcomment %}
                     <div style="margin-bottom: 25px">
                         *While your password should be kept a secret and only used by you, your <i>Team Passphrase</i> is shared with the other members of your team. If you forget your Team Passphrase, it will be displayed on the "Team" page after you log in.
                     </div>
@@ -147,13 +147,13 @@
                             </div>
                         </div>
                     </div>
-                    <div class="form-group">
+                    {% comment %}<div class="form-group">
                         <div class="checkbox">
                             <label>
                                 <input type="checkbox" id="checkbox-emails-existing"> I would like to receive emails about other CTFs for high school students.
                             </label>
                         </div>
-                    </div>
+                    </div>{% endcomment %}
                     <div class="form-group">
                         <div class="controls registration-controls">
                             <button id="register-button-existing" type="submit" class="btn btn-primary">
