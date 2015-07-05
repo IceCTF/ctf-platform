@@ -214,6 +214,9 @@ def load_problems(args):
 def recalculate_eligibility(args):
     api.team.recalculate_all_eligibility()
 
+def get_stats(args):
+    api.stats.get_stats()
+
 
 def main():
     parser = argparse.ArgumentParser(description="{} problem manager".format(api.config.competition_name))
@@ -269,11 +272,19 @@ def main():
 
 
     # Teams
-    parser_database = subparser.add_parser("team", help="Deal with team")
-    subparser_database = parser_database.add_subparsers(help="Select one of the following actions")
+    parser_team = subparser.add_parser("team", help="Deal with team")
+    subparser_team = parser_team.add_subparsers(help="Select one of the following actions")
 
-    parser_database_clear = subparser_database.add_parser("eligibility", help="Recalculate Eligibility")
-    parser_database_clear.set_defaults(func=recalculate_eligibility)
+    parser_team_clear = subparser_team.add_parser("eligibility", help="Recalculate Eligibility")
+    parser_team_clear.set_defaults(func=recalculate_eligibility)
+
+
+    # Stats
+    parser_stats = subparser.add_parser("team", help="Deal with stats")
+    subparser_stats = parser_stats.add_subparsers(help="Select one of the following actions")
+
+    parser_stats_clear = subparser_stats.add_parser("stats", help="Display stats")
+    parser_stats_clear.set_defaults(func=get_stats)
 
     args = parser.parse_args()
     if args.silent:
