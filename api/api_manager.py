@@ -280,10 +280,10 @@ def main():
 
 
     # Stats
-    parser_stats = subparser.add_parser("team", help="Deal with stats")
+    parser_stats = subparser.add_parser("stats", help="Deal with stats")
     subparser_stats = parser_stats.add_subparsers(help="Select one of the following actions")
 
-    parser_stats_clear = subparser_stats.add_parser("stats", help="Display stats")
+    parser_stats_clear = subparser_stats.add_parser("show", help="Display stats")
     parser_stats_clear.set_defaults(func=get_stats)
 
     args = parser.parse_args()
