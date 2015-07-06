@@ -198,11 +198,12 @@ def update_problem(pid, updated_problem):
 
     db = api.common.get_conn()
 
-    if updated_problem.get("name", None) is not None:
+    problem = get_problem(pid=pid, show_disabled=True).copy()
+
+    if updated_problem.get("name", None) is not None and updated_problem.get("name", None) != problem.get("name", None):
         if safe_fail(get_problem, name=updated_problem["name"]) is not None:
             raise WebException("Problem with identical name already exists.")
 
-    problem = get_problem(pid=pid, show_disabled=True).copy()
     problem.update(updated_problem)
 
     # pass validation by removing/readding pid

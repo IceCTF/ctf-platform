@@ -195,7 +195,7 @@ def load_problems(args):
             logging.info("Graders updated for problem {}".format(problem_name))
 
             try:
-                if api.common.safe_fail(api.problem.get_problem, api.common.hash(problem_name)):
+                if api.common.safe_fail(api.problem.get_problem, pid=api.common.hash(problem_name)):
                     api.problem.update_problem(api.common.hash(problem_name), data)
                 else:
                     api.problem.insert_problem(data)
