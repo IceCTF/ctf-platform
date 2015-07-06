@@ -195,7 +195,10 @@ def load_problems(args):
             logging.info("Graders updated for problem {}".format(problem_name))
 
             try:
-                api.problem.insert_problem(data)
+                if api.common.safe_fail(api.problem.get_problem, api.common.hash(problem_name)):
+                    api.problem.update_problem(data)
+                else:
+                    api.problem.insert_problem(data)
             except api.common.WebException as e:
                 logging.info("Problem '{}' was not added to the database. Reason: {}".format(problem_name, e))
 
