@@ -196,7 +196,7 @@ def load_problems(args):
 
             try:
                 if api.common.safe_fail(api.problem.get_problem, api.common.hash(problem_name)):
-                    api.problem.update_problem(data)
+                    api.problem.update_problem(api.common.hash(problem_name), data)
                 else:
                     api.problem.insert_problem(data)
             except api.common.WebException as e:
