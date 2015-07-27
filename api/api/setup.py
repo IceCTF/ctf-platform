@@ -23,6 +23,7 @@ def index_mongo():
 
     db.submissions.ensure_index("tid", name="submission tids")
     db.ssh.ensure_index("tid", unique=True, name="unique ssh tid")
+    db.ssh.ensure_index("tid", sparse=True, name="sparse ssh tid")
     db.teams.ensure_index("team_name", unique=True, name="unique team names")
 
     db.cache.ensure_index("expireAt", expireAfterSeconds=0)

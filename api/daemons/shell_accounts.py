@@ -29,7 +29,7 @@ def run():
 
         free_account_count = db.ssh.find({"tid": {"$exists": False}}).count()
 
-        new_accounts = api.config.shell_free_acounts - free_account_count
+        new_accounts = max(api.config.shell_free_acounts - free_account_count, 0)
 
         print("Checking that all teams have been assigned accounts...")
 
