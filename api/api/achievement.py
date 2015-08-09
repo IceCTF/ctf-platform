@@ -378,12 +378,13 @@ def update_achievement(aid, updated_achievement):
     """
 
     db = api.common.get_conn()
+    
+    achievement = get_achievement(aid=aid, show_disabled=True).copy()
 
-    if updated_achievement.get("name", None) is not None:
+    if updated_achievement.get("name", None) is not None and updated_achievement.get("name", None) != achievement.get("name", None):
         if safe_fail(get_achievement, name=updated_achievement["name"]) is not None:
             raise WebException("Achievement with identical name already exists.")
 
-    achievement = get_achievement(aid=aid, show_disabled=True).copy()
     achievement.update(updated_achievement)
 
     # pass validation by removing/readding aid

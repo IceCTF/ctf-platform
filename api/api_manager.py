@@ -144,6 +144,16 @@ def add_new_problems(args):
 def add_new_achievements(args):
     if check_files_exist(args.files):
         insert_objects(api.achievement.insert_achievement, args.files)
+        objects = get_json_objects(files)
+        for obj in objects:
+            try:
+                if api.common.safe_fail(api.achievement.get_achievement, aid=api.common.hash(obj["name"])):
+                    api.achievement.update_achievement(api.common.hash(obj["name"]),obj)
+                else
+                    api.achievement.insert_achievement(obj)
+            except APIException as error:
+                raise
+                exit(1)
 
 
 def load_problems(args):
