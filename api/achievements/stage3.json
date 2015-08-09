@@ -1,8 +1,0 @@
-{"name": "hx0rd",
- "description": "Your team completed stage 3!.",
- "event": "submit",
- "hidden": false,
- "score": 150,
- "processor": "stage3/stage3.py",
- "image": "/img/achievements/silver.png",
- "smallimage": "/img/achievements/silver_unlock.png"}

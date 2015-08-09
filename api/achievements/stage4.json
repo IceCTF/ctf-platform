@@ -1,8 +1,0 @@
-{"name": "p0wned",
- "description": "Your team completed stage 4!.",
- "event": "submit",
- "hidden": false,
- "score": 200,
- "processor": "stage4/stage4.py",
- "image": "/img/achievements/silver.png",
- "smallimage": "/img/achievements/silver_unlock.png"}
