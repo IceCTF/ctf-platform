@@ -149,7 +149,7 @@ def add_new_achievements(args):
             try:
                 if api.common.safe_fail(api.achievement.get_achievement, aid=api.common.hash(obj["name"])):
                     api.achievement.update_achievement(api.common.hash(obj["name"]),obj)
-                else
+                else:
                     api.achievement.insert_achievement(obj)
             except APIException as error:
                 raise
