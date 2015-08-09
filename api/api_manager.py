@@ -143,7 +143,6 @@ def add_new_problems(args):
 
 def add_new_achievements(args):
     if check_files_exist(args.files):
-        insert_objects(api.achievement.insert_achievement, args.files)
         objects = get_json_objects(files)
         for obj in objects:
             try:
