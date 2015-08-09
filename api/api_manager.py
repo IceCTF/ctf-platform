@@ -143,7 +143,7 @@ def add_new_problems(args):
 
 def add_new_achievements(args):
     if check_files_exist(args.files):
-        objects = get_json_objects(files)
+        objects = get_json_objects(args.files)
         for obj in objects:
             try:
                 if api.common.safe_fail(api.achievement.get_achievement, aid=api.common.hash(obj["name"])):
