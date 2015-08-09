@@ -21,6 +21,8 @@ def process(api, data):
         name = "Great Detectives"
     elif category == "Web Exploitation":
         name = "Masters of the Web"
+    elif category == "Programming":
+        name = "Conjurer of Code"
     elif category == "Master Challenge":
         name = "Best of the Best"
     elif category == "Miscellaneous":

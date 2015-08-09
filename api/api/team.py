@@ -243,9 +243,9 @@ def determine_eligibility(tid=None):
         eligible = True
         justification = []
         for member in members:
-            if member['background'] not in set(["student_el", "student_ms", "student_hs", "student_home", "student_undergrad", "student_grad"]):
+            if member['background'] not in set(["student_el", "student_ms", "student_hs", "student_home", "student_undergrad", "student_grad", "hobbyist"]):
                 eligible = False
-                justification.append("User %s is not a student" % member['username'])
+                justification.append("User %s is not a student or hobbyist" % member['username'])
             if member['country'] != "IS":
                 eligible = False
                 justification.append("User %s is not from Iceland" % member['username'])
