@@ -9,10 +9,11 @@ def process(api, data):
         "Mondrian": "db7ef43550856247226e9b1423671b77",
         "Authorize": "7f83df9cd29577d544efd9ff66d7118a",
         "Giga": "5262457500d337190c0f3484701a4ca6",
-        "Wiki & The Furious": "ccb44839ee47cdf92c3f55c3e596801c",
+        "Wiki & The Furious": "ccb44839ee47cdf92c3f55c3e596801c"
     }
     pids = api.problem.get_solved_pids(tid=data['tid'])
+    earned = True
     for pid in stage.values():
         if pid not in pids:
-            return False, {}
-    return True, {}
+            earned = False
+    return earned, {}

@@ -20,7 +20,8 @@ def process(api, data):
         "Wiki": "bf111e3622a72a3b5dc784b5903983ca"
     }
     pids = api.problem.get_solved_pids(tid=data['tid'])
+    earned = True
     for pid in stage.values():
         if pid not in pids:
-            return False, {}
-    return True, {}
+            earned = False
+    return earned, {}

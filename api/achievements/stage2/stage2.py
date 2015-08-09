@@ -18,7 +18,8 @@ def process(api, data):
         "SQL Injection 1": "8dfc2dd7c2bdb05ac64e15a23339f113"
     }
     pids = api.problem.get_solved_pids(tid=data['tid'])
+    earned = True
     for pid in stage.values():
         if pid not in pids:
-            return False, {}
-    return True, {}
+            earned = False
+    return earned, {}

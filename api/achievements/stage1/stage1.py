@@ -13,7 +13,8 @@ def process(api, data):
         "Oh No!": "6f256632fcf2f334335d0391eb53ad91"
     }
     pids = api.problem.get_solved_pids(tid=data['tid'])
+    earned = True
     for pid in stage.values():
         if pid not in pids:
-            return False, {}
-    return True, {}
+            earned = False
+    return earned, {}
