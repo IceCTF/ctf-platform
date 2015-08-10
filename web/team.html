@@ -70,7 +70,7 @@ startup_functions:
             <table>
                 <% if (_.size(data) > 0) { %>
                     <% _.each(data, function(achievement) { %>
-                        <tr><td><img class="image-achievement" src='<%- achievement.image %>'/></td>
+                        <tr><td><img class="image-achievement" src='/play/<%- achievement.image %>'/></td>
                             <td style="padding-left:15px">
                                 <div><h3 style="margin-top:0px;"><%- achievement.name %></h3></div>
                                 <div><%- achievement.description %></div>
