@@ -298,8 +298,8 @@ def main():
     subparser_user = parser_user.add_subparsers(help="Select one of the following actions")
 
     parser_user_password = subparser_user.add_parser("password", help="Change user password")
-    parser_user_password.add_argument("user", nargs=1, help="user")
-    parser_user_password.add_argument("password", nargs=1, help="New user password")
+    parser_user_password.add_argument("user", help="user")
+    parser_user_password.add_argument("password", help="New user password")
     parser_user_password.set_defaults(func=change_user_password)
 
 
