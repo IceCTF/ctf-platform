@@ -229,6 +229,9 @@ def recalculate_eligibility(args):
 def get_stats(args):
     api.stats.get_stats()
 
+def change_user_password(args):
+    api.users.update_password(args.user, args.password)
+
 
 def main():
     parser = argparse.ArgumentParser(description="{} problem manager".format(api.config.competition_name))
@@ -289,6 +292,15 @@ def main():
 
     parser_team_clear = subparser_team.add_parser("eligibility", help="Recalculate Eligibility")
     parser_team_clear.set_defaults(func=recalculate_eligibility)
+
+    # Users
+    parser_user = subparser.add_parser("user", help="Deal with user")
+    subparser_user = parser_user.add_subparsers(help="Select one of the following actions")
+
+    parser_user_password = subparser_team.add_parser("password", help="Change user password")
+    parser_user_password.add_argument("user", nargs=1, help="user")
+    parser_user_password.add_argument("password", nargs=1, help="New user password")
+    parser_user_password.set_defaults(func=change_user_password)
 
 
     # Stats
