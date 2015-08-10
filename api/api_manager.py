@@ -230,7 +230,7 @@ def get_stats(args):
     api.stats.get_stats()
 
 def change_user_password(args):
-    api.users.update_password(args.user, args.password)
+    api.user.update_password(args.user, args.password)
 
 
 def main():
