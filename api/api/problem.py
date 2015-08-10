@@ -200,6 +200,15 @@ def update_problem(pid, updated_problem):
 
     problem = get_problem(pid=pid, show_disabled=True).copy()
 
+    weightmap = {}
+
+    if updated_problem.get("weightmap"):
+        for name, weight in updated_problem["weightmap"].items():
+            name_hash = api.common.hash(name)
+            weightmap[name_hash] = weight
+
+    updated_problem["weightmap"] = weightmap
+
     if updated_problem.get("name", None) is not None and updated_problem.get("name", None) != problem.get("name", None):
         if safe_fail(get_problem, name=updated_problem["name"]) is not None:
             raise WebException("Problem with identical name already exists.")
