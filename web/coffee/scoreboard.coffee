@@ -25,7 +25,8 @@ load_scoreboard = ->
 
         window.drawTopTeamsProgressionGraph "#top-team-score-progression-graph"
       when 0
-        apiNotify(data)
+        0
+        #apiNotify(data)
 
 $ ->
   load_scoreboard()
