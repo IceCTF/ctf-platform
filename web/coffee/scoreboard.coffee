@@ -11,7 +11,8 @@ load_teamscore = ->
           teamscore: resp.data.score
         })
       when 0
-        apiNotify(resp)
+        0
+        # apiNotify(resp)
 
 load_scoreboard = ->
   apiCall "GET", "/api/stats/scoreboard", {}
@@ -25,8 +26,7 @@ load_scoreboard = ->
 
         window.drawTopTeamsProgressionGraph "#top-team-score-progression-graph"
       when 0
-        0
-        #apiNotify(data)
+        apiNotify(data)
 
 $ ->
   load_scoreboard()
