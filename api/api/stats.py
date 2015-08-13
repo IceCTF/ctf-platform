@@ -74,7 +74,7 @@ def get_group_average_score(gid=None, name=None):
 
 # Stored by the cache_stats daemon
 @api.cache.memoize()
-def get_all_team_scores():
+def get_all_team_scores(ignore_eligible=False):
     """
     Gets the score for every team in the database.
 
@@ -87,40 +87,11 @@ def get_all_team_scores():
 
     result = []
     for team in teams:
-        team_query = db.submissions.find({'tid': team['tid'], 'eligible': True, 'correct': True})
-        if team_query.count() > 0:
-            lastsubmit = team_query.sort('timestamp', direction=pymongo.DESCENDING)[0]['timestamp']
+        if ignore_eligible:
+            team_query = db.submissions.find({'tid': team['tid'], 'correct': True})
         else:
-            lastsubmit = datetime.datetime.now()
-        score = get_score(tid=team['tid'])
-        if score > 0:
-            result.append({
-                "name": team['team_name'],
-                "tid": team['tid'],
-                "school": team["school"],
-                "score": score,
-                "lastsubmit": lastsubmit
-            })
-    time_ordered = sorted(result, key=lambda entry: entry['lastsubmit'])
-    time_ordered_time_removed = [{'name': x['name'], 'tid': x['tid'], 'school': x['school'], 'score': x['score']} for x in time_ordered]
-    return sorted(time_ordered_time_removed, key=lambda entry: entry['score'], reverse=True)
+            team_query = db.submissions.find({'tid': team['tid'], 'eligible': True, 'correct': True})
 
-# Stored by the cache_stats daemon
-@api.cache.memoize()
-def get_overall_team_scores():
-    """
-    Gets the score for every team in the database even inelligable ones.
-
-    Returns:
-        A list of dictionaries with name and score
-    """
-
-    teams = api.team.get_all_teams()
-    db = api.api.common.get_conn()
-
-    result = []
-    for team in teams:
-        team_query = db.submissions.find({'tid': team['tid'], 'correct': True})
         if team_query.count() > 0:
             lastsubmit = team_query.sort('timestamp', direction=pymongo.DESCENDING)[0]['timestamp']
         else:
