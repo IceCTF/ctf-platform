@@ -33,13 +33,6 @@ startup_functions:
       <div id="top-team-score-progression-graph"></div>
       <%= renderScoreboard({scoreboard: data.contestants}) %>
     </div>
-    <% _.each(data.groups, function(group) { %>
-      <div id="<%= group.gid %>" class="tab-pane fade">
-        <%= renderScoreboard({scoreboard: group.scoreboard}) %>
-      </div>
-    <% }); %>
-  </div>
-  <div class="tab-content">
     <div id="all" class="tab-pane fade in">
       <div id="top-team-score-progression-graph"></div>
       <%= renderScoreboard({scoreboard: data.all}) %>
