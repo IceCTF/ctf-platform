@@ -74,7 +74,7 @@ def get_group_average_score(gid=None, name=None):
 
 # Stored by the cache_stats daemon
 @api.cache.memoize()
-def get_all_team_scores(ignore_eligible=True):
+def get_all_team_scores(show_ineligible=False):
     """
     Gets the score for every team in the database.
 
@@ -82,12 +82,12 @@ def get_all_team_scores(ignore_eligible=True):
         A list of dictionaries with name and score
     """
 
-    teams = api.team.get_all_teams()
+    teams = api.team.get_all_teams(show_ineligible=show_ineligible)
     db = api.api.common.get_conn()
 
     result = []
     for team in teams:
-        if not ignore_eligible:
+        if show_ineligible:
             team_query = db.submissions.find({'tid': team['tid'], 'correct': True})
         else:
             team_query = db.submissions.find({'tid': team['tid'], 'eligible': True, 'correct': True})
