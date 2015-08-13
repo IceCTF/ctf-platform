@@ -20,7 +20,7 @@ load_scoreboard = ->
     switch data["status"]
       when 1
         $("#scoreboard-tabs").html renderScoreboardTabs({
-         data: data
+         data: data,
           renderScoreboard: renderScoreboard
         })
 
