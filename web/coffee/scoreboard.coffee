@@ -11,7 +11,8 @@ load_teamscore = ->
           teamscore: resp.data.score
         })
       when 0
-        apiNotify(resp)
+        0
+        # apiNotify(resp)
 
 load_scoreboard = ->
   apiCall "GET", "/api/stats/scoreboard", {}

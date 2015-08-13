@@ -13,6 +13,7 @@ from voluptuous import Required, Length, Schema
 from datetime import datetime
 
 enable_email = False
+smtp_protocol = "ssl"
 smtp_url = ''
 email_username = ''
 email_password = ''
@@ -55,7 +56,12 @@ def send_email(recipient, subject, body):
         msg['To'] = recipient
         part1 = MIMEText(body, 'plain')
         msg.attach(part1)
-        s = smtplib.SMTP_SSL(smtp_url)
+        if smtp_protocol == "ssl":
+            s = smtplib.SMTP_SSL(smtp_url)
+        else:
+            s = smtplib.SMTP(smtp_url)
+        if smtp_protocol == "tls":
+            s.starttls()
         s.login(email_username, email_password)
         s.sendmail(from_addr, recipient, msg.as_string())
         s.quit()
