@@ -74,7 +74,7 @@ def get_group_average_score(gid=None, name=None):
 
 # Stored by the cache_stats daemon
 @api.cache.memoize()
-def get_all_team_scores(ignore_eligible=False):
+def get_all_team_scores(ignore_eligible=True):
     """
     Gets the score for every team in the database.
 
@@ -87,7 +87,7 @@ def get_all_team_scores(ignore_eligible=False):
 
     result = []
     for team in teams:
-        if ignore_eligible:
+        if not ignore_eligible:
             team_query = db.submissions.find({'tid': team['tid'], 'correct': True})
         else:
             team_query = db.submissions.find({'tid': team['tid'], 'eligible': True, 'correct': True})
