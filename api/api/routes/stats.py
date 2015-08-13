@@ -38,7 +38,8 @@ def get_team_score_progression():
 @block_before_competition(WebError("The competition has not begun yet!"))
 def get_scoreboard_hook():
     result = {}
-    result['public'] = api.stats.get_all_team_scores()
+    result['contestants'] = api.stats.get_all_team_scores()
+    result['all'] = api.stats.get_overall_team_scores()
     result['groups'] = []
 
     if api.auth.is_logged_in():

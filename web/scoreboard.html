@@ -15,7 +15,13 @@ startup_functions:
 
 <script type="text/template" id="scoreboard-tabs-template">
   <ul class="nav nav-tabs">
-    <li class="active"><a data-toggle="tab" href="#public">Public</a></li>
+    <li class="active"><a data-toggle="tab" href="#contestants">Contestants</a></li>
+    <% if(data.groups.length > 0) { %>
+      <% _.each(data.groups, function(group) { %>
+        <li><a data-toggle="tab" href="#<%= group.gid %>"><%- group.name %></a></li>
+      <% }); %>
+    <% } %>
+    <li><a data-toggle="tab" href="#all">All</a></li>
     <% if(data.groups.length > 0) { %>
       <% _.each(data.groups, function(group) { %>
         <li><a data-toggle="tab" href="#<%= group.gid %>"><%- group.name %></a></li>
@@ -23,9 +29,20 @@ startup_functions:
     <% } %>
   </ul>
   <div class="tab-content">
-    <div id="public" class="tab-pane fade in active">
+    <div id="contestants" class="tab-pane fade in active">
       <div id="top-team-score-progression-graph"></div>
-      <%= renderScoreboard({scoreboard: data.public}) %>
+      <%= renderScoreboard({scoreboard: data.contestants}) %>
+    </div>
+    <% _.each(data.groups, function(group) { %>
+      <div id="<%= group.gid %>" class="tab-pane fade">
+        <%= renderScoreboard({scoreboard: group.scoreboard}) %>
+      </div>
+    <% }); %>
+  </div>
+  <div class="tab-content">
+    <div id="all" class="tab-pane fade in">
+      <div id="top-team-score-progression-graph"></div>
+      <%= renderScoreboard({scoreboard: data.all}) %>
     </div>
     <% _.each(data.groups, function(group) { %>
       <div id="<%= group.gid %>" class="tab-pane fade">
