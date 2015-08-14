@@ -1,14 +1,14 @@
 # Site settings
 title: IceCTF
 
-# destination: /srv/http/ctf
+destination: /srv/http/ctf
 exclude: ['coffee', 'node_modules']
 
-mode: development
+mode: production
 
 # Build settings
 markdown: kramdown
 permalink: none
 
 encoding: utf-8
-baseurl: ""
+baseurl: "/play"
