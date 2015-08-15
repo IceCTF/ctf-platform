@@ -1,0 +1,11 @@
+---
+title:  "Wrap-Up Event"
+date:   2015-07-15 16:20:00
+categories: ctf
+---
+
+We'd like to let you guys know of our [Wrap-Up Event][event] that we'll be hosting at RU on the 24th (day after the competiton ends). We will award prizes, certificates, discuss solutions and ofcourse there will be pizza!
+
+Hope to see you there!
+
+[event]:    https://www.facebook.com/events/431077740431135/
