@@ -39,7 +39,7 @@ def get_team_score_progression():
 def get_scoreboard_hook():
     result = {}
     result['contestants'] = api.stats.get_all_team_scores()
-    result['all'] = api.stats.get_overall_team_scores()
+    result['all'] = api.stats.get_all_team_scores(show_ineligible=True)
     result['groups'] = []
 
     if api.auth.is_logged_in():
