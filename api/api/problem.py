@@ -437,6 +437,8 @@ def get_submissions(pid=None, uid=None, tid=None, category=None, correctness=Non
 
     if correctness is not None:
         match.update({"correct": correctness})
+        if api.config.freeze_time is not None:
+            match.update({"timestamp": {"$lte": api.config.freeze_time}})
 
     if eligibility is not None:
         match.update({"eligible": eligibility})

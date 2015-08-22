@@ -87,18 +87,9 @@ def get_all_team_scores(show_ineligible=False):
 
     result = []
     for team in teams:
-        if show_ineligible:
-            team_query = db.submissions.find({'tid': team['tid'], 'correct': True})
-        else:
-            team_query = db.submissions.find({'tid': team['tid'], 'eligible': True, 'correct': True})
-
-        if team_query.count() > 0:
-            lastsubmit = team_query.sort('timestamp', direction=pymongo.DESCENDING)[0]['timestamp']
-            timescore = sum((sub["timestamp"] - api.config.start_time).total_seconds() \
+        timescore = sum((sub["timestamp"] - api.config.start_time).total_seconds() \
                 for sub in api.problem.get_submissions(tid=team['tid'], correctness=True))
-        else:
-            lastsubmit = datetime.datetime.now()
-            timescore = 0
+
         score = get_score(tid=team['tid'])
         if score > 0:
             result.append({
@@ -106,7 +97,6 @@ def get_all_team_scores(show_ineligible=False):
                 "tid": team['tid'],
                 "school": team["school"],
                 "score": score,
-                "lastsubmit": lastsubmit,
                 "timescore": timescore
             })
     time_ordered = sorted(result, key=lambda entry: entry['timescore'])
