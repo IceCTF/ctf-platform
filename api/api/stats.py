@@ -270,10 +270,10 @@ def get_stats():
     for country, count in sorted(get_user_countries().items(), key=lambda x: x[1], reverse=True)[0:15]:
         print("%s: %s" % (country, count))
     print("...")
-    bar()
-    print("Event ID breakdown:")
-    for eventid, count in sorted(get_user_game_progress().items(), key=lambda x: x[0]):
-        print("{0:60} {1}".format(eventid, count))
+    # bar()
+    # print("Event ID breakdown:")
+    # for eventid, count in sorted(get_user_game_progress().items(), key=lambda x: x[0]):
+    #     print("{0:60} {1}".format(eventid, count))
     bar()
     print("Average Achievement Number:")
     print("Average Number of Achievements per Team (all teams): %s +/- %s" % get_average_achievement_number())
