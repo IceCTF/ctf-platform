@@ -150,7 +150,7 @@ def get_team_information(tid=None):
         tid = team_info["tid"]
 
     team_info["score"] = api.stats.get_score(tid=tid)
-    team_info["place"] = api.stats.get_team_place(tid=tid,show_ineligible=team_info["eligibile"])
+    team_info["place"] = api.stats.get_team_place(tid=tid, show_ineligible=team_info["eligible"])
     team_info["members"] = [member["username"] for member in get_team_members(tid=tid, show_disabled=False)]
     team_info["competition_active"] = api.utilities.check_competition_active()
     team_info["max_team_size"] = max_team_users
