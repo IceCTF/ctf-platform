@@ -121,7 +121,7 @@ getPdf = (team, score, place) ->
         width: 200
         margin: [
           175
-          75
+          60
           0
           0
         ]
