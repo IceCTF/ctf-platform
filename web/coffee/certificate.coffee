@@ -7,6 +7,16 @@ load_team = (cb)->
         return cb(resp.data)
       when 0
         apiNotify(resp)
+suffix = (i) ->
+  j = i % 10
+  k = i % 100
+  if j == 1 and k != 11
+    return i + 'st'
+  if j == 2 and k != 12
+    return i + 'nd'
+  if j == 3 and k != 13
+    return i + 'rd'
+  i + 'th'
 
 $ ->
   $("#certificate-get").on "click", (e) ->
@@ -14,9 +24,11 @@ $ ->
     load_team (data) ->
       if data.place is null
         data.place = ""
+      else
+        data.place = suffix(data.place)
       if data.score is null
         data.score = ""
-      dd = getPdf(data.team_name, data.score.toString(), data.place.toString())
+      dd = getPdf(data.team_name, data.score.toString(), data.place)
       console.log(dd)
       pdfMake.createPdf(dd).open()
 
