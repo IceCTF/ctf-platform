@@ -1,4 +1,4 @@
-pdfcode = 
+ 
 load_team = (cb)->
   apiCall "GET", "/api/team", {}
   .done (resp) ->
@@ -12,7 +12,8 @@ $ ->
   $("#certificate-get").on "click", (e) ->
     e.preventDefault()
     load_team (data) ->
-      dd = getPdf(data.team_name, data.score, data.place)
+      dd = getPdf(data.team_name, data.score.toString(), data.place.toString())
+      console.log(dd)
       pdfMake.createPdf(dd).open()
 
 getPdf = (team, score, place) ->
