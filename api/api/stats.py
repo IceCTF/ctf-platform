@@ -11,7 +11,7 @@ _get_problem_names = lambda problems: [problem['name'] for problem in problems]
 top_teams = 10
 
 @api.cache.memoize()
-def get_score(tid=None, uid=None):
+def get_score(tid=None, uid=None, end=None):
     """
     Get the score for a user or team.
 
@@ -21,7 +21,7 @@ def get_score(tid=None, uid=None):
     Returns:
         The users's or team's score
     """
-    score = sum([problem['score'] for problem in api.problem.get_solved_problems(tid=tid, uid=uid)])
+    score = sum([problem['score'] for problem in api.problem.get_solved_problems(tid=tid, uid=uid, end=end)])
     return score
 
 
@@ -88,9 +88,9 @@ def get_all_team_scores(show_ineligible=False):
     result = []
     for team in teams:
         timescore = sum((sub["timestamp"] - api.config.start_time).total_seconds() \
-                for sub in api.problem.get_submissions(tid=team['tid'], correctness=True))
+                for sub in api.problem.get_submissions(tid=team['tid'], correctness=True, end=api.config.freeze_time))
 
-        score = get_score(tid=team['tid'])
+        score = get_score(tid=team['tid'], end=api.config.freeze_time)
         if score > 0:
             result.append({
                 "name": team['team_name'],

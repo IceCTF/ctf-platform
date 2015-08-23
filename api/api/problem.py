@@ -381,7 +381,7 @@ def submit_key(tid, pid, key, uid=None, ip=None):
     return result
 
 
-def count_submissions(pid=None, uid=None, tid=None, category=None, correctness=None, eligibility=None):
+def count_submissions(pid=None, uid=None, tid=None, category=None, correctness=None, eligibility=None, end=None):
     db = api.common.get_conn()
     match = {}
     if uid is not None:
@@ -398,13 +398,16 @@ def count_submissions(pid=None, uid=None, tid=None, category=None, correctness=N
     if correctness is not None:
         match.update({"correct": correctness})
 
+    if end is not None:
+        match.update({"timestamp": {"$lte": end}})
+
     if eligibility is not None:
         match.update({"eligible": eligibility})
 
     return db.submissions.find(match, {"_id": 0}).count()
 
 
-def get_submissions(pid=None, uid=None, tid=None, category=None, correctness=None, eligibility=None):
+def get_submissions(pid=None, uid=None, tid=None, category=None, correctness=None, eligibility=None, end=None):
     """
     Gets the submissions from a team or user.
     Optional filters of pid or category.
@@ -437,8 +440,9 @@ def get_submissions(pid=None, uid=None, tid=None, category=None, correctness=Non
 
     if correctness is not None:
         match.update({"correct": correctness})
-        if api.config.freeze_time is not None:
-            match.update({"timestamp": {"$lte": api.config.freeze_time}})
+
+    if end is not None:
+        match.update({"timestamp": {"$lte": end}})
 
     if eligibility is not None:
         match.update({"eligible": eligibility})
@@ -600,7 +604,7 @@ def get_all_problems(category=None, show_disabled=False):
     return list(db.problems.find(match, {"_id":0}).sort('score', pymongo.ASCENDING))
 
 @api.cache.memoize()
-def get_solved_pids(tid=None, uid=None, category=None):
+def get_solved_pids(tid=None, uid=None, category=None, end=None):
     """
     Gets the solved pids for a given team or user.
 
@@ -611,9 +615,9 @@ def get_solved_pids(tid=None, uid=None, category=None):
         List of solved problem ids
     """
 
-    return list(set([sub['pid'] for sub in get_submissions(tid=tid, uid=uid, category=category, correctness=True)]))
+    return list(set([sub['pid'] for sub in get_submissions(tid=tid, uid=uid, category=category, correctness=True, end=end)]))
 
-def get_solved_problems(tid=None, uid=None, category=None):
+def get_solved_problems(tid=None, uid=None, category=None, end=None):
     """
     Gets the solved problems for a given team or user.
 
@@ -624,7 +628,7 @@ def get_solved_problems(tid=None, uid=None, category=None):
         List of solved problem dictionaries
     """
 
-    return [get_problem(pid=pid) for pid in get_solved_pids(tid=tid, uid=uid, category=category)]
+    return [get_problem(pid=pid) for pid in get_solved_pids(tid=tid, uid=uid, category=category, end=end)]
 
 @api.cache.memoize()
 def get_unlocked_pids(tid, category=None):
