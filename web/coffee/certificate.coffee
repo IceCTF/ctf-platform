@@ -13,7 +13,7 @@ $ ->
     e.preventDefault()
     load_team (data) ->
       dd = getPdf(data.team_name, data.score, data.place)
-      console.log dd
+      pdfMake.createPdf(dd).open()
 
 getPdf = (team, score, place) ->
   content: [
