@@ -120,8 +120,8 @@ getPdf = (team, score, place) ->
         image: 'syndis'
         width: 200
         margin: [
-          170
-          80
+          175
+          75
           0
           0
         ]
