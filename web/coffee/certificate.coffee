@@ -1,10 +1,10 @@
 pdfcode = 
-load_teamscore = ->
+load_team = (cb)->
   apiCall "GET", "/api/team", {}
   .done (resp) ->
     switch resp["status"]
       when 1
-        return resp.data.score
+        return cb(resp.data)
       when 0
         apiNotify(resp)
 
