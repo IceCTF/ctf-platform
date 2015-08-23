@@ -12,6 +12,10 @@ $ ->
   $("#certificate-get").on "click", (e) ->
     e.preventDefault()
     load_team (data) ->
+      if data.place is null
+        data.place = ""
+      if data.score is null
+        data.score = ""
       dd = getPdf(data.team_name, data.score.toString(), data.place.toString())
       console.log(dd)
       pdfMake.createPdf(dd).open()
