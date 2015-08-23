@@ -421,7 +421,7 @@ def get_team_member_solve_stats(eligible=True):
         user_breakdowns[t['tid']] = uid_map
         for member in members:
             if member['uid'] not in uid_map:
-                uid_map[uid] = None
+                uid_map[member['uid']] = None
     return user_breakdowns
 
 
