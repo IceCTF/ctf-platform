@@ -11,7 +11,7 @@ _get_problem_names = lambda problems: [problem['name'] for problem in problems]
 top_teams = 10
 
 @api.cache.memoize()
-def get_score(tid=None, uid=None, end=None):
+def get_score(tid=None, uid=None):
     """
     Get the score for a user or team.
 
@@ -21,7 +21,7 @@ def get_score(tid=None, uid=None, end=None):
     Returns:
         The users's or team's score
     """
-    score = sum([problem['score'] for problem in api.problem.get_solved_problems(tid=tid, uid=uid, end=end)])
+    score = sum([problem['score'] for problem in api.problem.get_solved_problems(tid=tid, uid=uid, end=api.config.freeze_time)])
     return score
 
 
@@ -90,7 +90,7 @@ def get_all_team_scores(show_ineligible=False):
         timescore = sum((sub["timestamp"] - api.config.start_time).total_seconds() \
                 for sub in api.problem.get_submissions(tid=team['tid'], correctness=True, end=api.config.freeze_time))
 
-        score = get_score(tid=team['tid'], end=api.config.freeze_time)
+        score = get_score(tid=team['tid'])
         if score > 0:
             result.append({
                 "name": team['team_name'],
@@ -227,6 +227,14 @@ def get_top_teams_score_progressions():
         "name": team["name"],
         "score_progression": get_score_progression(tid=team["tid"]),
     } for team in get_top_teams()]
+
+def get_team_place(tid,show_ineligible=False):
+    all_teams = api.stats.get_all_team_scores(show_ineligible=show_ineligible)
+    for i in range(len(all_teams)):
+        if all_teams[i]["tid"] == tid:
+            return i+1
+    else:
+        return None
 
 
 # Custom statistics not necessarily to be served publicly
