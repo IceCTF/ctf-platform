@@ -8,6 +8,7 @@ userLoggedIn =
   Chat: "/chat"
   Scoreboard: "/scoreboard"
   News: "/news"
+  Certificate: "/certificate"
   Account:
     Manage: "/account"
     Logout: "#"
