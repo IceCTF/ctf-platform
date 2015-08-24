@@ -543,7 +543,7 @@ def get_solve_score():
     for problem in api.problem.get_all_problems():
         results.append((problem["name"], \
             sum([1 if problem["pid"] in api.problem.get_solved_pids(team["tid"]) else 0 for team in api.team.get_all_teams()]) /
-            sum([1 if problem["pid"] in api.problem.get_unlocked_pids(team["tid"]) else 0 for team in api.team.get_all_teams()]))
+            sum([1 if problem["pid"] in api.problem.get_unlocked_pids(team["tid"]) else 0 for team in api.team.get_all_teams()])))
     return results
 
 
