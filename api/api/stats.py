@@ -289,6 +289,9 @@ def get_stats():
     for number, count in get_days_active_breakdown(user_breakdown=user_breakdown).items():
         print("%s Days: %s Teams" % (number, count))
     bar()
+    print("Problem solved/unlocked")
+    for problem, ratio in get_solve_score():
+        print("%s: %.2f" % (problem, ratio))
     print("REVIEWS:")
     bar()
     review_data = get_review_stats()
@@ -533,6 +536,14 @@ def get_review_stats():
         if counter > 0:
             results.append({'name': p['name'], 'education': edval/counter, 'difficulty': difficulty/counter,
                             'enjoyment': enjoyment/counter, 'time': timespent/counter, 'votes': counter})
+    return results
+
+def get_solve_score():
+    results = []
+    for problem in api.problem.get_all_problems():
+        results.append((problem["name"], \
+            sum([1 if problem["pid"] in api.problem.get_solved_pids(team["tid"]) else 0 for team in api.team.get_all_teams()]) /
+            sum([1 if problem["pid"] in api.problem.get_unlocked_pids(team["tid"]) else 0 for team in api.team.get_all_teams()]))
     return results
 
 
