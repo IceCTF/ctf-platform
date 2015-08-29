@@ -1,0 +1,18 @@
+{
+    "secret": "",
+    "shell": {
+        "host": "",
+        "username": "",
+        "password": ""
+    },
+    "email": {
+        "smtp": "",
+        "protocol": "",
+        "username": "",
+        "password": "",
+        "from_addr": "",
+        "from_name": ""
+    },
+    "recaptcha_key": "",
+    "autogen_seed": ""
+}
